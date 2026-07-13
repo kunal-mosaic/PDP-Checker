@@ -2,6 +2,15 @@ products:
 
   # ── Shilajit Gummies ──────────────────────────────────────────────────────
   - name: "Shilajit Gummies"
+    masterDoc: "inputs/masterdocs/shilajit_gummies.md"
+    sheets_name: "Shilajit Gummies"   # exact dropdown value in Umbrella Sheet cell A2
+    product_type: "nutra"
+    version_control_skus:             # rows to look up in NPD Version Control Sheet
+      - "MM Shilajit Gummies - 60s"
+      - "MM Shilajit Gummies - 30s"
+    drive_folder_overrides:
+      "MM Shilajit Gummies - 60s": "https://drive.google.com/drive/folders/1An8GvFuWNl_fZZO3mlwd3beA4bKveCwZ"
+      "MM Shilajit Gummies - 30s": "https://drive.google.com/drive/folders/1An8GvFuWNl_fZZO3mlwd3beA4bKveCwZ"
     personas:
       - "Tejas"
       - "Aakash"
@@ -30,15 +39,24 @@ products:
 
   # ── Hair Regrowth Kit — Stage 2 ──────────────────────────────────────────
   - name: "Hair Regrowth Kit S2"
+    masterDoc: "inputs/masterdocs/hair_regrowth_s2.md"
+    sheets_name: "Stage 2"
+    version_control_skus:
+      - "MM Hair Gummies 30mcg Gummies - 30s"
+      - "MM Minoxidil Topical Solution 5% - 60 ml"
     personas:
       - "S2 ICP"   # 18-26yr student/young professional, frontal recession, preservation mindset
     narratives:
       - "Preservation"        # Bachao nahi ugao — stop losing what you have
       - "Science and Safety"  # FDA-approved, 93% efficacy, doctor-backed
       - "Before After"        # Month 1-2 shedding normal → Month 5-6 visible regrowth
+    product_type: "topical"
     urls:
       - url: "https://manmatters.co/habit/landing/pdp/141464"
         narrative: "Preservation"
+        persona: "S2 ICP"
+      - url: "https://manmatters.co/dp/experiments/2025105"
+        narrative: "Science and Safety"
         persona: "S2 ICP"
     pdfs:
       persona:          "inputs/pdfs/hair_regrowth_s2/persona.pdf"
@@ -48,15 +66,27 @@ products:
 
   # ── Hair Regrowth Kit — Stage 3 ──────────────────────────────────────────
   - name: "Hair Regrowth Kit S3"
+    masterDoc: "inputs/masterdocs/hair_regrowth_s3.md"
+    sheets_name: "Stage 3"
+    version_control_skus:
+      - "MM Hair Gummies 30mcg Gummies - 30s"
+      - "MM Minoxifin - 60 ml"
     personas:
       - "Arjun"   # 22-34yr working professional, crown + bald patches, brand-burned researcher
     narratives:
       - "Regrowth / Reversal"       # Bald patch reversal — follicles dormant not dead
       - "It's Not Too Late"         # Address "too late" belief head-on, follicle biology
       - "The Right Protocol"        # Why oils/shampoos failed, why dual-action works
+    product_type: "topical"
     urls:
       - url: "https://manmatters.co/habit/landing/pdp/2024121"
         narrative: "Regrowth / Reversal"
+        persona: "Arjun"
+      - url: "https://manmatters.co/dp/experiments/2025106"
+        narrative: "It's Not Too Late"
+        persona: "Arjun"
+      - url: "https://manmatters.co/dp/2024428"
+        narrative: "The Right Protocol"
         persona: "Arjun"
     pdfs:
       persona:          "inputs/pdfs/hair_regrowth_s3/persona.pdf"
@@ -66,15 +96,27 @@ products:
 
   # ── Advanced Hair Regrowth Regime ────────────────────────────────────────
   - name: "Advanced Hair Regrowth Regime"
+    masterDoc: "inputs/masterdocs/advanced_hair_regrowth.md"
+    sheets_name: "Stage 3 (Cetosomal)"
+    version_control_skus:
+      - "MM Hair Gummies 30mcg Gummies - 30s"
+      - "MM Minoxifin Advanced"
+    packaging_file_filters:
+      "MM Minoxifin Advanced": "Label"   # bottle label only (not the carton box)
+    skip_pdp_prefilter: true             # kit PDP — composite images get wrongly dropped by product_shot filter
     personas:
       - "The Treatment Optimizer"   # 24-35, science-led, already 6-15mo on Minoxidil
     narratives:
       - "The Upgrade"             # You've been doing it right — now make it reach
       - "The Absorption Gap"      # Most of what you apply is wasted (CETOSOMAL 44%/2-3x)
       - "Triple-Action Compound"  # Topical + Internal + Mechanical (dermaroller)
+    product_type: "topical"
     urls:
       - url: "https://manmatters.co/dp/2025113"
         narrative: "The Upgrade"
+        persona: "The Treatment Optimizer"
+      - url: "https://manmatters.co/dp/2025093"
+        narrative: "The Absorption Gap"
         persona: "The Treatment Optimizer"
     pdfs:
       persona:          "inputs/pdfs/advanced_hair_regrowth/persona.pdf"
@@ -86,14 +128,23 @@ products:
   # NOTE: brief is for the S1 Kit (gummies + serum); the URL points to the
   # anti-hairfall shampoo page — confirm the URL maps to the Kit PDP.
   - name: "Anti-Hairfall Kit S1"
+    masterDoc: "inputs/masterdocs/anti_hairfall_s1.md"
+    sheets_name: "Stage1 Serum"
+    version_control_skus:
+      - "MM Hair Gummies 30mcg Gummies - 30s"
+      - "MM Advanced Hair Serum - 30 ml"
     personas:
       - "Early-Stage Hairfall"   # noticed hairfall/thinning early, tried nuskas/oils/shampoos, "waiting trap"
     narratives:
       - "Problem-Solution"   # noticed hairfall → wrong fixes → DHT+nutrition truth → S1 Kit
       - "Myth-Busting"       # bust every ghar ka nuska/oil/shampoo → science wins
+    product_type: "topical"
     urls:
       - url: "https://manmatters.co/dp/anti-hair-fall-shampoo-300ml/2025034"
         narrative: "Problem-Solution"
+        persona: "Early-Stage Hairfall"
+      - url: "https://manmatters.co/dp/2025097"
+        narrative: "Myth-Busting"
         persona: "Early-Stage Hairfall"
     pdfs:
       persona:          "inputs/pdfs/anti_hairfall_s1/persona.pdf"
@@ -103,6 +154,12 @@ products:
 
   # ── Hair Gummies ─────────────────────────────────────────────────────────
   - name: "Hair Gummies"
+    masterDoc: "inputs/masterdocs/hair_gummies.md"
+    sheets_name: "Biotin Gummies"
+    product_type: "nutra"
+    version_control_skus:
+      - "MM Hair Gummies 30mcg Gummies - 30s"
+      - "MM Hair 30mcg Gummies (No Added Sugar) - 90s"
     personas:
       - "Early-Stage Hairfall 18-26"   # college/first-job, nutrition gap, tried nuskas/oils/shampoos
     narratives:
@@ -113,11 +170,99 @@ products:
       - url: "https://manmatters.co/habit/landing/pdp/1605"
         narrative: "Problem-Solution"
         persona: "Early-Stage Hairfall 18-26"
+      - url: "https://manmatters.co/dp/2025100"
+        narrative: "Myth-Busting"
+        persona: "Early-Stage Hairfall 18-26"
+      - url: "https://manmatters.com/dp/2025100"
+        narrative: "Nutrition"
+        persona: "Early-Stage Hairfall 18-26"
+      - url: "https://manmatters.com/dp/biotin-hair-gummies-60n/6102393"
+        narrative: "Nutrition"
+        persona: "Early-Stage Hairfall 18-26"
     pdfs:
       persona:          "inputs/pdfs/hair_gummies_amj/persona.pdf"
       brand_guidelines: "inputs/pdfs/brand_guidelines.pdf"
       product_brief:    "inputs/pdfs/hair_gummies_amj/product_brief.pdf"
       narrative:        "inputs/pdfs/hair_gummies_amj/narrative.pdf"
+
+  # ── Beard Growth Kit ─────────────────────────────────────────────────────
+  - name: "Beard Growth Kit"
+    masterDoc: "inputs/masterdocs/beard_growth_kit.md"
+    sheets_name: "BGK"
+    product_type: "topical"
+    version_control_skus:
+      - "MM Beard Gummies - 30s"
+      - "MM BeardMax - 30 ml"
+    drive_folder_overrides:
+      "MM Beard Gummies - 30s": "https://drive.google.com/drive/folders/1DIDSci9Gcbu7MLopGpig7g58GPMmyI4s"
+    personas:
+      - "The First-Time Grower"   # 18-22, peer-driven, wants proof without judgment
+      - "The Patcher"             # 22-27, research-led, tried oils, wants mechanism clarity
+      - "The Late Resolver"       # 28-35, cautious, needs safety + doctor-backed reassurance
+    narratives:
+      - "Peer Proof / Confidence"  # Make routine feel normal, safe, peer-approved
+      - "Before-After"             # Visible progress with realistic 3-4 month timeline
+      - "Myth Busting"             # Why beard oil alone doesn't solve patches (Minoxidil does)
+      - "Product First"            # Simple aesthetic 3-step kit: Minoxidil + Gummies + Derma Roller
+      - "Problem Solution"         # Low/patchy beard → right science-backed routine
+    urls:
+      - url: "https://manmatters.co/dp/26166966"
+        narrative: "Product First"
+        persona: "The First-Time Grower"
+      - url: "https://manmatters.co/dp/experiments/beard-growth-kit-1-month-pack/26166966"
+        narrative: "Before-After"
+        persona: "The Patcher"
+      - url: "https://manmatters.com/dp/beard-growth-kit-1-month-pack/2024336"
+        narrative: "Product First"
+        persona: "The First-Time Grower"
+    pdfs:
+      persona:          "inputs/pdfs/beard/persona.pdf"
+      brand_guidelines: "inputs/pdfs/brand_guidelines.pdf"
+      product_brief:    "inputs/pdfs/beard/product_brief.docx"
+      narrative:        "inputs/pdfs/beard/narrative.pdf"
+
+  # ── Magnesium Gummies ─────────────────────────────────────────────────────────
+  # packaging_only: no MasterDoc yet — packaging compliance report only.
+  # Drive folder provided directly from email (not in version control sheet yet).
+  - name: "Magnesium Gummies"
+    sheets_name: "Magnesium Gummies"
+    product_type: "nutra"
+    packaging_only: true
+    version_control_skus:
+      - "MM Magnesium Gummies"
+    drive_folder_overrides:
+      "MM Magnesium Gummies": "https://drive.google.com/drive/folders/1Gq8MDdxvSpIQMrcG4E31XPVV8XHuY2_0"
+    masterDoc: "inputs/masterdocs/magnesium_gummies.md"
+    urls:
+      - url: "https://manmatters.com/dp/2025070"
+
+  # ── Multivitamin Gummies ──────────────────────────────────────────────────────
+  # packaging_only: no MasterDoc yet — packaging compliance report only.
+  # Drive folder provided directly from email (not in version control sheet yet).
+  - name: "Multivitamin Gummies"
+    sheets_name: "Multivitamin Gummies"
+    product_type: "nutra"
+    packaging_only: true
+    version_control_skus:
+      - "MM Multivitamin Gummies"
+    drive_folder_overrides:
+      "MM Multivitamin Gummies": "https://drive.google.com/drive/folders/17RCW7h4bVgX4gxaVByyj4d0AA--DJ2mB"
+    masterDoc: "inputs/masterdocs/multivitamin_gummies.md"
+    urls:
+      - url: "https://manmatters.com/dp/13410495"
+
+  # ── Plant Protein ─────────────────────────────────────────────────────────
+  - name: "Plant Protein"
+    masterDoc: "inputs/masterdocs/plant_protein.md"
+    sheets_name: "Plant Protein"
+    product_type: "nutra"
+    packaging_only: true
+    version_control_skus:
+      - "MM Plant Protein 1kg"
+    drive_folder_overrides:
+      "MM Plant Protein 1kg": "https://drive.google.com/drive/folders/1mHXSwhIMyjoNzX086YpnSkmuJz6h-dW6"
+    urls:
+      - url: "https://manmatters.com/dp/plant-protein-powder-1-kg/26166918"
 
   # ── ADD A NEW PRODUCT BELOW ───────────────────────────────────────────────
   # Copy this block and fill in the fields. Each product gets its own:

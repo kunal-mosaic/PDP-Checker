@@ -6,4 +6,7 @@ outputs/screenshots/
 outputs/reports/
 outputs/ingest_cache/
 # outputs/zeus_cache/ — tracked in git so cache is available on fresh clone
+outputs/run_*.log
+outputs/runs/
+outputs/packaging_cache/
 .DS_Store

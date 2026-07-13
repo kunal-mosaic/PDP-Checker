@@ -21,7 +21,10 @@ from typing import List
 from ingester import ingest
 from scraper import scrape_all_urls, enrich_with_visuals, pull_sheets_data
 from scraper.zeus_connector import clear_url_images
+from scraper.version_control_connector import fetch_packaging
 from analyser import analyse_all
+from analyser.claude_client import get_client as _get_claude_client
+from analyser.packaging_scorer import score_packaging, apply_packaging_to_visual_score, required_claims_to_claim_flags
 from report import build_report
 from tools.storage_tool import save_run, load_previous_run
 from agents.regression_agent import detect_regression
@@ -33,6 +36,33 @@ config = load_config()
 
 
 # ── Core pipeline ──────────────────────────────────────────────────────────────
+
+def _make_packaging_only_stubs(pdp_list, product_name: str):
+    """Create minimal PDPAnalysisResult stubs for packaging-only mode."""
+    from datetime import datetime as dt
+    from analyser.models import (
+        ReviewsScore, PersonaNarrativeScore, CopyHealthScore,
+        VisualDesignScore, AdAlignmentScore, SubScore,
+    )
+    stubs = []
+    _z = SubScore(name="", score=0.0, observation="Packaging-only mode — full analysis not run", suggestion="")
+    for pdp in pdp_list:
+        from analyser.models import PDPAnalysisResult
+        stub = PDPAnalysisResult(
+            url=pdp.url,
+            product_name=product_name,
+            analysed_at=dt.utcnow().isoformat(),
+            reviews=ReviewsScore(overall=0.0, freshness=_z, rating_distribution=_z, theme_alignment=_z, negative_handling=_z),
+            persona_narrative=PersonaNarrativeScore(overall=0.0, hero_banner=_z, carousel_flow=_z, banner_alignment=_z, page_narrative_arc=_z, cta_language=_z),
+            copy_health=CopyHealthScore(overall=0.0, spell_grammar=_z, brand_guidelines=_z, claims_alignment=_z),
+            visual_design=VisualDesignScore(overall=0.0, human_presence=_z, proof_prominence=_z, ingredient_imagery=_z, before_after=_z, lifestyle_shots=_z, visual_hierarchy_brand=_z),
+            ad_alignment=AdAlignmentScore(overall=0.0, atc_drop_off_addressed=_z),
+            overall_score=0.0,
+            status="attention",
+        )
+        stubs.append(stub)
+    return stubs
+
 
 def run_product(product_cfg: dict):
     """Full pipeline for one product."""
@@ -56,17 +86,31 @@ def run_product(product_cfg: dict):
     log.info(f"  Time: {datetime.now().strftime('%H:%M:%S')}")
     log.info(f"{'━'*60}")
 
-    # ── Step 1: Ingest PDFs ────────────────────────────────────
-    log.info("[1/5] Ingesting PDFs...")
-    try:
-        context = ingest(product_cfg)
-        log.info(f"      ✓ Persona: {context.persona.name}")
-        log.info(f"      ✓ Concerns: {len(context.persona.top_concerns)}")
-        log.info(f"      ✓ Pillars: {len(context.narrative.pillars)}")
-    except Exception as e:
-        log.error(f"PDF ingestion failed: {e}")
-        log.error("Check that all PDFs exist in inputs/pdfs/ and are named correctly in config.yaml")
-        return None
+    packaging_only = product_cfg.get("packaging_only", False)
+
+    # ── Step 1: Ingest PDFs / MasterDoc ───────────────────────
+    if packaging_only:
+        log.info("[1/5] Packaging-only mode — reading required claims from MasterDoc")
+        context = None
+        if product_cfg.get("masterDoc"):
+            try:
+                from ingester.extractor import ingest_masterdoc
+                context = ingest_masterdoc(product_cfg)
+                n = len(context.required_claims.health_claims_required) if context.required_claims else 0
+                log.info(f"      Required claims loaded: {n} health claims")
+            except Exception as e:
+                log.warning(f"      MasterDoc read failed (non-fatal): {e}")
+    else:
+        log.info("[1/5] Ingesting PDFs / MasterDoc...")
+        try:
+            context = ingest(product_cfg)
+            log.info(f"      ✓ Persona: {context.persona.name}")
+            log.info(f"      ✓ Concerns: {len(context.persona.top_concerns)}")
+            log.info(f"      ✓ Pillars: {len(context.narrative.pillars)}")
+        except Exception as e:
+            log.error(f"Ingestion failed: {e}")
+            log.error("Check that all PDFs / MasterDoc exist and are named correctly in config.yaml")
+            return None
 
     # ── Step 2: Scrape PDPs ────────────────────────────────────
     log.info("[2/5] Scraping PDPs...")
@@ -98,8 +142,9 @@ def run_product(product_cfg: dict):
 
     # ── Step 4: Pull Google Sheets ─────────────────────────────
     log.info("[4/5] Pulling Umbrella Sheet...")
+    sheets_name = product_cfg.get("sheets_name", name)
     try:
-        sheets = pull_sheets_data(name, urls)
+        sheets = pull_sheets_data(sheets_name, urls)
         log.info(f"      ✓ {len(sheets.top_ads)} ads | {len(sheets.url_stats)} URLs")
     except Exception as e:
         log.warning(f"      Sheets pull failed: {e} — continuing without ad data")
@@ -111,12 +156,55 @@ def run_product(product_cfg: dict):
         )
 
     # ── Step 5: Analyse ────────────────────────────────────────
-    log.info("[5/5] Analysing...")
-    results = analyse_all(enriched, context, sheets, url_meta=url_meta)
+    if packaging_only:
+        log.info("[5/5] Packaging-only mode — skipping full analysis")
+        results = _make_packaging_only_stubs(enriched, name)
+    else:
+        log.info("[5/5] Analysing...")
+        results = analyse_all(enriched, context, sheets, url_meta=url_meta)
 
     if not results:
         log.error("Analysis returned no results")
         return None
+
+    # ── Step 5b: Packaging check (optional) ───────────────────
+    sku_names = product_cfg.get("version_control_skus", [])
+    if sku_names:
+        log.info(f"[5b] Packaging check — {len(sku_names)} SKU(s)...")
+        try:
+            _client = _get_claude_client()
+            file_filters = product_cfg.get("packaging_file_filters", {})
+            skip_prefilter = product_cfg.get("skip_pdp_prefilter", False)
+            folder_overrides = product_cfg.get("drive_folder_overrides", {})
+            packaging_data = fetch_packaging(name, sku_names, file_filters=file_filters, drive_folder_overrides=folder_overrides)
+            req_claims = context.required_claims if context else None
+            # Apply packaging score to every URL result (same packaging for whole product)
+            for result in results:
+                pdp_for_pkg = next((p for p in enriched if p.url == result.url), None)
+                if pdp_for_pkg:
+                    pkg_score = score_packaging(
+                        _client, pdp_for_pkg, packaging_data,
+                        skip_pdp_prefilter=skip_prefilter,
+                        required_claims=req_claims,
+                    )
+                    result.packaging = pkg_score
+                    if not packaging_only:
+                        result.visual_design = apply_packaging_to_visual_score(
+                            result.visual_design, pkg_score
+                        )
+                    # Masterdoc "Required Claims" results (GM compliance + email-specific
+                    # checks) also surface in the Hygiene Check → Claims tab, so a violation
+                    # like "100% Natural found" is visible wherever the user looks — single
+                    # source (the masterdoc), rendered in two places.
+                    if pkg_score.required_claims_checks:
+                        result.copy_health.claims_flags.extend(
+                            required_claims_to_claim_flags(pkg_score.required_claims_checks)
+                        )
+            log.info("      ✓ Packaging check complete")
+        except Exception as e:
+            log.warning(f"      Packaging check failed (non-fatal): {e}")
+    else:
+        log.info("[5b] Packaging check — skipped (no version_control_skus in config)")
 
     # ── Step 6: Save run snapshot ──────────────────────────────
     run_file = save_run(name, results)
@@ -155,7 +243,7 @@ def run_product(product_cfg: dict):
 
     # ── Build report ───────────────────────────────────────────
     report_path = build_report(results, sheets, name, pdp_list=enriched,
-                               regression_alerts=alerts)
+                               regression_alerts=alerts, packaging_only=packaging_only)
     log.info(f"")
     log.info(f"  ✅ Report saved → {report_path}")
     log.info(f"{'━'*60}")

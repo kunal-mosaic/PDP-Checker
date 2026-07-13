@@ -5,7 +5,8 @@ from pathlib import Path
 from typing import Optional
 from ingester.models import (
     PersonaProfile, NarrativePillars,
-    BrandVoice, ProductBrief, IngestedContext
+    BrandVoice, ProductBrief, IngestedContext,
+    RequiredClaimsContext, NITableRow,
 )
 from ingester.pdf_reader import load_all_pdfs
 from utils.config_loader import get_env
@@ -171,11 +172,160 @@ def extract_product_brief(client: anthropic.Anthropic, raw_text: str) -> Product
     return brief
 
 
+def extract_required_claims(client: anthropic.Anthropic, section_text: str) -> RequiredClaimsContext:
+    """Extract required compliance claims from the ## Required Claims section of a MasterDoc."""
+    if not section_text or not section_text.strip():
+        return RequiredClaimsContext()
+    log.info("Extracting required claims from MasterDoc...")
+    system = (
+        "You are a compliance analyst. Extract required claims from this product MasterDoc section. "
+        "Return ONLY valid JSON matching this exact schema — no explanation, no markdown:\n"
+        "{\n"
+        '  "health_claims_required": ["No Added Sugar", "No Side Effects", ...],\n'
+        '  "prohibited_claims": ["100% Natural", ...],\n'
+        '  "ni_table": [{"ingredient": "Shilajit", "value": "500 mg"}, ...],\n'
+        '  "manufacturer": "exact manufacturer text required on label",\n'
+        '  "additional_checks": ["any other requirement to verify on PDP", ...]\n'
+        "}\n"
+        "If a field has no data, use an empty list or empty string."
+    )
+    data = _call_claude(client, system, f"REQUIRED CLAIMS SECTION:\n\n{section_text}")
+    ni_rows = [NITableRow(**r) for r in data.get("ni_table", [])]
+    return RequiredClaimsContext(
+        health_claims_required=data.get("health_claims_required", []),
+        prohibited_claims=data.get("prohibited_claims", []),
+        ni_table=ni_rows,
+        manufacturer=data.get("manufacturer", ""),
+        additional_checks=data.get("additional_checks", []),
+    )
+
+
+def _parse_masterdoc_sections(content: str) -> dict:
+    """Parse a MasterDoc .md file into a dict of {section_name: body_text}."""
+    sections = {}
+    current_heading = None
+    current_lines = []
+    for line in content.split("\n"):
+        if line.startswith("## "):
+            if current_heading is not None:
+                sections[current_heading] = "\n".join(current_lines).strip()
+            current_heading = line[3:].strip()
+            current_lines = []
+        else:
+            current_lines.append(line)
+    if current_heading is not None:
+        sections[current_heading] = "\n".join(current_lines).strip()
+    return sections
+
+
+def ingest_masterdoc(product_config: dict) -> IngestedContext:
+    """
+    Ingest product context from a MasterDoc .md file.
+    Called when product_config has a 'masterDoc' key.
+    """
+    client = anthropic.Anthropic(api_key=get_env("ANTHROPIC_API_KEY"))
+    product_name = product_config["name"]
+    md_path = Path(product_config["masterDoc"])
+
+    if not md_path.exists():
+        raise FileNotFoundError(f"MasterDoc not found: {md_path}")
+
+    log.info(f"Reading MasterDoc: {md_path}")
+
+    # Cache check — skip Claude if the .md file hasn't changed
+    fingerprint = hashlib.md5(md_path.read_bytes()).hexdigest()
+    cached = _load_ingest_cache(product_name, fingerprint)
+    if cached:
+        return cached
+
+    content = md_path.read_text(encoding="utf-8")
+    sections = _parse_masterdoc_sections(content)
+
+    persona_text   = sections.get("Persona", "")
+    brief_text     = sections.get("Product Brief", "")
+    narrative_text = sections.get("Narrative", "")
+    claims_text    = sections.get("Required Claims", "")
+
+    # Use placeholder brand voice (MasterDoc doesn't carry brand guidelines — shared PDF still used)
+    brand_guidelines_path = product_config.get("pdfs", {}).get("brand_guidelines", "")
+    if brand_guidelines_path and Path(brand_guidelines_path).exists():
+        from ingester.pdf_reader import load_all_pdfs
+        brand_raw = load_all_pdfs({"brand_guidelines": brand_guidelines_path})
+        voice = extract_brand_voice(client, brand_raw["brand_guidelines"])
+    else:
+        voice = BrandVoice(
+            tone_descriptors=["clean", "science-backed", "direct"],
+            dos=["Use evidence-based language"],
+            donts=["Avoid exaggerated claims"],
+            power_words=[],
+            banned_words=[],
+        )
+
+    def _is_tbd(text: str) -> bool:
+        t = text.strip()
+        return not t or t.startswith("[TBD") or t.startswith("# TBD") or t.lower().startswith("tbd")
+
+    persona   = _placeholder_persona(product_name) if _is_tbd(persona_text) else extract_persona(client, persona_text)
+    narrative = _placeholder_narrative() if _is_tbd(narrative_text) else extract_narrative(client, narrative_text)
+    brief     = _placeholder_brief(product_name) if _is_tbd(brief_text) else extract_product_brief(client, brief_text)
+    req_claims = None if _is_tbd(claims_text) else extract_required_claims(client, claims_text)
+
+    context = IngestedContext(
+        persona=persona,
+        narrative=narrative,
+        brand_voice=voice,
+        product_brief=brief,
+        product_name=product_name,
+        required_claims=req_claims,
+    )
+
+    _save_ingest_cache(product_name, fingerprint, context)
+    log.info(f"MasterDoc ingestion complete for: {product_name}")
+    return context
+
+
+def _placeholder_persona(product_name: str) -> PersonaProfile:
+    return PersonaProfile(
+        name="[TBD — add ## Persona section to MasterDoc]",
+        age_range="",
+        description=f"No persona defined yet for {product_name}.",
+        top_concerns=[],
+        motivations=[],
+        language_cues=[],
+        objections=[],
+    )
+
+
+def _placeholder_narrative() -> NarrativePillars:
+    return NarrativePillars(
+        core_story="[TBD — add ## Narrative section to MasterDoc]",
+        pillars=[],
+        emotional_arc="",
+        key_claims=[],
+    )
+
+
+def _placeholder_brief(product_name: str) -> ProductBrief:
+    return ProductBrief(
+        product_name=product_name,
+        tagline="",
+        key_ingredients=[],
+        primary_benefits=[],
+        target_persona_concerns=[],
+        proof_points=[],
+        differentiators=[],
+    )
+
+
 def ingest(product_config: dict) -> IngestedContext:
     """
     Main entry point. Pass a product's config block.
+    Routes to MasterDoc reader if 'masterDoc' key is present, otherwise reads PDFs.
     Returns a fully populated IngestedContext.
     """
+    if product_config.get("masterDoc"):
+        return ingest_masterdoc(product_config)
+
     client = anthropic.Anthropic(api_key=get_env("ANTHROPIC_API_KEY"))
 
     product_name = product_config["name"]

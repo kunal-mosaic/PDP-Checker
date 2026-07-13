@@ -1,5 +1,19 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
+
+
+class NITableRow(BaseModel):
+    ingredient: str
+    value: str  # e.g. "500 mg", "10 mcg"
+
+
+class RequiredClaimsContext(BaseModel):
+    """Compliance rules sourced from the product MasterDoc."""
+    health_claims_required: List[str] = []   # must appear on PDP
+    prohibited_claims: List[str] = []         # must NOT appear on PDP
+    ni_table: List[NITableRow] = []           # expected NI table values
+    manufacturer: str = ""                    # required manufacturer text
+    additional_checks: List[str] = []         # any other requirements
 
 
 class PersonaProfile(BaseModel):
@@ -38,9 +52,10 @@ class ProductBrief(BaseModel):
 
 
 class IngestedContext(BaseModel):
-    """Full context extracted from all PDFs — passed to every analysis step"""
+    """Full context extracted from all PDFs or MasterDoc — passed to every analysis step"""
     persona: PersonaProfile
     narrative: NarrativePillars
     brand_voice: BrandVoice
     product_brief: ProductBrief
-    product_name: str                  # convenience shortcut
+    product_name: str
+    required_claims: Optional[RequiredClaimsContext] = None  # from MasterDoc ## Required Claims section

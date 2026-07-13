@@ -3,8 +3,15 @@ Copy Health Scorer — three distinct checks mapped to the Hygiene Check tabs:
   1. Claims Alignment  — flags PDP claims vs product brief (numbers, absolutes)
   2. Brand Guidelines  — flags tone violations and banned words
   3. Spell / Grammar   — flags errors, punctuation, unclear copy
+
+GM/compliance claims (100% Natural, No Side Effects, Vegan, etc.) are no longer scanned
+here — they're driven entirely by each product's MasterDoc `## Required Claims` section
+and checked in analyser/packaging_scorer.py::_check_required_claims(), then merged into
+this scorer's claims_flags by main.py after the packaging check runs. This keeps GM
+compliance as a single masterdoc-driven source instead of a second, hardcoded phrase list.
 """
 
+import re
 import anthropic
 from analyser.models import CopyHealthScore, SubScore, ClaimFlag, TextInsight
 from analyser.claude_client import call_claude

@@ -86,12 +86,46 @@ def call_claude_vision(
     return _parse_json(response.content[0].text)
 
 
+def call_claude_vision_blocks(
+    client: anthropic.Anthropic,
+    system: str,
+    content_blocks: list,
+    model: str = "claude-opus-4-5",
+) -> dict:
+    """
+    Call Claude Vision with pre-built content blocks (text + image dicts).
+    Used when the caller constructs mixed packaging + PDP image blocks.
+    """
+    if not content_blocks:
+        return {}
+    response = client.messages.create(
+        model=model,
+        # 8192: vision calls now carry up to 24 images, so responses (per-image match
+        # entries, full NI ingredient tables) regularly overflow 4096 and truncate
+        # mid-JSON — which surfaced as "Expecting value: line 1 column 1" parse errors.
+        max_tokens=8192,
+        system=system,
+        messages=[{"role": "user", "content": content_blocks}]
+    )
+    return _parse_json(response.content[0].text)
+
+
 def _parse_json(text: str) -> dict:
-    """Strip markdown fences and parse JSON."""
+    """Strip markdown fences and parse JSON, tolerating prose around the object."""
     text = text.strip()
     if text.startswith("```"):
         parts = text.split("```")
         text = parts[1]
         if text.startswith("json"):
             text = text[4:]
-    return json.loads(text.strip())
+        text = text.strip()
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        # Model sometimes prefixes prose ("Looking at the images...") or appends a
+        # trailing note. Extract the outermost {...} block and parse that instead.
+        start = text.find("{")
+        end = text.rfind("}")
+        if start != -1 and end > start:
+            return json.loads(text[start:end + 1])
+        raise

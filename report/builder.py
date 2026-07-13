@@ -89,6 +89,7 @@ def build_report(
     product_name: str,
     pdp_list: Optional[List[PDPTextData]] = None,
     regression_alerts: Optional[list] = None,
+    packaging_only: bool = False,
 ) -> str:
     """
     Build HTML report from analysis results.
@@ -144,10 +145,13 @@ def build_report(
         score_bar=_score_bar,
         regression_alerts=regression_alerts or [],
         regression_count=regression_count,
+        packaging_only=packaging_only,
     )
 
     filename = f"{product_name.lower().replace(' ', '_')}_{datetime.now().strftime('%Y%m%d')}.html"
     output_path = REPORTS_DIR / filename
+    run_ts = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
+    html = html + f"\n<!-- generated: {run_ts} -->"
     output_path.write_text(html, encoding="utf-8")
 
     log.info(f"Report saved → {output_path}")

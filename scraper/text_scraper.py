@@ -129,6 +129,54 @@ def _scroll_full_page(page: Page):
     page.wait_for_timeout(300)
 
 
+def _expand_accordions(page: Page):
+    """
+    Click open collapsed accordion/FAQ sections (Additional Information, FAQs, etc.)
+    so their text becomes visible before we capture inner_text. Playwright's inner_text
+    only returns text that is currently rendered/visible — collapsed sections are
+    typically display:none until clicked, so Manufactured By / FAQ content would
+    otherwise be invisible to the scraper entirely.
+    """
+    try:
+        page.evaluate("""
+            () => {
+                // Native <details> elements
+                document.querySelectorAll('details').forEach(d => d.open = true);
+
+                // Common accordion header patterns — click anything that looks collapsed
+                const headerSelectors = [
+                    '[aria-expanded="false"]',
+                    '[class*="accordion" i] [class*="header" i]',
+                    '[class*="accordion" i] [class*="title" i]',
+                    '[class*="faq" i] [class*="question" i]',
+                    '[class*="collapsible" i]',
+                ];
+                const seen = new Set();
+                headerSelectors.forEach(sel => {
+                    document.querySelectorAll(sel).forEach(el => {
+                        if (seen.has(el)) return;
+                        seen.add(el);
+                        try { el.click(); } catch (e) {}
+                    });
+                });
+
+                // Text-based fallback: find headings/buttons literally saying
+                // "Additional Information" and click them (covers custom components
+                // that don't use standard accordion class names/attributes).
+                const targets = ['additional information', 'manufactured by', 'faq'];
+                document.querySelectorAll('h1,h2,h3,h4,button,div,span').forEach(el => {
+                    const t = (el.innerText || '').trim().toLowerCase();
+                    if (targets.some(x => t === x || t.startsWith(x))) {
+                        try { el.click(); } catch (e) {}
+                    }
+                });
+            }
+        """)
+        page.wait_for_timeout(800)
+    except Exception:
+        pass
+
+
 def _get_structured_dump(page: Page) -> str:
     """
     Extract a structured element dump from the page.
@@ -589,6 +637,10 @@ def scrape_text(url: str) -> PDPTextData:
             _scroll_full_page(page)
             # Extra settle time after scroll — lets lazy sections finish rendering
             page.wait_for_timeout(1500)
+
+            # Expand collapsed accordions (Additional Information, FAQs) so their
+            # text — e.g. "Manufactured By" — is visible before we capture it below.
+            _expand_accordions(page)
 
             # Meta — reliable cross-site
             meta_title = ""

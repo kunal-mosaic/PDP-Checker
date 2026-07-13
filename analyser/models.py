@@ -82,11 +82,49 @@ class CopyHealthScore(BaseModel):
     brand_guidelines: SubScore
     claims_alignment: SubScore
     # Structured flag lists (shown in each sub-tab)
-    claims_flags: List[ClaimFlag] = []  # Claims sub-tab
-    brand_flags: List[str] = []         # Brand Guidelines sub-tab
-    flagged_errors: List[str] = []      # Spell Check sub-tab
+    # claims_flags holds BOTH the brief-vs-PDP accuracy check AND, appended by main.py
+    # after the packaging step, every MasterDoc "Required Claims" result (GM compliance,
+    # prohibited phrases, ingredient/manufacturer checks) — single masterdoc-driven source.
+    claims_flags: List[ClaimFlag] = []       # Claims sub-tab
+    brand_flags: List[str] = []              # Brand Guidelines sub-tab
+    flagged_errors: List[str] = []           # Spell Check sub-tab
     # Text Layer insights
     text_insights: List[TextInsight] = []
+
+
+class RequiredClaimCheck(BaseModel):
+    claim: str                          # the required claim or rule text
+    claim_type: str                     # "required" | "prohibited" | "ni_value" | "manufacturer"
+    status: str                         # "present" | "absent" | "violated" | "cannot_verify"
+    found_text: Optional[str] = None    # exact text found on PDP (if any)
+    notes: str = ""
+
+
+class PackagingSKUResult(BaseModel):
+    sku_name: str
+    version: str                    # e.g. "V7"
+    drive_folder_url: str
+    ni_table_present: bool = False
+    ni_table_matches: Optional[bool] = None   # None = could not compare
+    ni_table_diff: List[str] = []             # ingredients missing or extra
+    ni_packaging_values: List[dict] = []      # [{ingredient, value}] from packaging
+    ni_pdp_values: List[dict] = []            # [{ingredient, value}] from PDP
+    product_photo_present: bool = False
+    packaging_match: Optional[bool] = None    # None = no packaging files to compare
+    packaging_mismatch_details: List[dict] = []  # [{element, on_packaging, on_pdp}]
+    packaging_images_b64: List[str] = []      # base64 JPGs of packaging pages
+    pdp_product_images_b64: List[str] = []    # base64 JPGs of PDP product images
+    ni_table_pdp_image_b64: Optional[str] = None  # the specific PDP image the NI table was found on
+
+
+class PackagingScore(BaseModel):
+    overall: float = 0.0
+    ni_table_check: SubScore = SubScore(name="NI Table", score=0.0, observation="Not run", suggestion="")
+    product_photo_check: SubScore = SubScore(name="Product Photo", score=0.0, observation="Not run", suggestion="")
+    packaging_match_check: SubScore = SubScore(name="Latest Packaging Match", score=0.0, observation="Not run", suggestion="")
+    sku_results: List[PackagingSKUResult] = []
+    required_claims_checks: List[RequiredClaimCheck] = []  # from MasterDoc verification
+    error: Optional[str] = None
 
 
 class VisualDesignScore(BaseModel):
@@ -97,6 +135,10 @@ class VisualDesignScore(BaseModel):
     before_after: SubScore
     lifestyle_shots: SubScore
     visual_hierarchy_brand: SubScore
+    # Packaging sub-scores (new — added from Version Control Sheet comparison)
+    ni_table_present: SubScore = SubScore(name="NI Table Present", score=0.0, observation="Not checked", suggestion="")
+    product_photo_present: SubScore = SubScore(name="Product Photo Present", score=0.0, observation="Not checked", suggestion="")
+    latest_packaging_match: SubScore = SubScore(name="Latest Packaging Match", score=0.0, observation="Not checked", suggestion="")
     flagged_issues: List[str] = []
     section_flow: Optional[SectionFlowScore] = None  # section order analysis
 
@@ -138,6 +180,7 @@ class PDPAnalysisResult(BaseModel):
     copy_health: CopyHealthScore
     visual_design: VisualDesignScore
     ad_alignment: AdAlignmentScore
+    packaging: Optional[PackagingScore] = None   # None if version_control_skus not configured
 
     # Overall
     overall_score: float

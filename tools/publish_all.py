@@ -55,6 +55,12 @@ def publish_all() -> str:
 
         _rebuild_index(worktree)
 
+        # GitHub Pages runs branches through Jekyll by default, which can choke on
+        # stray {{ }} / {% %} sequences in raw report HTML and silently fail the build
+        # (old content just keeps being served, with no visible error). .nojekyll
+        # disables that processing so files are served as-is.
+        (worktree / ".nojekyll").touch()
+
         _run(["git", "add", "-A"], cwd=worktree)
         status = subprocess.run(
             ["git", "status", "--porcelain"], capture_output=True, text=True, cwd=worktree
@@ -62,7 +68,7 @@ def publish_all() -> str:
         if status:
             _run(["git", "commit", "-m", "republish: wipe stale links, publish all current products"], cwd=worktree)
             _run(["git", "push", _authenticated_remote(), f"HEAD:{PAGES_BRANCH}"], cwd=worktree)
-            print(f"\n✓ Published {len(published)} products")
+            print(f"\nPublished {len(published)} products")
         else:
             print("\nNo changes to publish")
 

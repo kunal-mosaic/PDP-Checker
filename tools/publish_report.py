@@ -139,8 +139,14 @@ def publish(product_name: str) -> str:
             # Rebuild index.html listing all products
             _rebuild_index(worktree_path)
 
+            # GitHub Pages runs branches through Jekyll by default, which can choke on
+            # stray {{ }} / {% %} sequences in raw report HTML and silently fail the build
+            # (old content just keeps being served, with no visible error). .nojekyll
+            # disables that processing so files are served as-is.
+            (worktree_path / ".nojekyll").touch()
+
             # Commit and push
-            files_to_add = [product_file, "index.html"]
+            files_to_add = [product_file, "index.html", ".nojekyll"]
             _run(["git", "add"] + files_to_add, cwd=worktree_path)
             status = subprocess.run(
                 ["git", "status", "--porcelain"], capture_output=True, text=True, cwd=worktree_path

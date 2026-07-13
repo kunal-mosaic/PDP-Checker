@@ -18,7 +18,7 @@ def get_logger(name: str) -> logging.Logger:
     console = logging.StreamHandler(sys.stdout)
     console.setLevel(logging.INFO)
     console.setFormatter(logging.Formatter(
-        "%(asctime)s  %(levelname)-8s  %(name)s  →  %(message)s",
+        "%(asctime)s  %(levelname)-8s  %(name)s  |  %(message)s",
         datefmt="%H:%M:%S"
     ))
 
@@ -27,7 +27,7 @@ def get_logger(name: str) -> logging.Logger:
     file_handler = logging.FileHandler(log_file)
     file_handler.setLevel(logging.DEBUG)
     file_handler.setFormatter(logging.Formatter(
-        "%(asctime)s  %(levelname)-8s  %(name)s  →  %(message)s"
+        "%(asctime)s  %(levelname)-8s  %(name)s  |  %(message)s"
     ))
 
     logger.addHandler(console)

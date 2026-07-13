@@ -310,7 +310,17 @@ a{color:inherit;text-decoration:none}a:hover{text-decoration:underline}
   <div class="rh-right">{{ date }}<br>{{ results|length }} URL{% if results|length != 1 %}s{% endif %}</div>
 </div>
 
-{# ── Overall hero score ── #}
+{# ── Overall hero score / packaging-only banner ── #}
+{% if packaging_only %}
+<div class="hero-bar" style="background:#f0f4ff;border-color:#c5cff5">
+  <div style="font-size:32px;line-height:1">📦</div>
+  <div class="hero-meta">
+    <div class="lbl">Packaging Compliance Report</div>
+    <div class="name">{{ product_name }}</div>
+    <div style="font-size:12px;color:#888;margin-top:4px">Full scoring requires a complete MasterDoc. Showing packaging verification only.</div>
+  </div>
+</div>
+{% else %}
 <div class="hero-bar">
   <div class="big-score {{ avg_status }}" id="product-avg-score">{{ avg_score }}</div>
   <div class="hero-meta">
@@ -319,6 +329,7 @@ a{color:inherit;text-decoration:none}a:hover{text-decoration:underline}
   </div>
   <div class="badge bg-{{ avg_status }}" id="product-avg-badge" style="margin-left:auto">{{ avg_status | upper }}</div>
 </div>
+{% endif %}
 
 {# ── Regression banner ── #}
 {% if regression_alerts %}
@@ -349,9 +360,11 @@ a{color:inherit;text-decoration:none}a:hover{text-decoration:underline}
   <button class="url-pill{% if loop.first %} active{% endif %}" onclick="switchUrl({{ loop.index }},this)"
     title="{{ result.url }}">
     URL {{ loop.index }}: {{ result.url | replace('https://','') | truncate(40, true, '…') }}
+    {% if not packaging_only %}
     <span class="up-score bg-{{ result.overall_score | score_class }}">{{ result.overall_score }}</span>
     {% if result.delta is not none %}<span class="delta {{ dc }}">{{ "%+.1f"|format(result.delta) }}</span>
     {% else %}<span class="delta first">new</span>{% endif %}
+    {% endif %}
   </button>
   {% endfor %}
 </div>
@@ -394,6 +407,7 @@ a{color:inherit;text-decoration:none}a:hover{text-decoration:underline}
   </div>
 
   <div class="tab-nav" id="tnav-{{ uid }}">
+    {% if not packaging_only %}
     <button class="tab-btn active" onclick="switchTab('{{ uid }}','summary',this)">Summary</button>
     <button class="tab-btn" onclick="switchTab('{{ uid }}','hygiene',this)">
       Hygiene Check <span class="ts {{ result.copy_health.overall | score_class }}" id="{{ uid }}-tab-hygiene-score">{{ result.copy_health.overall }}</span>
@@ -407,13 +421,21 @@ a{color:inherit;text-decoration:none}a:hover{text-decoration:underline}
     <button class="tab-btn" onclick="switchTab('{{ uid }}','copy',this)">
       Text Layer <span class="ts {{ result.copy_health.overall | score_class }}" id="{{ uid }}-tab-copy-score">{{ result.copy_health.overall }}</span>
     </button>
+    {% endif %}
+    {% if not packaging_only %}
     <button class="tab-btn" onclick="switchTab('{{ uid }}','reviews',this)">
       Reviews &amp; Ratings <span class="ts {{ result.reviews.overall | score_class }}" id="{{ uid }}-tab-rev-score">{{ result.reviews.overall }}</span>
     </button>
+    {% endif %}
+    {% if result.packaging %}
+    <button class="tab-btn{% if packaging_only %} active{% endif %}" onclick="switchTab('{{ uid }}','packaging',this)">
+      Product Packaging {% if result.packaging.overall and not packaging_only %}<span class="ts {{ result.packaging.overall | score_class }}" id="{{ uid }}-tab-pkg-score">{{ result.packaging.overall }}</span>{% endif %}
+    </button>
+    {% endif %}
   </div>
 
   {# ── SUMMARY ── #}
-  <div class="tab-panel active" id="{{ uid }}-summary">
+  <div class="tab-panel{% if not packaging_only %} active{% endif %}" id="{{ uid }}-summary">
     <div class="sum-grid">
       <div class="sum-cell">
         <div class="sum-cell-lbl">Hygiene</div>
@@ -1105,6 +1127,293 @@ a{color:inherit;text-decoration:none}a:hover{text-decoration:underline}
     {% endif %}
 
   </div>
+
+  {# ── PRODUCT PACKAGING ── #}
+  {% if result.packaging %}
+  <div class="tab-panel{% if packaging_only %} active{% endif %}" id="{{ uid }}-packaging">
+
+    {% if result.packaging.error %}
+    <div class="fi fi-flagged" style="margin-bottom:12px">
+      <span class="fi-ico">⚠️</span>
+      <span class="fi-body"><span class="fi-text">Packaging check skipped: {{ result.packaging.error }}</span></span>
+    </div>
+    {% else %}
+
+    {# Overall packaging score #}
+    <div class="score-row" style="grid-template-columns:1fr">
+      <div class="sc total">
+        <div class="sc-lbl">Packaging Compliance Score</div>
+        <div class="sc-val {{ result.packaging.overall | score_class }}">
+          {{ result.packaging.overall }}<span class="dn">/10</span></div>
+        <div class="bar-t"><div class="bar-f {{ result.packaging.overall | score_class }}"
+          style="width:{{ result.packaging.overall | score_bar }}%"></div></div>
+      </div>
+    </div>
+
+    {# 3 aggregate sub-scores #}
+    <div class="ssr-list" style="margin-top:16px">
+      {% for key, sub in [
+        ('ni',    result.packaging.ni_table_check),
+        ('photo', result.packaging.product_photo_check),
+        ('match', result.packaging.packaging_match_check)
+      ] %}
+      <div class="ssr" onclick="toggleSsr(this)" data-sub-key="{{ key }}">
+        <div class="ssr-top">
+          <div class="ssr-name">{{ sub.name }}</div>
+          <div class="ssr-score {{ sub.score | score_class }}">{{ sub.score }}<span class="dn">/10</span></div>
+        </div>
+        <div class="bar-t" style="margin-top:6px"><div class="bar-f {{ sub.score | score_class }}"
+          style="width:{{ sub.score | score_bar }}%"></div></div>
+        <div class="ssr-detail">
+          <div class="ssr-obs">{{ sub.observation }}</div>
+          {% if sub.suggestion %}<div class="ssr-sug">{{ sub.suggestion }}</div>{% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {# Required Claims Checklist (from MasterDoc) #}
+    {% if result.packaging.required_claims_checks %}
+    <div class="sec-lbl" style="margin-top:24px{% if packaging_only %}; font-size:16px; color:#c0392b{% endif %}">Required Changes Checklist</div>
+    <div style="background:#fff;border:1px solid #e5e5e2;border-radius:10px;overflow:hidden;margin-bottom:20px">
+      <table style="width:100%;border-collapse:collapse;font-size:13px">
+        <thead>
+          <tr style="background:#f8f9fa;border-bottom:2px solid #dee2e6">
+            <th style="text-align:left;padding:10px 14px;color:#555;font-weight:600;width:40%">Claim / Requirement</th>
+            <th style="text-align:left;padding:10px 14px;color:#555;font-weight:600;width:12%">Type</th>
+            <th style="text-align:left;padding:10px 14px;color:#555;font-weight:600;width:14%">Status</th>
+            <th style="text-align:left;padding:10px 14px;color:#555;font-weight:600">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for chk in result.packaging.required_claims_checks %}
+          {% if chk.status == 'present' %}{% set row_bg = '' %}{% set status_color = '#1a7a4a' %}{% set status_icon = '✅' %}
+          {% elif chk.status == 'violated' %}{% set row_bg = 'background:#fdecea' %}{% set status_color = '#c0392b' %}{% set status_icon = '🔴' %}
+          {% elif chk.status == 'absent' %}{% set row_bg = 'background:#fff8f0' %}{% set status_color = '#c17d00' %}{% set status_icon = '⚠️' %}
+          {% elif chk.status == 'mismatch' %}{% set row_bg = 'background:#fdecea' %}{% set status_color = '#c0392b' %}{% set status_icon = '❌' %}
+          {% else %}{% set row_bg = '' %}{% set status_color = '#aaa' %}{% set status_icon = '—' %}{% endif %}
+          <tr style="border-bottom:1px solid #eee;{{ row_bg }}">
+            <td style="padding:9px 14px;font-weight:500">{{ chk.claim }}</td>
+            <td style="padding:9px 14px;color:#888;font-size:11px;text-transform:uppercase;letter-spacing:.5px">{{ chk.claim_type }}</td>
+            <td style="padding:9px 14px;color:{{ status_color }};font-weight:700;font-size:12px">{{ status_icon }} {{ chk.status | upper }}</td>
+            <td style="padding:9px 14px;color:#666;font-size:12px">
+              {% if chk.found_text %}<em style="color:#888">"{{ chk.found_text }}"</em><br>{% endif %}
+              {{ chk.notes }}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+
+    {# Per-SKU detail #}
+    {% if result.packaging.sku_results %}
+    <div class="sec-lbl" style="margin-top:24px">Per-SKU Packaging Detail</div>
+    {% for sku in result.packaging.sku_results %}
+    <details class="scraped-block" style="margin-bottom:14px" open>
+      <summary style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <strong>{{ sku.sku_name }}</strong>
+        {% if sku.version and sku.version not in ('Not found','No link','') %}
+        <span class="chip" style="background:#e8eaf6;color:#3949ab;font-size:11px">{{ sku.version }}</span>
+        {% endif %}
+        {% if sku.packaging_match == true %}<span class="fi-src" style="background:#e6f4ed;color:#1a7a4a">✓ match</span>
+        {% elif sku.packaging_match == false %}<span class="fi-src" style="background:#fff0f0;color:#c0392b">✗ mismatch</span>
+        {% else %}<span class="fi-src" style="background:#f5f5f5;color:#888">no data</span>
+        {% endif %}
+        {% if sku.drive_folder_url %}
+        <a href="{{ sku.drive_folder_url }}" target="_blank"
+          style="font-size:11px;color:#4a90d9;margin-left:auto;text-decoration:none">Open in Drive ↗</a>
+        {% endif %}
+      </summary>
+      <div class="scraped-body" style="padding:16px">
+
+        {# ── A) Side-by-side images: packaging vs PDP ── #}
+        {% if sku.packaging_images_b64 or sku.pdp_product_images_b64 %}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+          <div>
+            <div style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;margin-bottom:6px">
+              Latest Packaging ({{ sku.version }})</div>
+            {% if sku.packaging_images_b64 %}
+            {% for img_b64 in sku.packaging_images_b64 %}
+            <img src="data:image/jpeg;base64,{{ img_b64 }}"
+              style="width:100%;border-radius:6px;border:1px solid #e0e0e0;margin-bottom:6px" loading="lazy">
+            {% endfor %}
+            {% else %}
+            <div style="background:#f5f5f5;border-radius:6px;padding:30px;text-align:center;color:#aaa;font-size:12px">
+              No packaging images available</div>
+            {% endif %}
+          </div>
+          <div>
+            <div style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;margin-bottom:6px">
+              PDP Product Images</div>
+            {% if sku.pdp_product_images_b64 %}
+            {% for img_b64 in sku.pdp_product_images_b64 %}
+            <img src="data:image/jpeg;base64,{{ img_b64 }}"
+              style="width:100%;border-radius:6px;border:1px solid #e0e0e0;margin-bottom:6px" loading="lazy">
+            {% endfor %}
+            {% else %}
+            <div style="background:#f5f5f5;border-radius:6px;padding:30px;text-align:center;color:#aaa;font-size:12px">
+              No PDP product images</div>
+            {% endif %}
+          </div>
+        </div>
+        {% endif %}
+
+        {# ── B) NI Table comparison ── #}
+        <div style="margin-bottom:16px">
+          <div style="font-size:13px;font-weight:700;color:#333;margin-bottom:4px">
+            NI / Ingredient Table
+          </div>
+          <div style="font-size:13px;font-weight:600;margin-bottom:8px">
+            NI Table Present on PDP:
+            {% if not sku.ni_packaging_values and not sku.ni_pdp_values %}
+            <span style="color:#999">Not applicable</span>
+            {% elif sku.ni_table_present %}
+            <span style="color:#1a7a4a">Yes</span>
+            {% else %}
+            <span style="color:#c0392b">No</span>
+            {% endif %}
+          </div>
+          <div style="font-size:11px;color:#999;margin-bottom:10px">Checked with AI — not 100% accurate, please double-check.</div>
+
+          {% if not sku.ni_packaging_values and not sku.ni_pdp_values %}
+          <div style="background:#f9f9f9;border-radius:6px;padding:10px;font-size:12px;color:#999">
+            No ingredient table found on packaging — device or non-ingestible SKU.</div>
+          {% elif sku.ni_table_present %}
+            {% if sku.ni_table_pdp_image_b64 %}
+            <div style="margin-bottom:10px">
+              <img src="data:image/jpeg;base64,{{ sku.ni_table_pdp_image_b64 }}" style="max-width:320px;border-radius:6px;border:1px solid #eee">
+            </div>
+            {% endif %}
+          {% elif sku.ni_packaging_values and not sku.ni_pdp_values %}
+          <div style="background:#fff8f0;border-radius:6px;padding:12px;font-size:12px;color:#8a6d3b">
+            NI table is present on packaging but not visible in PDP product images.
+            The PDP does not photograph the angle showing the ingredient/nutrition table.</div>
+          {% endif %}
+
+          {# Side-by-side ingredient table — only show when BOTH sides have data #}
+          {% if sku.ni_packaging_values and sku.ni_pdp_values %}
+          <div style="overflow-x:auto;margin-bottom:10px">
+            <table style="width:100%;border-collapse:collapse;font-size:12px">
+              <thead>
+                <tr style="background:#f8f9fa;border-bottom:2px solid #dee2e6">
+                  <th style="text-align:left;padding:8px 10px;color:#555;font-weight:600">Ingredient</th>
+                  <th style="text-align:left;padding:8px 10px;color:#3949ab;font-weight:600">Packaging ({{ sku.version }})</th>
+                  <th style="text-align:left;padding:8px 10px;color:#1565c0;font-weight:600">PDP</th>
+                </tr>
+              </thead>
+              <tbody>
+                {# Build a merged list of all ingredients from both sources #}
+                {% set pkg_map = {} %}
+                {% for item in sku.ni_packaging_values %}
+                  {% if pkg_map.update({item.ingredient: item.value}) %}{% endif %}
+                {% endfor %}
+                {% set pdp_map = {} %}
+                {% for item in sku.ni_pdp_values %}
+                  {% if pdp_map.update({item.ingredient: item.value}) %}{% endif %}
+                {% endfor %}
+                {% set all_ingredients = [] %}
+                {% for item in sku.ni_packaging_values %}
+                  {% if item.ingredient not in all_ingredients %}
+                    {% if all_ingredients.append(item.ingredient) %}{% endif %}
+                  {% endif %}
+                {% endfor %}
+                {% for item in sku.ni_pdp_values %}
+                  {% if item.ingredient not in all_ingredients %}
+                    {% if all_ingredients.append(item.ingredient) %}{% endif %}
+                  {% endif %}
+                {% endfor %}
+                {% for ing in all_ingredients %}
+                {% set pkg_val = pkg_map.get(ing, '') %}
+                {% set pdp_val = pdp_map.get(ing, '') %}
+                {% set is_mismatch = (pkg_val and not pdp_val) or (pdp_val and not pkg_val) %}
+                <tr style="border-bottom:1px solid #eee;{% if is_mismatch %}background:#fff8f0{% endif %}">
+                  <td style="padding:6px 10px;font-weight:500">{{ ing }}</td>
+                  <td style="padding:6px 10px">{{ pkg_val or '—' }}</td>
+                  <td style="padding:6px 10px;{% if not pdp_val and pkg_val %}color:#c0392b;font-weight:600{% endif %}">
+                    {{ pdp_val or '✗ missing' }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% endif %}
+
+          {# Diff summary — only when both sides have data #}
+          {% if sku.ni_table_diff and sku.ni_pdp_values %}
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px">
+            {% set missing = [] %}{% set extra = [] %}{% for d in sku.ni_table_diff %}{% if 'Missing' in d %}{% if missing.append(d) %}{% endif %}{% elif 'Extra' in d %}{% if extra.append(d) %}{% endif %}{% endif %}{% endfor %}
+            {% if missing %}
+            <div style="background:#fff5f5;border-radius:6px;padding:10px">
+              <div style="font-size:11px;font-weight:700;color:#c0392b;margin-bottom:4px">Missing from PDP</div>
+              {% for d in missing %}
+              <div style="font-size:12px;color:#555;padding:2px 0">{{ d | replace('Missing from PDP: ', '') }}</div>
+              {% endfor %}
+            </div>
+            {% endif %}
+            {% if extra %}
+            <div style="background:#fff8e1;border-radius:6px;padding:10px">
+              <div style="font-size:11px;font-weight:700;color:#b85c00;margin-bottom:4px">Extra on PDP</div>
+              {% for d in extra %}
+              <div style="font-size:12px;color:#555;padding:2px 0">{{ d | replace('Extra on PDP: ', '') }}</div>
+              {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+          {% endif %}
+        </div>
+
+        {# ── C) Packaging match details (structured table) ── #}
+        {% if sku.packaging_mismatch_details %}
+        <div style="margin-bottom:8px">
+          <div style="font-size:13px;font-weight:700;color:#333;margin-bottom:6px">Packaging Mismatches</div>
+          <div style="overflow-x:auto">
+            <table style="width:100%;border-collapse:collapse;font-size:12px">
+              <thead>
+                <tr style="background:#fff5f5;border-bottom:2px solid #e0c0c0">
+                  <th style="text-align:left;padding:6px 10px;color:#c0392b;font-weight:600">Element</th>
+                  <th style="text-align:left;padding:6px 10px;color:#555;font-weight:600">On Packaging</th>
+                  <th style="text-align:left;padding:6px 10px;color:#555;font-weight:600">On PDP</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for detail in sku.packaging_mismatch_details %}
+                <tr style="border-bottom:1px solid #eee">
+                  {% if detail is mapping %}
+                  <td style="padding:6px 10px;font-weight:500">{{ detail.element or detail.get('element', '') }}</td>
+                  <td style="padding:6px 10px">{{ detail.on_packaging or detail.get('on_packaging', '') }}</td>
+                  <td style="padding:6px 10px;color:#c0392b">{{ detail.on_pdp or detail.get('on_pdp', '') }}</td>
+                  {% else %}
+                  <td colspan="3" style="padding:6px 10px">{{ detail }}</td>
+                  {% endif %}
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        {% endif %}
+
+        {# Product photo status #}
+        <div style="font-size:12px;color:#888;margin-top:8px;padding-top:8px;border-top:1px solid #eee">
+          Product Pack Shot:
+          {% if sku.product_photo_present %}
+          <span style="color:#1a7a4a">✓ Visible on PDP</span>
+          {% else %}
+          <span style="color:#c0392b">✗ Not found on PDP</span>
+          {% endif %}
+        </div>
+
+      </div>
+    </details>
+    {% endfor %}
+    {% endif %}
+
+    {% endif %}{# /not error #}
+
+  </div>
+  {% endif %}{# /result.packaging #}
 
 </div>{# /card #}
 </div>{# /pdp-block #}
