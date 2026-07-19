@@ -30,9 +30,16 @@ def _resolve_url_context(
         narrative_pillars  - pillars relevant to this narrative
         narrative_core     - one-line story arc
     """
-    # Persona resolution
-    persona_name = (configured_persona or context.persona.name).strip()
-    pain_points = list(context.persona.top_concerns)  # all from PDF
+    # Persona resolution — look up the SPECIFIC named persona for this URL (not just its
+    # label) when the masterdoc describes more than one, e.g. Shilajit's Tejas/Aakash/Fitness
+    # Buyer or Beard Growth Kit's Patcher/First-Time Grower/Late Resolver. Previously this only
+    # swapped the display name while every URL scored against one shared generic persona.
+    persona = context.get_persona(configured_persona)
+    persona_name = (configured_persona or persona.name).strip()
+    pain_points = list(persona.top_concerns)
+    persona_motivations = list(persona.motivations)
+    persona_objections = list(persona.objections)
+    persona_language_cues = list(persona.language_cues)
 
     # Narrative resolution — use configured label; filter pillars if possible
     narrative_label = (configured_narrative or context.narrative.core_story).strip()
@@ -59,6 +66,9 @@ def _resolve_url_context(
     return {
         "persona_name":      persona_name,
         "pain_points":       pain_points,
+        "persona_motivations":   persona_motivations,
+        "persona_objections":    persona_objections,
+        "persona_language_cues": persona_language_cues,
         "narrative_label":   narrative_label,
         "narrative_pillars": narrative_pillars,
         "narrative_core":    context.narrative.core_story,
@@ -133,6 +143,9 @@ def score_persona_narrative(
     )
     persona_name      = url_ctx["persona_name"]
     pain_points       = url_ctx["pain_points"]
+    persona_motivations   = url_ctx["persona_motivations"]
+    persona_objections    = url_ctx["persona_objections"]
+    persona_language_cues = url_ctx["persona_language_cues"]
     narrative_label   = url_ctx["narrative_label"]
     narrative_pillars = url_ctx["narrative_pillars"]
 
@@ -167,9 +180,9 @@ NARRATIVE PILLARS FOR "{narrative_label}":
 PERSONA PAIN POINTS FOR "{persona_name}":
 {chr(10).join(f"  • {p}" for p in pain_points[:5])}
 
-PERSONA MOTIVATIONS: {', '.join(context.persona.motivations[:4])}
-PERSONA OBJECTIONS:  {', '.join(context.persona.objections[:4])}
-PERSONA LANGUAGE CUES: {', '.join(context.persona.language_cues[:6])}
+PERSONA MOTIVATIONS: {', '.join(persona_motivations[:4])}
+PERSONA OBJECTIONS:  {', '.join(persona_objections[:4])}
+PERSONA LANGUAGE CUES: {', '.join(persona_language_cues[:6])}
 
 BRAND VOICE:
   Dos:    {', '.join(context.brand_voice.dos[:5])}

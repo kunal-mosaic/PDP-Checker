@@ -54,8 +54,30 @@ class ProductBrief(BaseModel):
 class IngestedContext(BaseModel):
     """Full context extracted from all PDFs or MasterDoc — passed to every analysis step"""
     persona: PersonaProfile
+    # A masterdoc's ## Persona section can describe more than one named persona (e.g. Shilajit's
+    # Tejas/Aakash/Fitness Buyer, Beard Growth Kit's Patcher/First-Time Grower/Late Resolver).
+    # `persona` above stays as the first/primary one for backward compatibility with scorers that
+    # don't do per-URL persona selection; `personas` carries the full list so config.yaml's
+    # per-URL `persona: "<name>"` can pull that persona's own concerns/motivations/objections
+    # instead of relabeling one generic profile.
+    personas: List[PersonaProfile] = []
     narrative: NarrativePillars
     brand_voice: BrandVoice
     product_brief: ProductBrief
     product_name: str
     required_claims: Optional[RequiredClaimsContext] = None  # from MasterDoc ## Required Claims section
+
+    def get_persona(self, name: Optional[str] = None) -> PersonaProfile:
+        """Look up a persona by name (case-insensitive, substring-tolerant). Falls back to the
+        primary persona if no name is given or nothing matches — never raises."""
+        pool = self.personas or [self.persona]
+        if not name:
+            return pool[0]
+        needle = name.strip().lower()
+        for p in pool:
+            if p.name.strip().lower() == needle:
+                return p
+        for p in pool:
+            if needle in p.name.strip().lower() or p.name.strip().lower() in needle:
+                return p
+        return pool[0]

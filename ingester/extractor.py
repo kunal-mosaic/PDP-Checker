@@ -2,7 +2,7 @@ import json
 import hashlib
 import anthropic
 from pathlib import Path
-from typing import Optional
+from typing import List, Optional
 from ingester.models import (
     PersonaProfile, NarrativePillars,
     BrandVoice, ProductBrief, IngestedContext,
@@ -83,25 +83,51 @@ def _call_claude(client: anthropic.Anthropic, system: str, user: str) -> dict:
     return json.loads(text)
 
 
-def extract_persona(client: anthropic.Anthropic, raw_text: str) -> PersonaProfile:
-    log.info("Extracting persona profile...")
+def extract_personas(client: anthropic.Anthropic, raw_text: str) -> "List[PersonaProfile]":
+    """
+    Extract one or more named persona profiles from a document. A masterdoc's ## Persona
+    section may describe a single persona or several (e.g. Shilajit's Tejas/Aakash/Fitness
+    Buyer) — always return a list so the caller doesn't need to guess the shape.
+    """
+    log.info("Extracting persona profile(s)...")
     system = (
         "You are a brand strategist. Extract structured persona data from the document. "
-        "Return ONLY valid JSON matching this exact schema — no explanation, no markdown:\n"
+        "The document may describe ONE persona or SEVERAL distinct named personas — extract "
+        "every one you find, each as its own entry. Return ONLY valid JSON matching this exact "
+        "schema — no explanation, no markdown:\n"
         "{\n"
-        '  "name": "persona name or label",\n'
-        '  "age_range": "e.g. 28-40",\n'
-        '  "description": "2-3 sentence summary of who they are",\n'
-        '  "top_concerns": ["concern 1", "concern 2", "concern 3"],\n'
-        '  "motivations": ["motivation 1", "motivation 2"],\n'
-        '  "language_cues": ["phrase or word they use", "..."],\n'
-        '  "objections": ["objection 1", "objection 2"]\n'
-        "}"
+        '  "personas": [\n'
+        "    {\n"
+        '      "name": "persona name or label (e.g. Tejas, The Patcher)",\n'
+        '      "age_range": "e.g. 28-40",\n'
+        '      "description": "2-3 sentence summary of who they are",\n'
+        '      "top_concerns": ["concern 1", "concern 2", "concern 3"],\n'
+        '      "motivations": ["motivation 1", "motivation 2"],\n'
+        '      "language_cues": ["phrase or word they use", "..."],\n'
+        '      "objections": ["objection 1", "objection 2"]\n'
+        "    }\n"
+        "  ]\n"
+        "}\n"
+        "If the document only describes one persona, return a list with exactly one entry."
     )
     data = _call_claude(client, system, f"PERSONA DOCUMENT:\n\n{raw_text}")
-    profile = PersonaProfile(**data)
-    log.info(f"Persona extracted → {profile.name} | Concerns: {len(profile.top_concerns)}")
-    return profile
+
+    # Tolerate older/malformed shapes defensively: a bare list, or a single object without
+    # the "personas" wrapper — always normalise to a list of dicts before validating.
+    if isinstance(data, list):
+        raw_list = data
+    elif isinstance(data, dict) and isinstance(data.get("personas"), list):
+        raw_list = data["personas"]
+    elif isinstance(data, dict):
+        raw_list = [data]
+    else:
+        raise ValueError(f"Unexpected persona extraction shape: {type(data)}")
+
+    profiles = [PersonaProfile(**p) for p in raw_list]
+    if not profiles:
+        raise ValueError("Persona extraction returned zero personas")
+    log.info(f"Persona(s) extracted → {', '.join(p.name for p in profiles)}")
+    return profiles
 
 
 def extract_narrative(client: anthropic.Anthropic, raw_text: str) -> NarrativePillars:
@@ -265,13 +291,14 @@ def ingest_masterdoc(product_config: dict) -> IngestedContext:
         t = text.strip()
         return not t or t.startswith("[TBD") or t.startswith("# TBD") or t.lower().startswith("tbd")
 
-    persona   = _placeholder_persona(product_name) if _is_tbd(persona_text) else extract_persona(client, persona_text)
+    personas  = [_placeholder_persona(product_name)] if _is_tbd(persona_text) else extract_personas(client, persona_text)
     narrative = _placeholder_narrative() if _is_tbd(narrative_text) else extract_narrative(client, narrative_text)
     brief     = _placeholder_brief(product_name) if _is_tbd(brief_text) else extract_product_brief(client, brief_text)
     req_claims = None if _is_tbd(claims_text) else extract_required_claims(client, claims_text)
 
     context = IngestedContext(
-        persona=persona,
+        persona=personas[0],
+        personas=personas,
         narrative=narrative,
         brand_voice=voice,
         product_brief=brief,
@@ -342,13 +369,14 @@ def ingest(product_config: dict) -> IngestedContext:
     # ── Full extraction via Claude ────────────────────────────────────────────
     raw_texts = load_all_pdfs(pdf_paths)
 
-    persona   = extract_persona(client, raw_texts["persona"])
+    personas  = extract_personas(client, raw_texts["persona"])
     narrative = extract_narrative(client, raw_texts["narrative"])
     voice     = extract_brand_voice(client, raw_texts["brand_guidelines"])
     brief     = extract_product_brief(client, raw_texts["product_brief"])
 
     context = IngestedContext(
-        persona=persona,
+        persona=personas[0],
+        personas=personas,
         narrative=narrative,
         brand_voice=voice,
         product_brief=brief,

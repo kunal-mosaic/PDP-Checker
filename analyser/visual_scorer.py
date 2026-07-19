@@ -444,10 +444,11 @@ def score_section_flow(
 
     numbered = "\n".join(f"  {i+1}. {h}" for i, h in enumerate(section_list))
 
+    _persona = context.get_persona(configured_persona)
     prompt = f"""URL: {pdp.url}
 CONFIGURED NARRATIVE: {configured_narrative or context.narrative.core_story}
-TARGET PERSONA: {configured_persona or context.persona.name}
-PERSONA TOP CONCERNS: {', '.join(context.persona.top_concerns[:3])}
+TARGET PERSONA: {configured_persona or _persona.name}
+PERSONA TOP CONCERNS: {', '.join(_persona.top_concerns[:3])}
 PERSONA CORE MOTIVATION: {context.narrative.emotional_arc}
 
 SECTIONS IN CURRENT PAGE ORDER — top to bottom ({source}):
