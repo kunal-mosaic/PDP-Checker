@@ -5,10 +5,15 @@
     <div>
       <p class="kicker"><a class="back" href="/">← Portfolio</a></p>
       <h1>{{ cat.name }}</h1>
+      <p class="muted">
+        {{ cat.pdps|length }} PDP(s)
+        {% if cat.run_ts %}· last audited {{ cat.run_ts[:10] }}{% endif %}
+        {% if cat.source_stub %}· <span class="chip stub">source: stub</span>{% endif %}
+      </p>
     </div>
-    <div>
-      <span class="pill {{ cat.status }}">{{ cat.status if cat.score is not none else "no audit" }}</span>
+    <div class="score-block">
       <span class="score">{{ "%.1f"|format(cat.score) if cat.score is not none else "—" }}</span>
+      <span class="pill {{ cat.status }}">{{ cat.status if cat.score is not none else "no audit" }}</span>
     </div>
   </div>
 
@@ -16,77 +21,40 @@
   <div class="fsummary">
     <span class="sev-chip critical">{{ cat.finding_summary.critical }} open critical</span>
     <span class="sev-chip warning">{{ cat.finding_summary.warning }} open warning</span>
-    <span class="muted">· {{ cat.finding_summary.addressed }} of {{ cat.finding_summary.total }} addressed across {{ cat.pdps|length }} PDP(s)</span>
+    <span class="muted">· {{ cat.finding_summary.addressed }} of {{ cat.finding_summary.total }} addressed</span>
   </div>
-  <p class="honest-note">The score above is the <b>verified</b> score from the last audit. Marking items fixed tracks the work — the score only changes when the PDP is <b>re-audited</b> and the fix is confirmed.</p>
   {% endif %}
-
-  <meta id="product-meta" data-product="{{ cat.name }}">
-
 
   {% if not cat.pdps %}
     <p class="empty">No audit has run for this category yet. Go back and Run it to generate results.</p>
   {% else %}
-    {% for pdp in cat.pdps %}
-    <div class="pdp">
-      <div class="pdp-head">
-        <a class="pdp-url" href="{{ pdp.url }}" target="_blank" rel="noopener">{{ pdp.url }}</a>
-        <span class="pill {{ pdp.status }}">{{ pdp.status }} · {{ "%.1f"|format(pdp.overall_score) if pdp.overall_score is not none else "—" }}</span>
-      </div>
-      <div class="dims">
-        {% for key, val in (pdp.scores or {}).items() %}
-        {% set cls = "healthy" if val >= 8 else ("attention" if val >= 6.5 else "critical") %}
-        <div class="dim">
-          <span class="dim-label">{{ labels.get(key, key) }}</span>
-          <span class="dim-bar {{ cls }}"><span style="width: {{ (val / 10 * 100)|round|int }}%"></span></span>
-          <span class="dim-val">{{ "%.1f"|format(val) }}</span>
+    <div class="pdpgrid">
+      {% for pdp in cat.pdps %}
+      {% set st = pdp.status or "unknown" %}
+      <a class="pdpcard {{ st }}" href="/category/{{ cat.slug }}/pdp/{{ loop.index0 }}">
+        <div class="card-top">
+          <span class="pdpcard-url">{{ pdp.url }}</span>
+          <span class="score">{{ "%.1f"|format(pdp.overall_score) if pdp.overall_score is not none else "—" }}</span>
         </div>
-        {% endfor %}
-      </div>
-
-      {% if pdp.sections %}
-      <div class="sections">
-        {% for sec in pdp.sections %}
-        <details class="section" {% if sec.summary.critical %}open{% endif %}>
-          <summary class="sec-summary">
-            <span class="sec-name">{{ sec.section }}</span>
-            {% if sec.score is not none %}
-              {% set scls = "healthy" if sec.score >= 8 else ("attention" if sec.score >= 6.5 else "critical") %}
-              <span class="pill {{ scls }}">{{ "%.1f"|format(sec.score) }}</span>
-            {% endif %}
-            <span class="sec-counts">
-              {% if sec.summary.critical %}<span class="sev-chip critical">{{ sec.summary.critical }}</span>{% endif %}
-              {% if sec.summary.warning %}<span class="sev-chip warning">{{ sec.summary.warning }}</span>{% endif %}
-              {% if sec.summary.info %}<span class="sev-chip info">{{ sec.summary.info }}</span>{% endif %}
-            </span>
-          </summary>
-          <div class="sec-body">
-            {% for f in sec.findings %}
-            <div class="finding {{ f.severity }} status-{{ f.status }}" data-fid="{{ f.id }}">
-              <div class="f-top">
-                <span class="sev-chip {{ f.severity }}">{{ f.severity }}</span>
-                <span class="f-layer">{{ f.layer }}</span>
-                <span class="f-state"></span>
-                <span class="f-actions">
-                  <button type="button" class="fbtn" data-status="implemented">Mark fixed</button>
-                  <button type="button" class="fbtn" data-status="dismissed">Dismiss</button>
-                  <button type="button" class="fbtn reopen" data-status="open">Reopen</button>
-                </span>
-              </div>
-              <div class="f-title">{{ f.title }}</div>
-              {% if f.detail %}<div class="f-detail">{{ f.detail }}</div>{% endif %}
-              {% if f.suggestion %}<div class="f-suggestion"><b>Fix:</b> {{ f.suggestion }}</div>{% endif %}
-            </div>
-            {% endfor %}
+        <div class="dims">
+          {% for key, val in (pdp.scores or {}).items() %}
+          {% set cls = "healthy" if val >= 8 else ("attention" if val >= 6.5 else "critical") %}
+          <div class="dim">
+            <span class="dim-label">{{ labels.get(key, key) }}</span>
+            <span class="dim-bar {{ cls }}"><span style="width: {{ (val / 10 * 100)|round|int }}%"></span></span>
+            <span class="dim-val">{{ "%.1f"|format(val) }}</span>
           </div>
-        </details>
-        {% endfor %}
-      </div>
-      {% elif pdp.scores %}
-      <p class="empty">No structured findings stored for this run (re-run to capture full findings).</p>
-      {% endif %}
+          {% endfor %}
+        </div>
+        <div class="card-meta">
+          <span class="pill {{ st }}">{{ st }}</span>
+          {% if pdp.finding_summary.critical %}<span class="sev-chip critical">{{ pdp.finding_summary.critical }} critical</span>{% endif %}
+          {% if pdp.finding_summary.warning %}<span class="sev-chip warning">{{ pdp.finding_summary.warning }} warning</span>{% endif %}
+          <span class="open-link">Open workspace →</span>
+        </div>
+      </a>
+      {% endfor %}
     </div>
-    {% endfor %}
 
     {% if cat.has_report %}
       <details class="section" style="margin-top:1.5rem;">
@@ -95,27 +63,4 @@
       </details>
     {% endif %}
   {% endif %}
-{% endblock %}
-
-{% block scripts %}
-<script>
-  const PRODUCT = document.getElementById('product-meta').dataset.product;
-
-  async function setStatus(card, status) {
-    const fid = card.dataset.fid;
-    const body = new URLSearchParams({ product: PRODUCT, fid, status });
-    try {
-      const r = await fetch('/finding/status', { method: 'POST', body });
-      if (!r.ok) return;
-      card.classList.remove('status-open', 'status-implemented', 'status-dismissed');
-      card.classList.add('status-' + status);
-    } catch (e) { /* ignore */ }
-  }
-
-  document.querySelectorAll('.finding').forEach(card => {
-    card.querySelectorAll('.fbtn').forEach(btn => {
-      btn.addEventListener('click', () => setStatus(card, btn.dataset.status));
-    });
-  });
-</script>
 {% endblock %}

@@ -6,6 +6,7 @@ Swapping the store's backend (SQLite → Postgres later) changes nothing here.
 """
 
 from utils.config_loader import load_config
+from dashboard import content
 from dashboard import findings as findings_mod
 from dashboard import store
 from tools.build_dashboard import (
@@ -16,7 +17,24 @@ from tools.build_dashboard import (
     _status_for,
 )
 
-__all__ = ["DIMENSION_LABELS", "list_categories", "get_category", "latest_report_path", "portfolio_stats"]
+__all__ = ["DIMENSION_LABELS", "PDP_TABS", "list_categories", "get_category", "get_pdp",
+           "latest_report_path", "portfolio_stats"]
+
+# Tabs on the PDP workspace. "kind" drives what the tab renders:
+#   content  → page assets (images / reviews) plus that section's findings
+#   findings → findings only
+#   history  → run history
+PDP_TABS = [
+    {"id": "overview",  "label": "Overview",   "kind": "overview", "section": None},
+    {"id": "visual",    "label": "Visual",     "kind": "images",   "section": "Visual"},
+    {"id": "text",      "label": "Copy / Text", "kind": "findings", "section": "Copy / Text"},
+    {"id": "narrative", "label": "Narrative",  "kind": "findings", "section": "Narrative × Persona"},
+    {"id": "packaging", "label": "Packaging",  "kind": "findings", "section": "Compliance"},
+    {"id": "reviews",   "label": "Reviews",    "kind": "reviews",  "section": "Reviews"},
+    {"id": "ads",       "label": "Ad Gaps",    "kind": "findings", "section": "Ad Alignment"},
+    {"id": "rca",       "label": "Root Cause", "kind": "findings", "section": "Root Cause"},
+    {"id": "history",   "label": "History",    "kind": "history",  "section": None},
+]
 
 
 def _overall(pdps: list):
@@ -92,6 +110,24 @@ _SECTION_SCORE_KEY = {
     "Reviews": "reviews",
     "Ad Alignment": "ad_alignment",
 }
+
+
+def get_pdp(slug: str, idx: int):
+    """One PDP as a full workspace: scores, sections of findings, page content
+    (Zeus images + reviews) and its run history."""
+    cat = get_category(slug)
+    if not cat or idx < 0 or idx >= len(cat["pdps"]):
+        return None, None
+    pdp = cat["pdps"][idx]
+    url = pdp["url"]
+    pdp["index"] = idx
+    pdp["images_grouped"] = content.images_grouped(url)
+    pdp["image_count"] = sum(len(g["images"]) for g in pdp["images_grouped"])
+    pdp["reviews"] = content.reviews_for(url)
+    pdp["history"] = store.history_for_url(cat["name"], url)
+    # Findings keyed by section name for direct tab lookup
+    pdp["by_section"] = {s["section"]: s for s in pdp["sections"]}
+    return cat, pdp
 
 
 def latest_report_path(slug: str):

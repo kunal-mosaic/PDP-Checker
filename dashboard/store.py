@@ -164,6 +164,42 @@ def latest_run(product: str) -> dict:
         return dict(row) if row else {}
 
 
+def runs_for_product(product: str, limit: int = 25) -> list:
+    """All runs for a product, newest first, with each run's average score."""
+    with _conn() as con:
+        rows = con.execute(
+            "SELECT r.run_id, r.run_ts, r.run_date, "
+            "       AVG(p.overall) AS avg_score, COUNT(p.url) AS pdp_count "
+            "FROM runs r LEFT JOIN pdps p ON p.run_id = r.run_id "
+            "WHERE r.product = ? GROUP BY r.run_id ORDER BY r.run_ts DESC LIMIT ?",
+            (product, limit),
+        ).fetchall()
+    return [{
+        "run_id": r["run_id"], "run_ts": r["run_ts"], "run_date": r["run_date"],
+        "avg_score": round(r["avg_score"], 1) if r["avg_score"] is not None else None,
+        "pdp_count": r["pdp_count"],
+    } for r in rows]
+
+
+def history_for_url(product: str, url: str, limit: int = 25) -> list:
+    """Score history for one PDP across runs, newest first."""
+    with _conn() as con:
+        rows = con.execute(
+            "SELECT r.run_id, r.run_ts, r.run_date, p.overall, p.status, p.scores "
+            "FROM pdps p JOIN runs r ON r.run_id = p.run_id "
+            "WHERE r.product = ? AND p.url = ? ORDER BY r.run_ts DESC LIMIT ?",
+            (product, url, limit),
+        ).fetchall()
+    out = []
+    for r in rows:
+        out.append({
+            "run_id": r["run_id"], "run_ts": r["run_ts"], "run_date": r["run_date"],
+            "overall": r["overall"], "status": r["status"],
+            "scores": json.loads(r["scores"] or "{}"),
+        })
+    return out
+
+
 def pdps_for_run(run_id: str) -> list:
     with _conn() as con:
         rows = con.execute(

@@ -128,3 +128,65 @@ form.runform { margin:0; }
 .finding.status-dismissed .f-state::before { content:"dismissed"; color:var(--ink-faint); }
 .finding.status-dismissed .fbtn:not(.reopen) { display:none; }
 .finding.status-dismissed .fbtn.reopen { display:inline; }
+
+/* ── PDP cards on the category page ── */
+.pdpgrid { display:grid; gap:1rem; grid-template-columns:repeat(auto-fill,minmax(23rem,1fr)); }
+.pdpcard { display:block; text-decoration:none; color:inherit; background:var(--surface);
+  border:1px solid var(--line); border-left:4px solid var(--unknown); border-radius:var(--radius);
+  padding:1.1rem 1.2rem; box-shadow:var(--shadow); transition:transform .12s, box-shadow .12s; }
+.pdpcard:hover { transform:translateY(-2px); box-shadow:0 4px 22px rgba(16,24,21,.12); border-color:var(--accent); }
+.pdpcard.healthy { border-left-color:var(--healthy); }
+.pdpcard.attention { border-left-color:var(--attention); }
+.pdpcard.critical { border-left-color:var(--critical); }
+.pdpcard-url { font-family:var(--font-mono); font-size:.74rem; color:var(--ink-soft); word-break:break-all; line-height:1.4; }
+.pdpcard .dims { margin:.8rem 0 .2rem; max-width:none; }
+.pdpcard .card-meta { display:flex; align-items:center; gap:.4rem; flex-wrap:wrap; }
+.open-link { margin-left:auto; font-size:.8rem; font-weight:600; color:var(--accent-ink); }
+
+/* ── PDP workspace ── */
+.pdp-h1 { font-family:var(--font-mono); font-size:clamp(.95rem,2vw,1.15rem); font-weight:600;
+  letter-spacing:-.01em; word-break:break-all; line-height:1.3; }
+.verified-tag { font-family:var(--font-mono); font-size:.6rem; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); }
+.tabs { display:flex; gap:.2rem; overflow-x:auto; border-bottom:1px solid var(--line);
+  margin:1.25rem 0 1.5rem; position:sticky; top:0; background:var(--paper); z-index:5; padding-bottom:0; }
+.tab { font-family:var(--font-body); font-size:.88rem; font-weight:560; white-space:nowrap;
+  background:none; border:none; border-bottom:2px solid transparent; color:var(--ink-faint);
+  padding:.6rem .85rem; cursor:pointer; display:flex; align-items:center; gap:.4rem; }
+.tab:hover { color:var(--ink); }
+.tab.active { color:var(--accent-ink); border-bottom-color:var(--accent); }
+.tab-count { font-family:var(--font-mono); font-size:.62rem; font-weight:700; padding:.1rem .35rem; border-radius:100px; }
+.tab-count.crit { color:var(--critical); background:color-mix(in srgb, var(--critical) 16%, transparent); }
+.tab-count.warn { color:var(--attention); background:color-mix(in srgb, var(--attention) 16%, transparent); }
+.panel { display:none; }
+.panel.active { display:block; animation:fade .18s ease both; }
+@keyframes fade { from { opacity:0; } to { opacity:1; } }
+@media (prefers-reduced-motion:reduce){ .panel.active{ animation:none; } .pdpcard{ transition:none; } }
+.panel-lead { margin-bottom:1rem; }
+.stack-h { margin-top:2rem; }
+.findings-col { display:grid; gap:.6rem; max-width:54rem; }
+
+/* Overview split */
+.ov-grid { display:grid; gap:2rem; }
+@media (min-width:60rem){ .ov-grid { grid-template-columns:22rem minmax(0,1fr); } }
+.ov-scores .dims, .ov-scores .dim { max-width:none; }
+.ov-scores .dim { grid-template-columns:8rem 1fr 2rem; margin-bottom:.35rem; }
+
+/* Image grid */
+.img-group-h { font-family:var(--font-display); font-size:.9rem; font-weight:620; text-transform:capitalize;
+  margin:1.4rem 0 .6rem; letter-spacing:.01em; }
+.imggrid { display:grid; gap:.8rem; grid-template-columns:repeat(auto-fill,minmax(11rem,1fr)); }
+.imgcard { margin:0; background:var(--surface); border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+.imgcard img { display:block; width:100%; height:9rem; object-fit:contain; background:var(--surface-2); }
+.imgcard figcaption { font-size:.7rem; color:var(--ink-faint); padding:.4rem .55rem; border-top:1px solid var(--line);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+/* Review cards */
+.revgrid { display:grid; gap:.8rem; grid-template-columns:repeat(auto-fill,minmax(17rem,1fr)); }
+.revcard { background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:.85rem 1rem; }
+.rev-top { display:flex; align-items:center; gap:.5rem; margin-bottom:.35rem; flex-wrap:wrap; }
+.rev-author { font-weight:640; font-size:.88rem; }
+.rev-stars { color:var(--attention); font-size:.8rem; letter-spacing:.05em; }
+.rev-stars .dim-star { color:var(--line); }
+.rev-date { margin-left:auto; font-family:var(--font-mono); font-size:.68rem; color:var(--ink-faint); }
+.rev-title { font-weight:600; font-size:.86rem; margin-bottom:.2rem; }
+.rev-text { font-size:.84rem; color:var(--ink-soft); }

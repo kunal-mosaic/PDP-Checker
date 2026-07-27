@@ -11,6 +11,7 @@ outputs/run_*.log
 outputs/runs/
 outputs/packaging_cache/
 outputs/dashboard/
+outputs/image_cache/
 outputs/dashboard.db
 outputs/dashboard.db-wal
 outputs/dashboard.db-shm

@@ -16,12 +16,12 @@ Routes:
 from pathlib import Path
 from typing import List
 
-from fastapi import FastAPI, Form, Request
+from fastapi import FastAPI, Form, Request, Response
 from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from dashboard import data, jobs, store
+from dashboard import content, data, jobs, store
 
 BASE = Path(__file__).parent
 
@@ -60,6 +60,27 @@ def category(request: Request, slug: str):
         "cat": cat,
         "labels": data.DIMENSION_LABELS,
     })
+
+
+@app.get("/category/{slug}/pdp/{idx}", response_class=HTMLResponse)
+def pdp_detail(request: Request, slug: str, idx: int):
+    cat, pdp = data.get_pdp(slug, idx)
+    if not pdp:
+        return HTMLResponse("PDP not found", status_code=404)
+    return templates.TemplateResponse(request=request, name="pdp.html", context={
+        "cat": cat, "pdp": pdp, "labels": data.DIMENSION_LABELS,
+        "tabs": data.PDP_TABS,
+    })
+
+
+@app.get("/img")
+def image_proxy(u: str):
+    """Serve a Zeus CDN image same-origin (host-allowlisted, disk-cached)."""
+    body, ctype = content.cached_image(u)
+    if body is None:
+        return Response(status_code=404)
+    return Response(content=body, media_type=ctype,
+                    headers={"Cache-Control": "public, max-age=86400"})
 
 
 @app.post("/finding/status")

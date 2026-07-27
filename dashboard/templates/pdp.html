@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+{% block title %}{{ cat.name }} — PDP · PDP Intelligence{% endblock %}
+
+{% macro finding_card(f) %}
+  <div class="finding {{ f.severity }} status-{{ f.status }}" data-fid="{{ f.id }}">
+    <div class="f-top">
+      <span class="sev-chip {{ f.severity }}">{{ f.severity }}</span>
+      <span class="f-layer">{{ f.layer }}</span>
+      <span class="f-state"></span>
+      <span class="f-actions">
+        <button type="button" class="fbtn" data-status="implemented">Mark fixed</button>
+        <button type="button" class="fbtn" data-status="dismissed">Dismiss</button>
+        <button type="button" class="fbtn reopen" data-status="open">Reopen</button>
+      </span>
+    </div>
+    <div class="f-title">{{ f.title }}</div>
+    {% if f.detail %}<div class="f-detail">{{ f.detail }}</div>{% endif %}
+    {% if f.suggestion %}<div class="f-suggestion"><b>Fix:</b> {{ f.suggestion }}</div>{% endif %}
+  </div>
+{% endmacro %}
+
+{% macro section_findings(sec) %}
+  {% if sec and sec.findings %}
+    <div class="findings-col">{% for f in sec.findings %}{{ finding_card(f) }}{% endfor %}</div>
+  {% else %}
+    <p class="empty">Nothing flagged here. ✓</p>
+  {% endif %}
+{% endmacro %}
+
+{% block content %}
+  <div class="topbar">
+    <div>
+      <p class="kicker"><a class="back" href="/category/{{ cat.slug }}">← {{ cat.name }}</a></p>
+      <h1 class="pdp-h1">{{ pdp.url }}</h1>
+      <p class="muted">
+        Last audited {{ cat.run_ts[:10] if cat.run_ts else "—" }} ·
+        {{ pdp.image_count }} images · {{ pdp.reviews|length }} reviews ·
+        {{ pdp.finding_summary.total }} findings
+      </p>
+    </div>
+    <div class="score-block">
+      <span class="score">{{ "%.1f"|format(pdp.overall_score) if pdp.overall_score is not none else "—" }}</span>
+      <span class="pill {{ pdp.status }}">{{ pdp.status }}</span>
+      <span class="verified-tag">verified</span>
+    </div>
+  </div>
+
+  <meta id="product-meta" data-product="{{ cat.name }}">
+
+  <div class="tabs" role="tablist">
+    {% for t in tabs %}
+      {% set sec = pdp.by_section.get(t.section) if t.section else None %}
+      <button class="tab{% if loop.first %} active{% endif %}" data-tab="{{ t.id }}" role="tab">
+        {{ t.label }}
+        {% if sec and sec.summary.critical %}<span class="tab-count crit">{{ sec.summary.critical }}</span>
+        {% elif sec and sec.summary.warning %}<span class="tab-count warn">{{ sec.summary.warning }}</span>{% endif %}
+      </button>
+    {% endfor %}
+  </div>
+
+  {% for t in tabs %}
+  {% set sec = pdp.by_section.get(t.section) if t.section else None %}
+  <div class="panel{% if loop.first %} active{% endif %}" data-panel="{{ t.id }}">
+
+    {% if t.kind == "overview" %}
+      <div class="ov-grid">
+        <div class="ov-scores">
+          <h2 class="section-h">Dimension scores</h2>
+          {% for key, val in (pdp.scores or {}).items() %}
+            {% set cls = "healthy" if val >= 8 else ("attention" if val >= 6.5 else "critical") %}
+            <div class="dim">
+              <span class="dim-label">{{ labels.get(key, key) }}</span>
+              <span class="dim-bar {{ cls }}"><span style="width: {{ (val / 10 * 100)|round|int }}%"></span></span>
+              <span class="dim-val">{{ "%.1f"|format(val) }}</span>
+            </div>
+          {% endfor %}
+          <p class="honest-note">This is the <b>verified</b> score from the last audit. Marking items fixed tracks the work — the score changes only when the PDP is re-audited.</p>
+        </div>
+        <div class="ov-top">
+          <h2 class="section-h">Top priorities</h2>
+          {% set crits = pdp.findings | selectattr("severity", "equalto", "critical") | list %}
+          {% if crits %}
+            <div class="findings-col">{% for f in crits[:6] %}{{ finding_card(f) }}{% endfor %}</div>
+            {% if crits|length > 6 %}<p class="muted">+ {{ crits|length - 6 }} more critical findings in the tabs above.</p>{% endif %}
+          {% else %}<p class="empty">No critical findings. ✓</p>{% endif %}
+        </div>
+      </div>
+
+    {% elif t.kind == "images" %}
+      {% if pdp.images_grouped %}
+        <p class="muted panel-lead">{{ pdp.image_count }} assets pulled from the Zeus CDN, in page order — the same visuals the customer sees.</p>
+        {% for group in pdp.images_grouped %}
+          <h3 class="img-group-h">{{ group.type }} <span class="muted">({{ group.images|length }})</span></h3>
+          <div class="imggrid">
+            {% for img in group.images %}
+              <figure class="imgcard">
+                <a href="{{ img.url }}" target="_blank" rel="noopener">
+                  <img src="/img?u={{ img.url | urlencode }}" alt="{{ img.label or img.position }}" loading="lazy">
+                </a>
+                <figcaption>{{ img.label or img.position }}</figcaption>
+              </figure>
+            {% endfor %}
+          </div>
+        {% endfor %}
+      {% else %}
+        <p class="empty">No Zeus assets cached for this page.</p>
+      {% endif %}
+      <h2 class="section-h stack-h">Visual findings</h2>
+      {{ section_findings(sec) }}
+
+    {% elif t.kind == "reviews" %}
+      {% if pdp.reviews %}
+        <p class="muted panel-lead">{{ pdp.reviews|length }} reviews as stored in Zeus.</p>
+        <div class="revgrid">
+          {% for r in pdp.reviews %}
+            <div class="revcard">
+              <div class="rev-top">
+                <span class="rev-author">{{ r.author }}</span>
+                {% if r.rating %}<span class="rev-stars">{{ "★" * (r.rating|round|int) }}<span class="dim-star">{{ "★" * (5 - (r.rating|round|int)) }}</span></span>{% endif %}
+                <span class="rev-date">{{ r.date }}</span>
+              </div>
+              {% if r.title %}<div class="rev-title">{{ r.title }}</div>{% endif %}
+              {% if r.text %}<div class="rev-text">{{ r.text }}</div>{% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="empty">No reviews cached for this page.</p>
+      {% endif %}
+      <h2 class="section-h stack-h">Review findings</h2>
+      {{ section_findings(sec) }}
+
+    {% elif t.kind == "history" %}
+      {% if pdp.history %}
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Date</th><th>Overall</th><th>Status</th>
+              {% for key in (pdp.scores or {}).keys() %}<th>{{ labels.get(key, key) }}</th>{% endfor %}
+            </tr></thead>
+            <tbody>
+              {% for h in pdp.history %}
+              <tr>
+                <td class="num">{{ h.run_date or (h.run_ts or "")[:10] }}</td>
+                <td class="num"><b>{{ "%.1f"|format(h.overall) if h.overall is not none else "—" }}</b></td>
+                <td><span class="pill {{ h.status }}">{{ h.status }}</span></td>
+                {% for key in (pdp.scores or {}).keys() %}
+                  <td class="num">{{ "%.1f"|format(h.scores.get(key)) if h.scores.get(key) is not none else "—" }}</td>
+                {% endfor %}
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <p class="muted" style="margin-top:.8rem;">{{ pdp.history|length }} run(s) recorded for this PDP.</p>
+      {% else %}
+        <p class="empty">No previous runs recorded.</p>
+      {% endif %}
+
+    {% else %}
+      {{ section_findings(sec) }}
+    {% endif %}
+
+  </div>
+  {% endfor %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Tabs
+  const tabs = document.querySelectorAll('.tab');
+  const panels = document.querySelectorAll('.panel');
+  function show(id) {
+    tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === id));
+    panels.forEach(p => p.classList.toggle('active', p.dataset.panel === id));
+    history.replaceState(null, '', '#' + id);
+  }
+  tabs.forEach(t => t.addEventListener('click', () => show(t.dataset.tab)));
+  if (location.hash) { const id = location.hash.slice(1); if (document.querySelector(`[data-panel="${id}"]`)) show(id); }
+
+  // Finding review state
+  const PRODUCT = document.getElementById('product-meta').dataset.product;
+  async function setStatus(card, status) {
+    const body = new URLSearchParams({ product: PRODUCT, fid: card.dataset.fid, status });
+    try {
+      const r = await fetch('/finding/status', { method: 'POST', body });
+      if (!r.ok) return;
+      // The same finding can appear in more than one panel (e.g. Overview + its tab)
+      document.querySelectorAll(`.finding[data-fid="${card.dataset.fid}"]`).forEach(el => {
+        el.classList.remove('status-open', 'status-implemented', 'status-dismissed');
+        el.classList.add('status-' + status);
+      });
+    } catch (e) { /* ignore */ }
+  }
+  document.querySelectorAll('.finding').forEach(card => {
+    card.querySelectorAll('.fbtn').forEach(btn => {
+      btn.addEventListener('click', () => setStatus(card, btn.dataset.status));
+    });
+  });
+</script>
+{% endblock %}
