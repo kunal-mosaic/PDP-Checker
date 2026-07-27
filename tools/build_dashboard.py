@@ -60,6 +60,8 @@ def _latest_run_per_product() -> dict:
     """Return {product_name: run_dict} keeping only the most recent run each."""
     latest = {}
     for f in sorted(RUNS_DIR.glob("*.json")):
+        if f.name.endswith(".full.json"):
+            continue  # full-findings snapshots are lists, not run summaries
         try:
             data = json.loads(f.read_text(encoding="utf-8"))
         except (json.JSONDecodeError, OSError):

@@ -12,6 +12,15 @@
     </div>
   </div>
 
+  {% if cat.finding_summary and cat.finding_summary.total %}
+  <div class="fsummary">
+    <span class="sev-chip critical">{{ cat.finding_summary.critical }} critical</span>
+    <span class="sev-chip warning">{{ cat.finding_summary.warning }} warning</span>
+    <span class="sev-chip info">{{ cat.finding_summary.info }} info</span>
+    <span class="muted">· {{ cat.finding_summary.total }} findings across {{ cat.pdps|length }} PDP(s)</span>
+  </div>
+  {% endif %}
+
   {% if not cat.pdps %}
     <p class="empty">No audit has run for this category yet. Go back and Run it to generate results.</p>
   {% else %}
@@ -31,6 +40,28 @@
         </div>
         {% endfor %}
       </div>
+
+      {% if pdp.findings %}
+      <div class="findings">
+        <div class="findings-h">
+          <span class="section-h">Findings &amp; suggestions</span>
+          <span class="muted">{{ pdp.finding_summary.critical }} critical · {{ pdp.finding_summary.warning }} warning · {{ pdp.finding_summary.info }} info</span>
+        </div>
+        {% for f in pdp.findings %}
+        <div class="finding {{ f.severity }}">
+          <div class="f-top">
+            <span class="sev-chip {{ f.severity }}">{{ f.severity }}</span>
+            <span class="f-layer">{{ f.layer }}</span>
+          </div>
+          <div class="f-title">{{ f.title }}</div>
+          {% if f.detail %}<div class="f-detail">{{ f.detail }}</div>{% endif %}
+          {% if f.suggestion %}<div class="f-suggestion"><b>Fix:</b> {{ f.suggestion }}</div>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% elif pdp.scores %}
+      <p class="empty">No structured findings stored for this run (re-run to capture full findings).</p>
+      {% endif %}
     </div>
     {% endfor %}
 

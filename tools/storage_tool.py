@@ -79,11 +79,33 @@ def save_run(product_name: str, results: List[PDPAnalysisResult]) -> Path:
         ]
     }
 
-    with open(filename, "w") as f:
-        json.dump(snapshot, f, indent=2)
+    with open(filename, "w", encoding="utf-8") as f:
+        json.dump(snapshot, f, indent=2, ensure_ascii=False)
+
+    # Full findings snapshot — the complete PDPAnalysisResult per URL, so the
+    # dashboard can render suggestions/findings (not just scores). Heavy base64
+    # image blobs are stripped to keep the file small.
+    full_path = RUNS_DIR / f"{run_id}.full.json"
+    full = [_strip_blobs(r.model_dump()) for r in results]
+    with open(full_path, "w", encoding="utf-8") as f:
+        json.dump(full, f, indent=2, ensure_ascii=False, default=str)
+    log.info(f"Full findings saved → {full_path}")
 
     log.info(f"Run snapshot saved → {filename}")
     return filename
+
+
+_BLOB_FIELDS = ("packaging_images_b64", "pdp_product_images_b64", "ni_table_pdp_image_b64")
+
+
+def _strip_blobs(result: dict) -> dict:
+    """Remove large base64 image fields from a serialized result (in place)."""
+    pkg = result.get("packaging")
+    if pkg:
+        for sku in pkg.get("sku_results", []):
+            for field in _BLOB_FIELDS:
+                sku.pop(field, None)
+    return result
 
 
 def load_previous_run(product_name: str, before_run_id: str = None) -> Optional[dict]:
