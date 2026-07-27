@@ -1,21 +1,16 @@
 """
-data.py — read-only views the dashboard renders from: the product catalog
-(config.yaml) joined with each product's latest audit run summary.
+data.py — the ONLY layer the app reads through. It joins the product catalog
+(config.yaml) with audit data from the SQLite store (dashboard/store.py).
 
-Reuses the pure helpers in tools/build_dashboard.py so there is one source of
-truth for "latest run", status bands, source-health and report lookup.
+Swapping the store's backend (SQLite → Postgres later) changes nothing here.
 """
-
-import json
 
 from utils.config_loader import load_config
 from dashboard import findings as findings_mod
+from dashboard import store
 from tools.build_dashboard import (
     DIMENSION_LABELS,
-    RUNS_DIR,
     _find_report,
-    _latest_run_per_product,
-    _product_overall,
     _product_slug,
     _source_health,
     _status_for,
@@ -24,38 +19,31 @@ from tools.build_dashboard import (
 __all__ = ["DIMENSION_LABELS", "list_categories", "get_category", "latest_report_path", "portfolio_stats"]
 
 
-def _load_full(run_id: str) -> dict:
-    """Load the full findings snapshot for a run_id, mapped url -> result dict."""
-    if not run_id:
-        return {}
-    path = RUNS_DIR / f"{run_id}.full.json"
-    if not path.exists():
-        return {}
-    try:
-        data = json.loads(path.read_text(encoding="utf-8"))
-    except (json.JSONDecodeError, OSError):
-        return {}
-    return {r.get("url"): r for r in data}
+def _overall(pdps: list):
+    scores = [p["overall_score"] for p in pdps if p.get("overall_score") is not None]
+    return round(sum(scores) / len(scores), 1) if scores else None
 
 
 def list_categories() -> list:
-    """One row per product: catalog info + latest-run scores/status."""
+    """One row per product: catalog info + latest-run scores/status from the store."""
+    store.sync()  # cheap no-op once everything's ingested; picks up any new runs
     cfg = load_config()
-    runs = _latest_run_per_product()
     cats = []
     for p in cfg["products"]:
         name = p["name"]
-        run = runs.get(name)
-        overall = _product_overall(run) if run else None
+        run = store.latest_run(name)
+        run_id = run.get("run_id")
+        pdps = store.pdps_for_run(run_id) if run_id else []
+        overall = _overall(pdps)
         cats.append({
             "name": name,
             "slug": _product_slug(name),
             "url_count": len(p.get("urls", [])),
             "score": overall,
             "status": _status_for(overall),
-            "run_ts": (run or {}).get("run_ts"),
-            "run_id": (run or {}).get("run_id"),
-            "pdps": (run or {}).get("pdps", []),
+            "run_ts": run.get("run_ts"),
+            "run_id": run_id,
+            "pdps": pdps,
             "source_stub": _source_health(name).get("stub", False),
             "has_report": _find_report(name) is not None,
         })
@@ -63,15 +51,14 @@ def list_categories() -> list:
 
 
 def get_category(slug: str):
-    """Category detail with full findings attached to each PDP (from the .full.json)."""
+    """Category detail with findings attached to each PDP (from the store)."""
     cat = next((c for c in list_categories() if c["slug"] == slug), None)
     if not cat:
         return None
-    full = _load_full(cat.get("run_id"))
+    grouped = store.findings_for_run(cat["run_id"]) if cat.get("run_id") else {}
     total = {"critical": 0, "warning": 0, "info": 0, "total": 0}
     for pdp in cat["pdps"]:
-        result = full.get(pdp.get("url"))
-        fnd = findings_mod.extract_findings(result) if result else []
+        fnd = grouped.get(pdp["url"], [])
         pdp["findings"] = fnd
         pdp["finding_summary"] = findings_mod.summarize(fnd)
         for k in total:

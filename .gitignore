@@ -11,4 +11,7 @@ outputs/run_*.log
 outputs/runs/
 outputs/packaging_cache/
 outputs/dashboard/
+outputs/dashboard.db
+outputs/dashboard.db-wal
+outputs/dashboard.db-shm
 .DS_Store
