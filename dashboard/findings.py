@@ -189,27 +189,28 @@ def summarize(findings: list) -> dict:
 
 # Top-level sections shown on the PDP page, in reading order. Mirrors the report
 # tabs so the dashboard reads section-wise instead of one flat list.
+# Sections mirror the HTML report's tabs, in the same order.
 SECTION_ORDER = [
-    "Compliance", "Narrative × Persona", "Visual", "Copy / Text",
-    "Reviews", "Ad Alignment", "Root Cause",
+    "Hygiene Check", "Narrative × Persona", "Visual Layer", "Text Layer",
+    "Reviews & Ratings", "Product Packaging", "Ad Gaps", "Root Cause",
 ]
 
 _LAYER_TO_SECTION = {
-    "Claims / Compliance": "Compliance",
-    "Packaging / Compliance": "Compliance",
+    "Claims / Compliance": "Hygiene Check",     # claims accuracy
+    "Brand": "Hygiene Check",                   # brand-voice violations
+    "Spelling / Grammar": "Hygiene Check",      # spell/grammar
     "Narrative × Persona": "Narrative × Persona",
-    "Visual": "Visual",
-    "Brand": "Copy / Text",
-    "Spelling / Grammar": "Copy / Text",
-    "Reviews": "Reviews",
-    "Ad Alignment": "Ad Alignment",
+    "Visual": "Visual Layer",
+    "Reviews": "Reviews & Ratings",
+    "Packaging / Compliance": "Product Packaging",
+    "Ad Alignment": "Ad Gaps",
     "RCA": "Root Cause",
 }
 
 
 def _section_of(layer: str) -> str:
     if layer.startswith("Text"):
-        return "Copy / Text"
+        return "Text Layer"
     return _LAYER_TO_SECTION.get(layer, "Other")
 
 

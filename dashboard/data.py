@@ -24,16 +24,18 @@ __all__ = ["DIMENSION_LABELS", "PDP_TABS", "list_categories", "get_category", "g
 #   content  → page assets (images / reviews) plus that section's findings
 #   findings → findings only
 #   history  → run history
+# Tabs mirror the HTML report's sections, in order, then extras (Ad Gaps, RCA, History).
 PDP_TABS = [
-    {"id": "overview",  "label": "Overview",   "kind": "overview", "section": None},
-    {"id": "visual",    "label": "Visual",     "kind": "images",   "section": "Visual"},
-    {"id": "text",      "label": "Copy / Text", "kind": "findings", "section": "Copy / Text"},
-    {"id": "narrative", "label": "Narrative",  "kind": "findings", "section": "Narrative × Persona"},
-    {"id": "packaging", "label": "Packaging",  "kind": "findings", "section": "Compliance"},
-    {"id": "reviews",   "label": "Reviews",    "kind": "reviews",  "section": "Reviews"},
-    {"id": "ads",       "label": "Ad Gaps",    "kind": "findings", "section": "Ad Alignment"},
-    {"id": "rca",       "label": "Root Cause", "kind": "findings", "section": "Root Cause"},
-    {"id": "history",   "label": "History",    "kind": "history",  "section": None},
+    {"id": "summary",   "label": "Summary",             "kind": "overview", "section": None},
+    {"id": "hygiene",   "label": "Hygiene Check",       "kind": "findings", "section": "Hygiene Check"},
+    {"id": "narrative", "label": "Narrative × Persona", "kind": "findings", "section": "Narrative × Persona"},
+    {"id": "visual",    "label": "Visual Layer",        "kind": "images",   "section": "Visual Layer"},
+    {"id": "text",      "label": "Text Layer",          "kind": "findings", "section": "Text Layer"},
+    {"id": "reviews",   "label": "Reviews & Ratings",   "kind": "reviews",  "section": "Reviews & Ratings"},
+    {"id": "packaging", "label": "Product Packaging",   "kind": "findings", "section": "Product Packaging"},
+    {"id": "ads",       "label": "Ad Gaps",             "kind": "findings", "section": "Ad Gaps"},
+    {"id": "rca",       "label": "Root Cause",          "kind": "findings", "section": "Root Cause"},
+    {"id": "history",   "label": "History",             "kind": "history",  "section": None},
 ]
 
 
@@ -104,11 +106,12 @@ def _summarize_open(findings: list) -> dict:
 
 # Maps a section to the dimension score in the run summary (where one exists).
 _SECTION_SCORE_KEY = {
+    "Hygiene Check": "copy_health",
     "Narrative × Persona": "persona_narrative",
-    "Visual": "visual_design",
-    "Copy / Text": "copy_health",
-    "Reviews": "reviews",
-    "Ad Alignment": "ad_alignment",
+    "Visual Layer": "visual_design",
+    "Text Layer": "copy_health",
+    "Reviews & Ratings": "reviews",
+    "Ad Gaps": "ad_alignment",
 }
 
 

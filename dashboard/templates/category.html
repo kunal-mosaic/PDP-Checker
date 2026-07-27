@@ -14,6 +14,7 @@
     <div class="score-block">
       <span class="score">{{ "%.1f"|format(cat.score) if cat.score is not none else "—" }}</span>
       <span class="pill {{ cat.status }}">{{ cat.status if cat.score is not none else "no audit" }}</span>
+      {% if cat.has_report %}<a class="report-btn" href="/report/{{ cat.slug }}" target="_blank" rel="noopener">Open full report ↗</a>{% endif %}
     </div>
   </div>
 
@@ -56,11 +57,5 @@
       {% endfor %}
     </div>
 
-    {% if cat.has_report %}
-      <details class="section" style="margin-top:1.5rem;">
-        <summary class="sec-summary"><span class="sec-name">Original full report (reference)</span></summary>
-        <div class="sec-body"><iframe class="reportframe" src="/report/{{ cat.slug }}" title="Full report"></iframe></div>
-      </details>
-    {% endif %}
   {% endif %}
 {% endblock %}

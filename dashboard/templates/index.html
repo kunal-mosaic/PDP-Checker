@@ -31,24 +31,22 @@
 
     <div class="grid">
       {% for c in categories %}
-      <div class="card {{ c.status }}">
-        <div class="card-top">
-          <label class="check">
-            <input type="checkbox" name="categories" value="{{ c.name }}" class="catcb">
+      <div class="card cat-card {{ c.status }}">
+        <input type="checkbox" name="categories" value="{{ c.name }}" class="catcb"
+               title="Select to run an audit" aria-label="Select {{ c.name }} to run">
+        <a class="cat-link" href="/category/{{ c.slug }}">
+          <div class="card-top">
             <span class="cname">{{ c.name }}</span>
-          </label>
-          <span class="score">{{ "%.1f"|format(c.score) if c.score is not none else "—" }}</span>
-        </div>
-        <div class="card-meta">
-          <span class="pill {{ c.status }}">{{ c.status if c.score is not none else "no audit" }}</span>
-          <span>{{ c.url_count }} PDP(s)</span>
-          {% if c.source_stub %}<span class="chip stub">source: stub</span>{% endif %}
-          {% if c.run_ts %}<span>· {{ c.run_ts[:10] }}</span>{% endif %}
-        </div>
-        <div class="card-links">
-          <a href="/category/{{ c.slug }}">Results →</a>
-          {% if c.has_report %}<a href="/report/{{ c.slug }}" target="_blank">Full report ↗</a>{% endif %}
-        </div>
+            <span class="score">{{ "%.1f"|format(c.score) if c.score is not none else "—" }}</span>
+          </div>
+          <div class="card-meta">
+            <span class="pill {{ c.status }}">{{ c.status if c.score is not none else "no audit" }}</span>
+            <span>{{ c.url_count }} PDP(s)</span>
+            {% if c.source_stub %}<span class="chip stub">source: stub</span>{% endif %}
+            {% if c.run_ts %}<span>· {{ c.run_ts[:10] }}</span>{% endif %}
+          </div>
+          <div class="open-hint">Open workspace →</div>
+        </a>
       </div>
       {% endfor %}
     </div>
