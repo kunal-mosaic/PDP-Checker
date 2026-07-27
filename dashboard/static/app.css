@@ -109,3 +109,22 @@ form.runform { margin:0; }
 .sec-name { font-family:var(--font-display); font-weight:620; font-size:.98rem; }
 .sec-counts { margin-left:auto; display:flex; gap:.3rem; }
 .sec-body { padding:0 .9rem .9rem; display:grid; gap:.5rem; }
+
+/* Honest-score note + review state (P3) */
+.honest-note { font-size:.82rem; color:var(--ink-soft); background:var(--surface-2); border-radius:8px; padding:.6rem .8rem; margin:.4rem 0 0; max-width:54rem; }
+.honest-note b { color:var(--ink); }
+.f-actions { margin-left:auto; display:flex; gap:.35rem; }
+.fbtn { font-family:var(--font-body); font-size:.72rem; border:1px solid var(--line); background:var(--surface); color:var(--ink-soft); padding:.2rem .5rem; border-radius:6px; cursor:pointer; }
+.fbtn:hover { border-color:var(--accent); color:var(--accent-ink); }
+.fbtn.reopen { display:none; }
+.f-state { font-family:var(--font-mono); font-size:.66rem; letter-spacing:.03em; text-transform:uppercase; }
+/* implemented = awaiting verification; dismissed = struck out */
+.finding.status-implemented { opacity:.7; }
+.finding.status-implemented .f-state::before { content:"✓ awaiting verification"; color:var(--good); }
+.finding.status-implemented .fbtn:not(.reopen) { display:none; }
+.finding.status-implemented .fbtn.reopen { display:inline; }
+.finding.status-dismissed { opacity:.5; }
+.finding.status-dismissed .f-title { text-decoration:line-through; }
+.finding.status-dismissed .f-state::before { content:"dismissed"; color:var(--ink-faint); }
+.finding.status-dismissed .fbtn:not(.reopen) { display:none; }
+.finding.status-dismissed .fbtn.reopen { display:inline; }

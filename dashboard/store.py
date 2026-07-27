@@ -178,8 +178,10 @@ def pdps_for_run(run_id: str) -> list:
     return out
 
 
-def findings_for_run(run_id: str) -> dict:
-    """All findings for a run, grouped by url: {url: [finding, ...]}."""
+def findings_for_run(run_id: str, product: str = "") -> dict:
+    """All findings for a run, grouped by url: {url: [finding, ...]}.
+    Each finding is tagged with its persisted review status (open by default)."""
+    statuses = resolution_statuses(product) if product else {}
     with _conn() as con:
         rows = con.execute(
             "SELECT url, fid, layer, severity, title, detail, suggestion "
@@ -191,7 +193,42 @@ def findings_for_run(run_id: str) -> dict:
         grouped.setdefault(r["url"], []).append({
             "id": r["fid"], "layer": r["layer"], "severity": r["severity"],
             "title": r["title"], "detail": r["detail"], "suggestion": r["suggestion"],
+            "status": statuses.get(r["fid"], "open"),
         })
     for url in grouped:
         grouped[url].sort(key=lambda f: rank.get(f["severity"], 9))
     return grouped
+
+
+# ── review state (P3) — keyed by (product, fingerprint) so it survives re-runs ──
+
+VALID_STATUSES = {"open", "implemented", "dismissed"}
+
+
+def resolution_statuses(product: str) -> dict:
+    """{fid: status} for a product — the persisted review decisions."""
+    init_db()
+    with _conn() as con:
+        rows = con.execute(
+            "SELECT fid, status FROM resolutions WHERE product=?", (product,)
+        ).fetchall()
+    return {r["fid"]: r["status"] for r in rows}
+
+
+def set_resolution(product: str, fid: str, status: str, note: str = "") -> bool:
+    """Persist a review decision. 'open' clears any prior decision."""
+    if status not in VALID_STATUSES:
+        return False
+    init_db()
+    from datetime import datetime, timezone
+    now = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    with _conn() as con:
+        if status == "open":
+            con.execute("DELETE FROM resolutions WHERE product=? AND fid=?", (product, fid))
+        else:
+            con.execute(
+                "INSERT OR REPLACE INTO resolutions (product, fid, status, note, updated_at) "
+                "VALUES (?,?,?,?,?)", (product, fid, status, note, now),
+            )
+        con.commit()
+    return True

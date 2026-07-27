@@ -21,7 +21,7 @@ from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Redirect
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from dashboard import data, jobs
+from dashboard import data, jobs, store
 
 BASE = Path(__file__).parent
 
@@ -60,6 +60,12 @@ def category(request: Request, slug: str):
         "cat": cat,
         "labels": data.DIMENSION_LABELS,
     })
+
+
+@app.post("/finding/status")
+def set_finding_status(product: str = Form(...), fid: str = Form(...), status: str = Form(...)):
+    ok = store.set_resolution(product, fid, status)
+    return JSONResponse({"ok": ok, "fid": fid, "status": status}, status_code=200 if ok else 400)
 
 
 @app.get("/report/{slug}")

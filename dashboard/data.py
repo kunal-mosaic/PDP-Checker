@@ -55,15 +55,16 @@ def get_category(slug: str):
     cat = next((c for c in list_categories() if c["slug"] == slug), None)
     if not cat:
         return None
-    grouped = store.findings_for_run(cat["run_id"]) if cat.get("run_id") else {}
-    total = {"critical": 0, "warning": 0, "info": 0, "total": 0}
+    grouped = store.findings_for_run(cat["run_id"], product=cat["name"]) if cat.get("run_id") else {}
+    total = {"critical": 0, "warning": 0, "info": 0, "total": 0, "addressed": 0}
     for pdp in cat["pdps"]:
         fnd = grouped.get(pdp["url"], [])
         pdp["findings"] = fnd
-        pdp["finding_summary"] = findings_mod.summarize(fnd)
-        # Group into report-style sections, tagging each with its dimension score.
+        pdp["finding_summary"] = _summarize_open(fnd)
+        # Group into report-style sections; counts reflect OPEN items, dimension score tagged.
         sections = findings_mod.group_by_section(fnd)
         for sec in sections:
+            sec["summary"] = _summarize_open(sec["findings"])
             key = _SECTION_SCORE_KEY.get(sec["section"])
             sec["score"] = pdp["scores"].get(key) if key else None
         pdp["sections"] = sections
@@ -72,6 +73,15 @@ def get_category(slug: str):
     cat["finding_summary"] = total
     cat["has_findings"] = total["total"] > 0
     return cat
+
+
+def _summarize_open(findings: list) -> dict:
+    """Severity counts for OPEN findings only, plus how many are addressed."""
+    open_fnd = [f for f in findings if f.get("status", "open") == "open"]
+    summary = findings_mod.summarize(open_fnd)          # critical/warning/info of open items
+    summary["addressed"] = len(findings) - len(open_fnd)
+    summary["total"] = len(findings)
+    return summary
 
 
 # Maps a section to the dimension score in the run summary (where one exists).
