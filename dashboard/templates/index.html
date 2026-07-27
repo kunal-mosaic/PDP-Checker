@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="topbar">
+    <div>
+      <p class="kicker">PDP Intelligence · Portfolio</p>
+      <h1>Man Matters — PDP Health Dashboard</h1>
+    </div>
+    <span class="muted">Select categories, then Run to scrape &amp; audit live.</span>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="n">{{ stats.total }}</div><div class="l">Products</div></div>
+    <div class="stat healthy"><div class="n">{{ stats.healthy }}</div><div class="l">Healthy</div></div>
+    <div class="stat attention"><div class="n">{{ stats.attention }}</div><div class="l">Attention</div></div>
+    <div class="stat critical"><div class="n">{{ stats.critical }}</div><div class="l">Critical</div></div>
+    <div class="stat"><div class="n">{{ stats.unknown }}</div><div class="l">No data</div></div>
+    <div class="stat"><div class="n">{{ stats.avg }}</div><div class="l">Avg health</div></div>
+  </div>
+
+  <div class="jobs" id="jobs" hidden>
+    <h2>Audit runs</h2>
+    <div class="job-list" id="job-list"></div>
+  </div>
+
+  <form class="runform" method="post" action="/run">
+    <div class="actionbar">
+      <button type="submit" class="btn" id="runbtn" disabled>Run selected</button>
+      <button type="button" class="btn ghost" id="selall">Select all</button>
+      <span class="selcount" id="selcount">0 selected</span>
+    </div>
+
+    <div class="grid">
+      {% for c in categories %}
+      <div class="card {{ c.status }}">
+        <div class="card-top">
+          <label class="check">
+            <input type="checkbox" name="categories" value="{{ c.name }}" class="catcb">
+            <span class="cname">{{ c.name }}</span>
+          </label>
+          <span class="score">{{ "%.1f"|format(c.score) if c.score is not none else "—" }}</span>
+        </div>
+        <div class="card-meta">
+          <span class="pill {{ c.status }}">{{ c.status if c.score is not none else "no audit" }}</span>
+          <span>{{ c.url_count }} PDP(s)</span>
+          {% if c.source_stub %}<span class="chip stub">source: stub</span>{% endif %}
+          {% if c.run_ts %}<span>· {{ c.run_ts[:10] }}</span>{% endif %}
+        </div>
+        <div class="card-links">
+          <a href="/category/{{ c.slug }}">Results →</a>
+          {% if c.has_report %}<a href="/report/{{ c.slug }}" target="_blank">Full report ↗</a>{% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </form>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const cbs = () => Array.from(document.querySelectorAll('.catcb'));
+  const runbtn = document.getElementById('runbtn');
+  const selcount = document.getElementById('selcount');
+  const selall = document.getElementById('selall');
+
+  function refreshSel() {
+    const n = cbs().filter(c => c.checked).length;
+    selcount.textContent = n + ' selected';
+    runbtn.disabled = n === 0;
+    runbtn.textContent = n ? `Run selected (${n})` : 'Run selected';
+  }
+  cbs().forEach(c => c.addEventListener('change', refreshSel));
+  selall.addEventListener('click', () => {
+    const anyUnchecked = cbs().some(c => !c.checked);
+    cbs().forEach(c => c.checked = anyUnchecked);
+    refreshSel();
+  });
+  refreshSel();
+
+  // Live job status polling
+  const jobsBox = document.getElementById('jobs');
+  const jobList = document.getElementById('job-list');
+  let lastActive = 0;
+
+  function render(jobs) {
+    const entries = Object.values(jobs);
+    if (!entries.length) { jobsBox.hidden = true; return; }
+    jobsBox.hidden = false;
+    const order = { running: 0, queued: 1, failed: 2, done: 3 };
+    entries.sort((a, b) => (order[a.status] ?? 9) - (order[b.status] ?? 9));
+    jobList.innerHTML = entries.map(j => {
+      const spin = j.status === 'running' ? '<span class="spinner"></span>' : '';
+      let meta = j.status;
+      if (j.status === 'failed' && j.error) meta = 'failed · ' + j.error;
+      if (j.status === 'done') meta = 'done · ' + (j.report ? j.report.split(/[\\/]/).pop() : '');
+      return `<div class="job ${j.status}">${spin}<span class="jname">${j.name}</span><span class="jmeta">${meta}</span></div>`;
+    }).join('');
+  }
+
+  async function poll() {
+    try {
+      const r = await fetch('/api/status');
+      const jobs = await r.json();
+      render(jobs);
+      const active = Object.values(jobs).filter(j => j.status === 'running' || j.status === 'queued').length;
+      // When the last active job finishes, reload once to pull fresh scores.
+      if (lastActive > 0 && active === 0) { location.reload(); return; }
+      lastActive = active;
+    } catch (e) { /* ignore transient */ }
+  }
+  poll();
+  setInterval(poll, 2000);
+</script>
+{% endblock %}

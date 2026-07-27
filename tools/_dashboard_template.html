@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDP Intelligence — Portfolio Dashboard</title>
+<style>
+  :root {
+    --paper:#F5F7F6; --surface:#FFFFFF; --surface-2:#EEF2F0; --ink:#101815; --ink-soft:#33433D;
+    --ink-faint:#6A7A73; --line:#DCE4E0; --accent:#0B6E5A; --accent-ink:#095446; --accent-wash:#E3F0EC;
+    --healthy:#2C7A55; --attention:#B45309; --critical:#B0322C; --unknown:#6A7A73;
+    --font-display:"Inter Tight","Segoe UI",system-ui,sans-serif;
+    --font-body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --font-mono:ui-monospace,"SF Mono","Cascadia Code","Consolas",monospace;
+    --radius:10px; --shadow:0 1px 2px rgba(16,24,21,.05),0 4px 16px rgba(16,24,21,.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper:#0C1311; --surface:#121C19; --surface-2:#18251F; --ink:#E5ECE8; --ink-soft:#B4C2BC;
+      --ink-faint:#7C8C85; --line:#23322C; --accent:#3DBBA0; --accent-ink:#6FD8C0; --accent-wash:#123029;
+      --healthy:#4FB07E; --attention:#E0973F; --critical:#E4756D; --unknown:#7C8C85;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 20px rgba(0,0,0,.35);
+    }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--paper); color:var(--ink); font-family:var(--font-body);
+    line-height:1.55; -webkit-font-smoothing:antialiased; }
+  .wrap { max-width:76rem; margin:0 auto; padding:2.5rem 1.5rem 5rem; }
+  .kicker { font-family:var(--font-mono); font-size:.72rem; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--accent); margin:0 0 .8rem; }
+  h1 { font-family:var(--font-display); font-weight:680; font-size:clamp(1.8rem,4vw,2.5rem);
+    letter-spacing:-.02em; margin:0 0 .4rem; }
+  .sub { color:var(--ink-soft); margin:0 0 2rem; }
+
+  .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(8rem,1fr)); gap:1rem; margin:0 0 2.5rem; }
+  .stat { background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    padding:1rem 1.15rem; box-shadow:var(--shadow); }
+  .stat .n { font-family:var(--font-display); font-weight:680; font-size:1.8rem; font-variant-numeric:tabular-nums; }
+  .stat .l { font-family:var(--font-mono); font-size:.66rem; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--ink-faint); margin-top:.15rem; }
+  .stat.healthy .n { color:var(--healthy); } .stat.attention .n { color:var(--attention); }
+  .stat.critical .n { color:var(--critical); }
+
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(20rem,1fr)); gap:1rem; }
+  .card { background:var(--surface); border:1px solid var(--line); border-left:4px solid var(--unknown);
+    border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
+  .card.healthy { border-left-color:var(--healthy); } .card.attention { border-left-color:var(--attention); }
+  .card.critical { border-left-color:var(--critical); } .card.unknown { border-left-color:var(--unknown); }
+  summary { cursor:pointer; list-style:none; padding:1.15rem 1.25rem; }
+  summary::-webkit-details-marker { display:none; }
+  .card-top { display:flex; justify-content:space-between; align-items:flex-start; gap:1rem; }
+  .card-title { display:flex; flex-direction:column; gap:.4rem; }
+  .cname { font-family:var(--font-display); font-weight:640; font-size:1.1rem; }
+  .score-block { display:flex; flex-direction:column; align-items:flex-end; gap:.3rem; }
+  .score { font-family:var(--font-display); font-weight:680; font-size:1.7rem; font-variant-numeric:tabular-nums; line-height:1; }
+  .card-meta { margin-top:.7rem; font-size:.8rem; color:var(--ink-soft); }
+  .card-meta code { font-family:var(--font-mono); font-size:.72rem; background:var(--surface-2);
+    padding:.1rem .3rem; border-radius:4px; }
+  .card-body { padding:0 1.25rem 1.25rem; border-top:1px solid var(--line); margin-top:.2rem; }
+
+  .pill { font-family:var(--font-mono); font-size:.66rem; letter-spacing:.04em; text-transform:uppercase;
+    padding:.22rem .5rem; border-radius:100px; font-weight:600; white-space:nowrap; }
+  .pill.healthy { color:var(--healthy); background:color-mix(in srgb, var(--healthy) 14%, transparent); }
+  .pill.attention { color:var(--attention); background:color-mix(in srgb, var(--attention) 14%, transparent); }
+  .pill.critical { color:var(--critical); background:color-mix(in srgb, var(--critical) 14%, transparent); }
+  .pill.unknown { color:var(--unknown); background:color-mix(in srgb, var(--unknown) 14%, transparent); }
+  .chip { font-family:var(--font-mono); font-size:.64rem; letter-spacing:.04em; padding:.18rem .45rem;
+    border-radius:6px; border:1px solid var(--line); color:var(--ink-faint); width:fit-content; }
+  .chip.stub { color:var(--critical); border-color:color-mix(in srgb, var(--critical) 40%, var(--line)); }
+  .chip.ok { color:var(--healthy); border-color:color-mix(in srgb, var(--healthy) 40%, var(--line)); }
+
+  .report-link { color:var(--accent-ink); text-decoration:none; font-weight:600; }
+  .report-link:hover { text-decoration:underline; }
+  .report-missing { color:var(--ink-faint); }
+
+  .pdp { padding:.9rem 0; border-bottom:1px solid var(--line); }
+  .pdp:last-child { border-bottom:none; }
+  .pdp-head { display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-bottom:.6rem; }
+  .pdp-url { font-family:var(--font-mono); font-size:.76rem; color:var(--ink-soft); text-decoration:none;
+    word-break:break-all; }
+  .pdp-url:hover { color:var(--accent-ink); }
+  .dims { display:grid; gap:.35rem; }
+  .dim { display:grid; grid-template-columns:9rem 1fr 2rem; align-items:center; gap:.6rem; }
+  .dim-label { font-size:.74rem; color:var(--ink-soft); }
+  .dim-bar { height:6px; border-radius:3px; background:var(--surface-2); overflow:hidden; }
+  .dim-bar > span { display:block; height:100%; background:var(--unknown); }
+  .dim-bar.healthy > span { background:var(--healthy); } .dim-bar.attention > span { background:var(--attention); }
+  .dim-bar.critical > span { background:var(--critical); }
+  .dim-val { font-family:var(--font-mono); font-size:.74rem; text-align:right; color:var(--ink-soft);
+    font-variant-numeric:tabular-nums; }
+
+  footer { margin-top:3rem; padding-top:1.5rem; border-top:1px solid var(--line); color:var(--ink-faint);
+    font-size:.78rem; font-family:var(--font-mono); }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <p class="kicker">PDP Intelligence · Portfolio</p>
+    <h1>Man Matters — PDP Health Dashboard</h1>
+    <p class="sub">Every product's latest audit, at a glance. Click a card to drill into its PDPs and scores. Last audit: {last_run}.</p>
+
+    <div class="stats">
+      <div class="stat"><div class="n">{total}</div><div class="l">Products</div></div>
+      <div class="stat healthy"><div class="n">{healthy}</div><div class="l">Healthy</div></div>
+      <div class="stat attention"><div class="n">{attention}</div><div class="l">Attention</div></div>
+      <div class="stat critical"><div class="n">{critical}</div><div class="l">Critical</div></div>
+      <div class="stat"><div class="n">{unknown}</div><div class="l">No data</div></div>
+      <div class="stat"><div class="n">{avg}</div><div class="l">Avg health</div></div>
+    </div>
+
+    <div class="grid">
+      {cards}
+    </div>
+
+    <footer>Generated {generated} · python tools/build_dashboard.py · static, offline-ready</footer>
+  </div>
+</body>
+</html>

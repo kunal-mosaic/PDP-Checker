@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}{{ cat.name }} — PDP Intelligence{% endblock %}
+{% block content %}
+  <div class="topbar">
+    <div>
+      <p class="kicker"><a class="back" href="/">← Portfolio</a></p>
+      <h1>{{ cat.name }}</h1>
+    </div>
+    <div>
+      <span class="pill {{ cat.status }}">{{ cat.status if cat.score is not none else "no audit" }}</span>
+      <span class="score">{{ "%.1f"|format(cat.score) if cat.score is not none else "—" }}</span>
+    </div>
+  </div>
+
+  {% if not cat.pdps %}
+    <p class="empty">No audit has run for this category yet. Go back and Run it to generate results.</p>
+  {% else %}
+    {% for pdp in cat.pdps %}
+    <div class="pdp">
+      <div class="pdp-head">
+        <a class="pdp-url" href="{{ pdp.url }}" target="_blank" rel="noopener">{{ pdp.url }}</a>
+        <span class="pill {{ pdp.status }}">{{ pdp.status }} · {{ "%.1f"|format(pdp.overall_score) if pdp.overall_score is not none else "—" }}</span>
+      </div>
+      <div class="dims">
+        {% for key, val in (pdp.scores or {}).items() %}
+        {% set cls = "healthy" if val >= 8 else ("attention" if val >= 6.5 else "critical") %}
+        <div class="dim">
+          <span class="dim-label">{{ labels.get(key, key) }}</span>
+          <span class="dim-bar {{ cls }}"><span style="width: {{ (val / 10 * 100)|round|int }}%"></span></span>
+          <span class="dim-val">{{ "%.1f"|format(val) }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+
+    {% if cat.has_report %}
+      <h2 class="section-h" style="margin-top:1.5rem;">Full report</h2>
+      <iframe class="reportframe" src="/report/{{ cat.slug }}" title="Full report"></iframe>
+    {% endif %}
+  {% endif %}
+{% endblock %}
