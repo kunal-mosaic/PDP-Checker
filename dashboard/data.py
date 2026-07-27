@@ -61,11 +61,27 @@ def get_category(slug: str):
         fnd = grouped.get(pdp["url"], [])
         pdp["findings"] = fnd
         pdp["finding_summary"] = findings_mod.summarize(fnd)
+        # Group into report-style sections, tagging each with its dimension score.
+        sections = findings_mod.group_by_section(fnd)
+        for sec in sections:
+            key = _SECTION_SCORE_KEY.get(sec["section"])
+            sec["score"] = pdp["scores"].get(key) if key else None
+        pdp["sections"] = sections
         for k in total:
             total[k] += pdp["finding_summary"].get(k, 0)
     cat["finding_summary"] = total
     cat["has_findings"] = total["total"] > 0
     return cat
+
+
+# Maps a section to the dimension score in the run summary (where one exists).
+_SECTION_SCORE_KEY = {
+    "Narrative × Persona": "persona_narrative",
+    "Visual": "visual_design",
+    "Copy / Text": "copy_health",
+    "Reviews": "reviews",
+    "Ad Alignment": "ad_alignment",
+}
 
 
 def latest_report_path(slug: str):

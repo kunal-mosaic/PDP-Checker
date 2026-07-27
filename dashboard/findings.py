@@ -183,3 +183,46 @@ def summarize(findings: list) -> dict:
         c[f["severity"]] = c.get(f["severity"], 0) + 1
     c["total"] = len(findings)
     return c
+
+
+# ── grouping into report-style sections ──────────────────────────────────────
+
+# Top-level sections shown on the PDP page, in reading order. Mirrors the report
+# tabs so the dashboard reads section-wise instead of one flat list.
+SECTION_ORDER = [
+    "Compliance", "Narrative × Persona", "Visual", "Copy / Text",
+    "Reviews", "Ad Alignment", "Root Cause",
+]
+
+_LAYER_TO_SECTION = {
+    "Claims / Compliance": "Compliance",
+    "Packaging / Compliance": "Compliance",
+    "Narrative × Persona": "Narrative × Persona",
+    "Visual": "Visual",
+    "Brand": "Copy / Text",
+    "Spelling / Grammar": "Copy / Text",
+    "Reviews": "Reviews",
+    "Ad Alignment": "Ad Alignment",
+    "RCA": "Root Cause",
+}
+
+
+def _section_of(layer: str) -> str:
+    if layer.startswith("Text"):
+        return "Copy / Text"
+    return _LAYER_TO_SECTION.get(layer, "Other")
+
+
+def group_by_section(findings: list) -> list:
+    """Group findings into ordered report-style sections with per-section counts."""
+    groups: dict = {}
+    for f in findings:
+        groups.setdefault(_section_of(f["layer"]), []).append(f)
+    ordered = []
+    for name in SECTION_ORDER:
+        if name in groups:
+            ordered.append({"section": name, "findings": groups[name], "summary": summarize(groups[name])})
+    for name, fs in groups.items():          # any unmapped sections last
+        if name not in SECTION_ORDER:
+            ordered.append({"section": name, "findings": fs, "summary": summarize(fs)})
+    return ordered

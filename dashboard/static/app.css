@@ -98,3 +98,14 @@ form.runform { margin:0; }
 .f-detail { font-size:.85rem; color:var(--ink-soft); margin-top:.25rem; }
 .f-suggestion { font-size:.85rem; color:var(--ink); margin-top:.4rem; padding:.4rem .6rem; background:var(--accent-wash); border-radius:6px; }
 .f-suggestion b { color:var(--accent-ink); }
+
+/* Sections (collapsible, report-style) */
+.sections { margin-top:1rem; display:grid; gap:.5rem; max-width:54rem; }
+.section { border:1px solid var(--line); border-radius:8px; background:var(--surface); overflow:hidden; }
+.sec-summary { cursor:pointer; list-style:none; display:flex; align-items:center; gap:.7rem; padding:.7rem .9rem; }
+.sec-summary::-webkit-details-marker { display:none; }
+.sec-summary::before { content:"▸"; color:var(--ink-faint); font-size:.8rem; transition:transform .15s; }
+.section[open] .sec-summary::before { transform:rotate(90deg); }
+.sec-name { font-family:var(--font-display); font-weight:620; font-size:.98rem; }
+.sec-counts { margin-left:auto; display:flex; gap:.3rem; }
+.sec-body { padding:0 .9rem .9rem; display:grid; gap:.5rem; }
