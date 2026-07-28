@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}{{ cat.name }} — PDP · PDP Intelligence{% endblock %}
 
-{% macro scls(s) %}{{ 'healthy' if (s is not none and s >= 8) else ('attention' if (s is not none and s >= 6.5) else 'critical') }}{% endmacro %}
+{% macro scls(s) %}{{ "healthy" if s is not none and s >= 8 else ("attention" if s is not none and s >= 6.5 else "critical") }}{% endmacro %}
 
 {% macro sub_score(ss) %}
   {% if ss %}
@@ -10,19 +10,12 @@
       <span class="ssr-name">{{ ss.name }}</span>
       <span class="ssr-score {{ scls(ss.score) }}">{{ "%.1f"|format(ss.score) if ss.score is not none else "—" }}<span class="dn">/10</span></span>
     </summary>
-    <div class="bar-t"><div class="bar-f {{ scls(ss.score) }}" style="width: {{ ((ss.score or 0) / 10 * 100)|round|int }}%"></div></div>
+    <div class="ssr-bar"><span class="{{ scls(ss.score) }}" style="width: {{ (ss.score / 10 * 100)|round|int if ss.score is not none else 0 }}%"></span></div>
     <div class="ssr-detail">
       {% if ss.observation %}<div class="ssr-obs">{{ ss.observation }}</div>{% endif %}
       {% if ss.suggestion %}<div class="ssr-sug"><b>Suggestion:</b> {{ ss.suggestion }}</div>{% endif %}
     </div>
   </details>
-  {% endif %}
-{% endmacro %}
-
-{% macro flagged(items, label="Flagged issues") %}
-  {% if items %}
-    <div class="sec-lbl">{{ label }}</div>
-    {% for f in items %}<div class="fi fi-flagged"><span class="fi-ico">❌</span><span>{{ f }}</span></div>{% endfor %}
   {% endif %}
 {% endmacro %}
 
@@ -44,28 +37,34 @@
   </div>
 {% endmacro %}
 
+{% macro flagged(items, label="Flagged issues") %}
+  {% if items %}
+    <div class="sec-lbl">{{ label }}</div>
+    {% for f in items %}<div class="fi fi-flagged"><span class="fi-ico">❌</span><span class="fi-text">{{ f }}</span></div>{% endfor %}
+  {% endif %}
+{% endmacro %}
+
+{% set r = pdp.raw %}
+
 {% block content %}
   <div class="topbar">
     <div>
       <p class="kicker"><a class="back" href="/category/{{ cat.slug }}">← {{ cat.name }}</a></p>
-      <h1 class="pdp-h1">{{ pdp.url }}</h1>
+      <h1 class="pdp-h1"><a href="{{ pdp.url }}" target="_blank" rel="noopener">{{ pdp.url }} ↗</a></h1>
       <p class="muted">
         Last audited {{ cat.run_ts[:10] if cat.run_ts else "—" }} ·
         {{ pdp.image_count }} images · {{ pdp.reviews|length }} reviews ·
         {{ pdp.finding_summary.total }} findings
-        {% if pdp.raw.persona_narrative %} · persona: {{ pdp.raw.persona_narrative.persona_used or pdp.raw.persona_narrative.configured_persona }}{% endif %}
       </p>
     </div>
     <div class="score-block">
       <span class="score">{{ "%.1f"|format(pdp.overall_score) if pdp.overall_score is not none else "—" }}</span>
       <span class="pill {{ pdp.status }}">{{ pdp.status }}</span>
       <span class="verified-tag">verified</span>
-      {% if cat.has_report %}<a class="report-btn" href="/report/{{ cat.slug }}" target="_blank" rel="noopener">Full report ↗</a>{% endif %}
     </div>
   </div>
 
   <meta id="product-meta" data-product="{{ cat.name }}">
-  {% set raw = pdp.raw %}
 
   <div class="tabs" role="tablist">
     {% for t in tabs %}
@@ -78,247 +77,228 @@
     {% endfor %}
   </div>
 
-  {# ── Summary ── #}
-  <div class="panel active" data-panel="summary">
-    {% if raw %}
-    <div class="sum-cells">
-      {% for lbl, val in [("Hygiene", raw.copy_health.overall), ("Narrative × Persona", raw.persona_narrative.overall), ("Visual", raw.visual_design.overall), ("Reviews", raw.reviews.overall), ("Ad Alignment", raw.ad_alignment.overall)] %}
-        <div class="sum-cell">
-          <div class="sum-cell-score {{ scls(val) }}">{{ "%.1f"|format(val) if val is not none else "—" }}</div>
-          <div class="sum-cell-lbl">{{ lbl }}</div>
-        </div>
-      {% endfor %}
-    </div>
-    {% endif %}
-    <div class="ov-grid">
-      <div class="ov-scores">
-        <h2 class="section-h">Dimension scores</h2>
-        {% for key, val in (pdp.scores or {}).items() %}
-          <div class="dim">
-            <span class="dim-label">{{ labels.get(key, key) }}</span>
-            <span class="dim-bar {{ scls(val) }}"><span style="width: {{ (val / 10 * 100)|round|int }}%"></span></span>
-            <span class="dim-val">{{ "%.1f"|format(val) }}</span>
-          </div>
-        {% endfor %}
-        <p class="honest-note">This is the <b>verified</b> score from the last audit. Marking items fixed tracks the work — the score changes only when the PDP is re-audited.</p>
-      </div>
-      <div class="ov-top">
-        <h2 class="section-h">Top priorities</h2>
-        {% set crits = pdp.findings | selectattr("severity", "equalto", "critical") | list %}
-        {% if crits %}
-          <div class="findings-col">{% for f in crits[:6] %}{{ finding_card(f) }}{% endfor %}</div>
-          {% if crits|length > 6 %}<p class="muted">+ {{ crits|length - 6 }} more critical findings in the tabs.</p>{% endif %}
-        {% else %}<p class="empty">No critical findings. ✓</p>{% endif %}
-      </div>
-    </div>
-  </div>
+  {% if not r %}
+    <p class="empty">Full findings not captured for this run — open the full report, or re-run to populate the native sections.</p>
+  {% endif %}
 
-  {# ── Hygiene Check ── #}
-  <div class="panel" data-panel="hygiene">
-    {% if raw.copy_health %}
-      <div class="sec-lbl">Sub-scores — click to expand</div>
-      {{ sub_score(raw.copy_health.claims_alignment) }}
-      {{ sub_score(raw.copy_health.brand_guidelines) }}
-      {{ sub_score(raw.copy_health.spell_grammar) }}
-      {% if raw.copy_health.claims_flags %}
-        <div class="sec-lbl">Claims ({{ raw.copy_health.claims_flags|length }})</div>
-        {% for c in raw.copy_health.claims_flags %}
-          <div class="claim {{ 'crit' if c.status == 'flagged' else ('warn' if c.status == 'warning' else 'ok') }}">
-            <span class="claim-status">{{ c.status }}</span>
-            <span class="claim-text">{{ c.text }}</span>
-            {% if c.reason %}<span class="claim-reason">{{ c.reason }}</span>{% endif %}
-          </div>
-        {% endfor %}
-      {% endif %}
-      {{ flagged(raw.copy_health.brand_flags, "Brand guideline flags") }}
-      {{ flagged(raw.copy_health.flagged_errors, "Spelling / grammar errors") }}
-    {% else %}<p class="empty">No hygiene data for this run.</p>{% endif %}
-  </div>
+  {% for t in tabs %}
+  {% set sec = pdp.by_section.get(t.section) if t.section else None %}
+  <div class="panel{% if loop.first %} active{% endif %}" data-panel="{{ t.id }}">
 
-  {# ── Narrative × Persona ── #}
-  <div class="panel" data-panel="narrative">
-    {% if raw.persona_narrative %}
-      {% set pn = raw.persona_narrative %}
-      <p class="muted panel-lead">Narrative: <b>{{ pn.narrative_used or pn.configured_narrative }}</b> · Persona: <b>{{ pn.persona_used or pn.configured_persona }}</b></p>
-      <div class="sec-lbl">Sub-scores — click to expand</div>
-      {{ sub_score(pn.hero_banner) }}{{ sub_score(pn.carousel_flow) }}{{ sub_score(pn.banner_alignment) }}
-      {{ sub_score(pn.page_narrative_arc) }}{{ sub_score(pn.cta_language) }}
-      {% if pn.persona_matrix %}
-        <div class="sec-lbl">Persona Matrix — what's working vs missing</div>
-        <div class="table-scroll"><table class="pm-table">
-          <thead><tr><th>Persona</th><th>Doing right ✓</th><th>Missing ✗</th></tr></thead>
-          <tbody>
-          {% for row in pn.persona_matrix %}
-            <tr>
-              <td class="pm-persona">{{ row.persona }}</td>
-              <td><ul class="pm-list pm-right">{% for i in row.doing_right %}<li>{{ i }}</li>{% endfor %}{% if not row.doing_right %}<li class="pm-none">—</li>{% endif %}</ul></td>
-              <td><ul class="pm-list pm-miss">{% for i in row.missing %}<li>{{ i }}</li>{% endfor %}{% if not row.missing %}<li class="pm-none">Nothing missing</li>{% endif %}</ul></td>
-            </tr>
+    {# ── SUMMARY ── #}
+    {% if t.kind == "overview" %}
+      <div class="ov-grid">
+        <div class="ov-scores">
+          <h2 class="section-h">Dimension scores</h2>
+          {% for key, val in (pdp.scores or {}).items() %}
+            <div class="dim">
+              <span class="dim-label">{{ labels.get(key, key) }}</span>
+              <span class="dim-bar {{ scls(val) }}"><span style="width: {{ (val / 10 * 100)|round|int }}%"></span></span>
+              <span class="dim-val">{{ "%.1f"|format(val) }}</span>
+            </div>
           {% endfor %}
-          </tbody>
-        </table></div>
-      {% endif %}
-      {{ flagged(pn.flagged_issues) }}
-    {% else %}<p class="empty">No narrative data for this run.</p>{% endif %}
-  </div>
+          {% if r.persona_narrative %}
+          <p class="ctx">Narrative: <b>{{ r.persona_narrative.narrative_used or r.persona_narrative.configured_narrative }}</b> ·
+             Persona: <b>{{ r.persona_narrative.persona_used or r.persona_narrative.configured_persona }}</b></p>
+          {% endif %}
+          <p class="honest-note">This is the <b>verified</b> score from the last audit. Marking items tracks the work — the score changes only on re-audit.</p>
+        </div>
+        <div class="ov-top">
+          <h2 class="section-h">Top priorities</h2>
+          {% set crits = pdp.findings | selectattr("severity", "equalto", "critical") | list %}
+          {% if crits %}
+            <div class="findings-col">{% for f in crits[:6] %}{{ finding_card(f) }}{% endfor %}</div>
+            {% if crits|length > 6 %}<p class="muted">+ {{ crits|length - 6 }} more critical findings in the tabs above.</p>{% endif %}
+          {% else %}<p class="empty">No critical findings. ✓</p>{% endif %}
+        </div>
+      </div>
 
-  {# ── Visual Layer ── #}
-  <div class="panel" data-panel="visual">
-    {% if pdp.images_grouped %}
-      <p class="muted panel-lead">{{ pdp.image_count }} assets from the Zeus CDN, in page order.</p>
-      {% for group in pdp.images_grouped %}
-        <h3 class="img-group-h">{{ group.type }} <span class="muted">({{ group.images|length }})</span></h3>
-        <div class="imggrid">
-          {% for img in group.images %}
+    {# ── HYGIENE CHECK ── #}
+    {% elif t.id == "hygiene" %}
+      {% set ch = r.copy_health %}
+      {% if ch %}
+        <div class="ssr-list">
+          {{ sub_score(ch.claims_alignment) }}
+          {{ sub_score(ch.brand_guidelines) }}
+          {{ sub_score(ch.spell_grammar) }}
+        </div>
+        {% if ch.claims_flags %}
+          <div class="sec-lbl">Claims ({{ ch.claims_flags|length }})</div>
+          {% for c in ch.claims_flags %}
+          <div class="fi {{ 'fi-flagged' if c.status == 'flagged' else ('fi-warn' if c.status == 'warning' else 'fi-ok') }}">
+            <span class="fi-ico">{{ '❌' if c.status == 'flagged' else ('⚠️' if c.status == 'warning' else '✓') }}</span>
+            <span class="fi-body"><span class="fi-text">{{ c.text }}</span>{% if c.reason %}<span class="fi-sub">{{ c.reason }}</span>{% endif %}</span>
+          </div>
+          {% endfor %}
+        {% endif %}
+        {{ flagged(ch.brand_flags, "Brand guideline issues") }}
+        {{ flagged(ch.flagged_errors, "Spelling / grammar errors") }}
+      {% else %}<p class="empty">Not captured for this run.</p>{% endif %}
+
+    {# ── NARRATIVE × PERSONA ── #}
+    {% elif t.id == "narrative" %}
+      {% set pn = r.persona_narrative %}
+      {% if pn %}
+        <div class="ssr-list">
+          {{ sub_score(pn.hero_banner) }}{{ sub_score(pn.carousel_flow) }}{{ sub_score(pn.banner_alignment) }}
+          {{ sub_score(pn.page_narrative_arc) }}{{ sub_score(pn.cta_language) }}
+        </div>
+        {% if pn.persona_matrix %}
+          <div class="sec-lbl">Persona Matrix — what's working vs what's missing</div>
+          <div class="table-scroll">
+          <table class="pm-table">
+            <thead><tr><th style="width:130px">Persona</th><th>Doing Right ✓</th><th>Missing ✗</th></tr></thead>
+            <tbody>
+              {% for row in pn.persona_matrix %}
+              <tr>
+                <td><b>{{ row.persona }}</b></td>
+                <td><ul class="pm-list pm-right">{% for i in row.doing_right %}<li>{{ i }}</li>{% endfor %}{% if not row.doing_right %}<li class="pm-none">—</li>{% endif %}</ul></td>
+                <td><ul class="pm-list pm-miss">{% for i in row.missing %}<li>{{ i }}</li>{% endfor %}{% if not row.missing %}<li class="pm-none">Nothing missing</li>{% endif %}</ul></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          </div>
+        {% endif %}
+        {{ flagged(pn.flagged_issues) }}
+      {% else %}<p class="empty">Not captured for this run.</p>{% endif %}
+
+    {# ── VISUAL LAYER ── #}
+    {% elif t.id == "visual" %}
+      {% if pdp.images_grouped %}
+        <p class="muted panel-lead">{{ pdp.image_count }} assets from the Zeus CDN, in page order.</p>
+        {% for group in pdp.images_grouped %}
+          <h3 class="img-group-h">{{ group.type }} <span class="muted">({{ group.images|length }})</span></h3>
+          <div class="imggrid">
+            {% for img in group.images %}
             <figure class="imgcard">
               <a href="{{ img.url }}" target="_blank" rel="noopener"><img src="/img?u={{ img.url | urlencode }}" alt="{{ img.label or img.position }}" loading="lazy"></a>
               <figcaption>{{ img.label or img.position }}</figcaption>
             </figure>
-          {% endfor %}
-        </div>
-      {% endfor %}
-    {% endif %}
-    {% if raw.visual_design %}
-      {% set vd = raw.visual_design %}
-      <div class="sec-lbl stack-h">Visual sub-scores — click to expand</div>
-      {{ sub_score(vd.human_presence) }}{{ sub_score(vd.proof_prominence) }}{{ sub_score(vd.ingredient_imagery) }}
-      {{ sub_score(vd.before_after) }}{{ sub_score(vd.lifestyle_shots) }}{{ sub_score(vd.visual_hierarchy_brand) }}
-      {% if vd.section_flow %}
-        <div class="sec-lbl">Page section flow <span class="ssr-score {{ scls(vd.section_flow.score) }}">{{ "%.1f"|format(vd.section_flow.score) }}/10</span></div>
-        {% if vd.section_flow.observation %}<p class="muted">{{ vd.section_flow.observation }}</p>{% endif %}
-        {% if vd.section_flow.current_order %}<p class="flow-order"><b>Current order:</b> {{ vd.section_flow.current_order | join("  →  ") }}</p>{% endif %}
-        {% if vd.section_flow.missing_sections %}<p class="flow-miss"><b>Missing:</b> {{ vd.section_flow.missing_sections | join(", ") }}</p>{% endif %}
-        {% if vd.section_flow.suggestion %}<div class="f-suggestion"><b>Fix:</b> {{ vd.section_flow.suggestion }}</div>{% endif %}
+            {% endfor %}
+          </div>
+        {% endfor %}
       {% endif %}
-      {{ flagged(vd.flagged_issues) }}
-    {% endif %}
-  </div>
+      {% set vd = r.visual_design %}
+      {% if vd %}
+        <h2 class="section-h stack-h">Visual scores</h2>
+        <div class="ssr-list">
+          {{ sub_score(vd.human_presence) }}{{ sub_score(vd.proof_prominence) }}{{ sub_score(vd.ingredient_imagery) }}
+          {{ sub_score(vd.before_after) }}{{ sub_score(vd.lifestyle_shots) }}{{ sub_score(vd.visual_hierarchy_brand) }}
+        </div>
+        {% if vd.section_flow %}
+          {% set sf = vd.section_flow %}
+          <div class="sec-lbl">Page section flow <span class="ssr-score {{ scls(sf.score) }}">{{ "%.1f"|format(sf.score) if sf.score is not none else "—" }}/10</span></div>
+          {% if sf.current_order %}<div class="flow-order">{% for s in sf.current_order %}<span class="flow-chip">{{ loop.index }}. {{ s }}</span>{% endfor %}</div>{% endif %}
+          {{ flagged(sf.missing_sections, "Missing sections") }}
+          {% if sf.out_of_order %}<div class="sec-lbl">Out of order</div>{% for o in sf.out_of_order %}<div class="fi fi-warn"><span class="fi-ico">↕</span><span class="fi-text">{{ o.section }}: position {{ o.current_position }} → {{ o.recommended_position }} — {{ o.reason }}</span></div>{% endfor %}{% endif %}
+        {% endif %}
+        {{ flagged(vd.flagged_issues) }}
+      {% endif %}
 
-  {# ── Text Layer ── #}
-  <div class="panel" data-panel="text">
-    {% if raw.copy_health and raw.copy_health.text_insights %}
-      {% for ti in raw.copy_health.text_insights %}
+    {# ── TEXT LAYER ── #}
+    {% elif t.id == "text" %}
+      {% set ch = r.copy_health %}
+      {% if ch and ch.text_insights %}
+        {% for ti in ch.text_insights %}
         <div class="ti {{ ti.severity }}">
           <div class="ti-top"><span class="sev-chip {{ 'critical' if ti.severity == 'critical' else 'warning' }}">{{ ti.severity }}</span><span class="f-layer">{{ ti.category }}</span></div>
           <div class="f-title">{{ ti.finding }}</div>
           {% if ti.detail %}<div class="f-detail">{{ ti.detail }}</div>{% endif %}
         </div>
-      {% endfor %}
-    {% else %}<p class="empty">No text-layer insights for this run.</p>{% endif %}
-  </div>
+        {% endfor %}
+      {% else %}<p class="empty">No text-layer insights for this run.</p>{% endif %}
 
-  {# ── Reviews & Ratings ── #}
-  <div class="panel" data-panel="reviews">
-    {% if raw.reviews %}
-      {% set rv = raw.reviews %}
-      {% if rv.freshness_warning %}<div class="fi fi-flagged"><span class="fi-ico">⚠️</span><span>{{ rv.freshness_warning }}</span></div>{% endif %}
-      <div class="sec-lbl">Sub-scores — click to expand</div>
-      {{ sub_score(rv.freshness) }}{{ sub_score(rv.rating_distribution) }}{{ sub_score(rv.theme_alignment) }}{{ sub_score(rv.negative_handling) }}
-      {{ flagged(rv.flagged_issues) }}
-    {% endif %}
-    {% if pdp.reviews %}
-      <div class="sec-lbl stack-h">Review cards ({{ pdp.reviews|length }})</div>
-      <div class="revgrid">
-        {% for r in pdp.reviews %}
+    {# ── REVIEWS & RATINGS ── #}
+    {% elif t.id == "reviews" %}
+      {% set rv = r.reviews %}
+      {% if rv %}
+        <div class="ssr-list">
+          {{ sub_score(rv.freshness) }}{{ sub_score(rv.rating_distribution) }}{{ sub_score(rv.theme_alignment) }}{{ sub_score(rv.negative_handling) }}
+        </div>
+        {% if rv.freshness_warning %}<div class="fi fi-warn"><span class="fi-ico">⚠️</span><span class="fi-text">{{ rv.freshness_warning }}</span></div>{% endif %}
+        {{ flagged(rv.flagged_issues) }}
+      {% endif %}
+      {% if pdp.reviews %}
+        <h2 class="section-h stack-h">Review cards ({{ pdp.reviews|length }})</h2>
+        <div class="revgrid">
+          {% for rev in pdp.reviews %}
           <div class="revcard">
             <div class="rev-top">
-              <span class="rev-author">{{ r.author }}</span>
-              {% if r.rating %}<span class="rev-stars">{{ "★" * (r.rating|round|int) }}<span class="dim-star">{{ "★" * (5 - (r.rating|round|int)) }}</span></span>{% endif %}
-              <span class="rev-date">{{ r.date }}</span>
+              <span class="rev-author">{{ rev.author }}</span>
+              {% if rev.rating %}<span class="rev-stars">{{ "★" * (rev.rating|round|int) }}<span class="dim-star">{{ "★" * (5 - (rev.rating|round|int)) }}</span></span>{% endif %}
+              <span class="rev-date">{{ rev.date }}</span>
             </div>
-            {% if r.title %}<div class="rev-title">{{ r.title }}</div>{% endif %}
-            {% if r.text %}<div class="rev-text">{{ r.text }}</div>{% endif %}
+            {% if rev.title %}<div class="rev-title">{{ rev.title }}</div>{% endif %}
+            {% if rev.text %}<div class="rev-text">{{ rev.text }}</div>{% endif %}
           </div>
-        {% endfor %}
-      </div>
-    {% endif %}
-  </div>
+          {% endfor %}
+        </div>
+      {% endif %}
 
-  {# ── Product Packaging ── #}
-  <div class="panel" data-panel="packaging">
-    {% if raw.packaging %}
-      {% set pk = raw.packaging %}
-      {% if pk.error %}<div class="fi fi-flagged"><span class="fi-ico">⚠️</span><span>{{ pk.error }}</span></div>{% endif %}
-      <div class="sec-lbl">Checks</div>
-      {{ sub_score(pk.ni_table_check) }}{{ sub_score(pk.product_photo_check) }}{{ sub_score(pk.packaging_match_check) }}
-      {% for sku in pk.sku_results %}
-        <div class="sku">
-          <div class="sku-head"><b>{{ sku.sku_name }}</b> <span class="chip">{{ sku.version }}</span></div>
-          <div class="sku-flags">
+    {# ── PRODUCT PACKAGING ── #}
+    {% elif t.id == "packaging" %}
+      {% set pk = r.packaging %}
+      {% if pk and (pk.sku_results or pk.required_claims_checks) %}
+        {% if pk.error %}<div class="fi fi-warn"><span class="fi-ico">⚠️</span><span class="fi-text">{{ pk.error }}</span></div>{% endif %}
+        <div class="ssr-list">
+          {{ sub_score(pk.ni_table_check) }}{{ sub_score(pk.product_photo_check) }}{{ sub_score(pk.packaging_match_check) }}
+        </div>
+        {% for sku in pk.sku_results %}
+          <div class="sec-lbl">{{ sku.sku_name }} <span class="muted">· {{ sku.version }}</span></div>
+          <div class="pkg-flags">
             <span class="chip {{ 'ok' if sku.ni_table_present else 'stub' }}">NI table {{ 'present' if sku.ni_table_present else 'missing' }}</span>
             <span class="chip {{ 'ok' if sku.product_photo_present else 'stub' }}">product photo {{ 'present' if sku.product_photo_present else 'missing' }}</span>
             {% if sku.packaging_match is not none %}<span class="chip {{ 'ok' if sku.packaging_match else 'stub' }}">packaging {{ 'matches' if sku.packaging_match else 'MISMATCH' }}</span>{% endif %}
           </div>
-          {% if sku.ni_table_diff %}<p class="flow-miss"><b>NI differences:</b> {{ sku.ni_table_diff | join("; ") }}</p>{% endif %}
+          {% if sku.ni_table_diff %}{{ flagged(sku.ni_table_diff, "NI table differences") }}{% endif %}
           {% if sku.packaging_mismatch_details %}
-            <div class="table-scroll"><table class="pm-table"><thead><tr><th>Element</th><th>On packaging</th><th>On PDP</th></tr></thead><tbody>
-            {% for m in sku.packaging_mismatch_details %}<tr><td>{{ m.element }}</td><td>{{ m.on_packaging }}</td><td>{{ m.on_pdp }}</td></tr>{% endfor %}
-            </tbody></table></div>
+            <div class="sec-lbl">Packaging mismatches</div>
+            {% for m in sku.packaging_mismatch_details %}<div class="fi fi-flagged"><span class="fi-ico">❌</span><span class="fi-text"><b>{{ m.element }}</b> — packaging: {{ m.on_packaging }} · PDP: {{ m.on_pdp }}</span></div>{% endfor %}
           {% endif %}
-        </div>
-      {% endfor %}
-      {% if pk.required_claims_checks %}
-        <div class="sec-lbl">Required / prohibited claims ({{ pk.required_claims_checks|length }})</div>
-        {% for rc in pk.required_claims_checks %}
-          <div class="claim {{ 'crit' if rc.status in ['violated','absent'] else ('ok' if rc.status == 'present' else 'warn') }}">
-            <span class="claim-status">{{ rc.claim_type }} · {{ rc.status }}</span>
-            <span class="claim-text">{{ rc.claim }}</span>
-            {% if rc.notes %}<span class="claim-reason">{{ rc.notes }}</span>{% endif %}
+        {% endfor %}
+        {% if pk.required_claims_checks %}
+          <div class="sec-lbl">Required / prohibited claims ({{ pk.required_claims_checks|length }})</div>
+          {% for rc in pk.required_claims_checks %}
+          <div class="fi {{ 'fi-flagged' if rc.status in ('violated','absent') else ('fi-ok' if rc.status == 'present' else 'fi-warn') }}">
+            <span class="fi-ico">{{ '❌' if rc.status in ('violated','absent') else ('✓' if rc.status == 'present' else '?') }}</span>
+            <span class="fi-body"><span class="fi-text">[{{ rc.claim_type }}] {{ rc.claim }} — <b>{{ rc.status }}</b></span>{% if rc.notes %}<span class="fi-sub">{{ rc.notes }}</span>{% endif %}</span>
           </div>
-        {% endfor %}
-      {% endif %}
-      <p class="muted" style="margin-top:1rem;">Packaging artwork ↔ PDP photo comparison images are being wired in from the report backfill.</p>
-    {% else %}<p class="empty">No packaging check configured/run for this product.</p>{% endif %}
-  </div>
+          {% endfor %}
+        {% endif %}
+        <p class="muted" style="margin-top:1rem;">Packaging artwork photos are coming in the next pass (pulled from the existing reports).</p>
+      {% else %}<p class="empty">No packaging check configured/available for this product.</p>{% endif %}
 
-  {# ── Ad Gaps ── #}
-  <div class="panel" data-panel="ads">
-    {% if raw.ad_alignment and raw.ad_alignment.gaps %}
-      {% set ad = raw.ad_alignment %}
-      {% if ad.top_converting_angles %}<p class="muted panel-lead"><b>Top converting angles:</b> {{ ad.top_converting_angles | join(", ") }}</p>{% endif %}
-      {% for g in ad.gaps %}
-        <div class="finding warning">
-          <div class="f-top"><span class="sev-chip warning">gap</span><span class="f-layer">{{ g.angle }} · {{ g.conv_rate }}</span></div>
-          <div class="f-title">{{ g.what_is_missing }}</div>
-          {% if g.what_to_add %}<div class="f-suggestion"><b>Add:</b> {{ g.what_to_add }}{% if g.where_to_add %} <i>→ {{ g.where_to_add }}</i>{% endif %}</div>{% endif %}
+    {# ── HISTORY ── #}
+    {% elif t.kind == "history" %}
+      {% if pdp.history %}
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Date</th><th>Overall</th><th>Status</th>{% for key in (pdp.scores or {}).keys() %}<th>{{ labels.get(key, key) }}</th>{% endfor %}</tr></thead>
+            <tbody>
+              {% for h in pdp.history %}
+              <tr>
+                <td class="num">{{ h.run_date or (h.run_ts or "")[:10] }}</td>
+                <td class="num"><b>{{ "%.1f"|format(h.overall) if h.overall is not none else "—" }}</b></td>
+                <td><span class="pill {{ h.status }}">{{ h.status }}</span></td>
+                {% for key in (pdp.scores or {}).keys() %}<td class="num">{{ "%.1f"|format(h.scores.get(key)) if h.scores.get(key) is not none else "—" }}</td>{% endfor %}
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
-      {% endfor %}
-    {% else %}<p class="empty">No ad-gap data (needs Umbrella Sheet ad data).</p>{% endif %}
-  </div>
+        <p class="muted" style="margin-top:.8rem;">{{ pdp.history|length }} run(s) recorded.</p>
+      {% else %}<p class="empty">No previous runs recorded.</p>{% endif %}
 
-  {# ── Root Cause ── #}
-  <div class="panel" data-panel="rca">
-    {% if raw.rca %}
-      {% for item in raw.rca %}
-        <div class="finding critical">
-          <div class="f-top"><span class="sev-chip critical">root cause</span><span class="f-layer">{{ item.culprit_score }}{% if item.score_value is not none %} · {{ item.score_value }}{% endif %}</span></div>
-          {% if item.evidence %}<div class="f-detail"><b>Evidence:</b> {{ item.evidence }}</div>{% endif %}
-          {% if item.why_it_matters %}<div class="f-detail"><b>Why it matters:</b> {{ item.why_it_matters }}</div>{% endif %}
-          {% if item.fix %}<div class="f-suggestion"><b>Fix:</b> {{ item.fix }}</div>{% endif %}
-        </div>
-      {% endfor %}
-    {% else %}<p class="empty">No root-cause items (generated for PDPs below 8.0).</p>{% endif %}
-  </div>
+    {# ── extras: Ad Gaps, Root Cause (findings) ── #}
+    {% else %}
+      {% if sec and sec.findings %}
+        <div class="findings-col">{% for f in sec.findings %}{{ finding_card(f) }}{% endfor %}</div>
+      {% else %}<p class="empty">Nothing flagged here. ✓</p>{% endif %}
+    {% endif %}
 
-  {# ── History ── #}
-  <div class="panel" data-panel="history">
-    {% if pdp.history %}
-      <div class="table-scroll"><table>
-        <thead><tr><th>Date</th><th>Overall</th><th>Status</th>{% for key in (pdp.scores or {}).keys() %}<th>{{ labels.get(key, key) }}</th>{% endfor %}</tr></thead>
-        <tbody>
-        {% for h in pdp.history %}
-          <tr><td class="num">{{ h.run_date or (h.run_ts or "")[:10] }}</td>
-            <td class="num"><b>{{ "%.1f"|format(h.overall) if h.overall is not none else "—" }}</b></td>
-            <td><span class="pill {{ h.status }}">{{ h.status }}</span></td>
-            {% for key in (pdp.scores or {}).keys() %}<td class="num">{{ "%.1f"|format(h.scores.get(key)) if h.scores.get(key) is not none else "—" }}</td>{% endfor %}
-          </tr>
-        {% endfor %}
-        </tbody>
-      </table></div>
-      <p class="muted" style="margin-top:.8rem;">{{ pdp.history|length }} run(s) recorded.</p>
-    {% else %}<p class="empty">No previous runs recorded.</p>{% endif %}
   </div>
-
+  {% endfor %}
 {% endblock %}
 
 {% block scripts %}
@@ -337,8 +317,8 @@
   async function setStatus(card, status) {
     const body = new URLSearchParams({ product: PRODUCT, fid: card.dataset.fid, status });
     try {
-      const r = await fetch('/finding/status', { method: 'POST', body });
-      if (!r.ok) return;
+      const res = await fetch('/finding/status', { method: 'POST', body });
+      if (!res.ok) return;
       document.querySelectorAll(`.finding[data-fid="${card.dataset.fid}"]`).forEach(el => {
         el.classList.remove('status-open', 'status-implemented', 'status-dismissed');
         el.classList.add('status-' + status);

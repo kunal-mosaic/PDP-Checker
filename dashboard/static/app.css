@@ -199,6 +199,55 @@ form.runform { margin:0; }
 .rev-title { font-weight:600; font-size:.86rem; margin-bottom:.2rem; }
 .rev-text { font-size:.84rem; color:var(--ink-soft); }
 
+/* ── Sub-score cards (report replica) ── */
+.ssr-list { display:grid; gap:.5rem; max-width:54rem; margin-bottom:1.2rem; }
+.ssr { background:var(--surface); border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+.ssr-top { cursor:pointer; list-style:none; display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:.7rem .9rem; }
+.ssr-top::-webkit-details-marker { display:none; }
+.ssr-top::before { content:"▸"; color:var(--ink-faint); font-size:.8rem; margin-right:.2rem; transition:transform .15s; }
+.ssr[open] .ssr-top::before { transform:rotate(90deg); }
+.ssr-name { font-weight:600; font-size:.92rem; flex:1; }
+.ssr-score { font-family:var(--font-display); font-weight:700; font-size:1.05rem; font-variant-numeric:tabular-nums; }
+.ssr-score.healthy { color:var(--healthy); } .ssr-score.attention { color:var(--attention); } .ssr-score.critical { color:var(--critical); }
+.ssr-score .dn { font-size:.7rem; color:var(--ink-faint); font-weight:500; }
+.ssr-bar { height:5px; background:var(--surface-2); }
+.ssr-bar > span { display:block; height:100%; }
+.ssr-bar > span.healthy { background:var(--healthy); } .ssr-bar > span.attention { background:var(--attention); } .ssr-bar > span.critical { background:var(--critical); }
+.ssr-detail { padding:.75rem .9rem; border-top:1px solid var(--line); }
+.ssr-obs { font-size:.87rem; color:var(--ink-soft); }
+.ssr-sug { font-size:.87rem; margin-top:.5rem; padding:.5rem .7rem; background:var(--accent-wash); border-radius:6px; }
+.ssr-sug b { color:var(--accent-ink); }
+
+/* ── Section labels + flag rows ── */
+.sec-lbl { font-family:var(--font-mono); font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); margin:1.4rem 0 .6rem; display:flex; align-items:center; gap:.5rem; }
+.fi { display:flex; gap:.6rem; align-items:flex-start; background:var(--surface); border:1px solid var(--line); border-left:3px solid var(--unknown); border-radius:6px; padding:.55rem .8rem; margin-bottom:.4rem; max-width:54rem; }
+.fi-flagged { border-left-color:var(--critical); }
+.fi-warn { border-left-color:var(--attention); }
+.fi-ok { border-left-color:var(--healthy); opacity:.85; }
+.fi-ico { flex-shrink:0; font-size:.85rem; }
+.fi-body { display:flex; flex-direction:column; gap:.15rem; }
+.fi-text { font-size:.87rem; }
+.fi-sub { font-size:.8rem; color:var(--ink-soft); }
+
+/* ── Persona matrix ── */
+.pm-table { width:100%; border-collapse:collapse; font-size:.85rem; background:var(--surface); }
+.pm-table th { text-align:left; padding:.6rem .8rem; background:var(--surface-2); font-family:var(--font-mono); font-size:.66rem; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); }
+.pm-table td { padding:.6rem .8rem; border-top:1px solid var(--line); vertical-align:top; }
+.pm-list { margin:0; padding-left:1.1rem; } .pm-list li { margin-bottom:.3rem; }
+.pm-right li { color:var(--ink-soft); } .pm-miss li { color:var(--critical); }
+.pm-none { list-style:none; margin-left:-1.1rem; color:var(--ink-faint); font-style:italic; }
+
+/* ── Section flow + text insights + packaging ── */
+.flow-order { display:flex; flex-wrap:wrap; gap:.35rem; margin-bottom:.6rem; }
+.flow-chip { font-family:var(--font-mono); font-size:.72rem; background:var(--surface-2); border:1px solid var(--line); border-radius:6px; padding:.25rem .5rem; }
+.ti { background:var(--surface); border:1px solid var(--line); border-left:3px solid var(--attention); border-radius:8px; padding:.7rem .9rem; margin-bottom:.5rem; max-width:54rem; }
+.ti.critical { border-left-color:var(--critical); }
+.ti-top { display:flex; align-items:center; gap:.5rem; margin-bottom:.35rem; }
+.pkg-flags { display:flex; flex-wrap:wrap; gap:.4rem; margin-bottom:.5rem; }
+.ctx { font-size:.82rem; color:var(--ink-soft); margin-top:.6rem; }
+.pdp-h1 a { color:inherit; text-decoration:none; }
+.pdp-h1 a:hover { color:var(--accent-ink); text-decoration:underline; }
+
 /* Summary cells (mirrors report's summary row) */
 .sum-cells { display:grid; grid-template-columns:repeat(auto-fit,minmax(7rem,1fr)); gap:.8rem; margin-bottom:1.5rem; }
 .sum-cell { background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:.8rem; text-align:center; }
