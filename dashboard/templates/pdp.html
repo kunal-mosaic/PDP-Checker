@@ -3,6 +3,16 @@
 
 {% macro scls(s) %}{{ "healthy" if s is not none and s >= 8 else ("attention" if s is not none and s >= 6.5 else "critical") }}{% endmacro %}
 
+{% macro total_score(label, val) %}
+  {% if val is not none %}
+  <div class="score-row-total">
+    <div class="sc-lbl">{{ label }}</div>
+    <div class="sc-val {{ scls(val) }}">{{ "%.1f"|format(val) }}<span class="dn">/10</span></div>
+    <div class="bar-t"><div class="bar-f {{ scls(val) }}" style="width:{{ (val / 10 * 100)|round|int }}%"></div></div>
+  </div>
+  {% endif %}
+{% endmacro %}
+
 {% macro sub_score(ss) %}
   {% if ss %}
   <details class="ssr">
@@ -42,6 +52,38 @@
     <div class="sec-lbl">{{ label }}</div>
     {% for f in items %}<div class="fi fi-flagged"><span class="fi-ico">❌</span><span class="fi-text">{{ f }}</span></div>{% endfor %}
   {% endif %}
+{% endmacro %}
+
+{# One claims-style row: ❌ flagged / ⚠️ warning / ✅ ok, with reason text #}
+{% macro claim_row(item, text_field="text", reason_field="reason") %}
+  {% set st = item.status %}
+  <div class="fi {{ 'fi-flagged' if st in ('flagged','violated','absent') else ('fi-ok' if st in ('ok','present') else 'fi-warn') }}">
+    <span class="fi-ico">{{ '❌' if st in ('flagged','violated','absent') else ('✅' if st in ('ok','present') else '⚠️') }}</span>
+    <span class="fi-body">
+      <span class="fi-text">"{{ item[text_field] }}"</span>
+      {% if item[reason_field] %}<span class="fi-reason">{{ item[reason_field] }}</span>{% endif %}
+    </span>
+  </div>
+{% endmacro %}
+
+{# A grouped claims-style list: Flagged (❌) → Warnings (⚠️) → Verified (✅), with counts #}
+{% macro grouped_flags(items, text_field="text", reason_field="reason") %}
+  {% set flagged_items = items | selectattr("status","in",["flagged","violated","absent"]) | list %}
+  {% set warn_items = items | selectattr("status","equalto","warning") | list %}
+  {% set ok_items = items | selectattr("status","in",["ok","present"]) | list %}
+  {% if flagged_items %}
+    <div class="flag-section-lbl">❌ Flagged <span class="fcnt critical">{{ flagged_items|length }}</span></div>
+    {% for it in flagged_items %}{{ claim_row(it, text_field, reason_field) }}{% endfor %}
+  {% endif %}
+  {% if warn_items %}
+    <div class="flag-section-lbl">⚠️ Warnings <span class="fcnt attention">{{ warn_items|length }}</span></div>
+    {% for it in warn_items %}{{ claim_row(it, text_field, reason_field) }}{% endfor %}
+  {% endif %}
+  {% if ok_items %}
+    <div class="flag-section-lbl">✅ Verified <span class="fcnt healthy">{{ ok_items|length }}</span></div>
+    {% for it in ok_items %}{{ claim_row(it, text_field, reason_field) }}{% endfor %}
+  {% endif %}
+  {% if not flagged_items and not warn_items and not ok_items %}<div class="ok-msg">Nothing found.</div>{% endif %}
 {% endmacro %}
 
 {% set r = pdp.raw %}
@@ -97,10 +139,6 @@
               <span class="dim-val">{{ "%.1f"|format(val) }}</span>
             </div>
           {% endfor %}
-          {% if r.persona_narrative %}
-          <p class="ctx">Narrative: <b>{{ r.persona_narrative.narrative_used or r.persona_narrative.configured_narrative }}</b> ·
-             Persona: <b>{{ r.persona_narrative.persona_used or r.persona_narrative.configured_persona }}</b></p>
-          {% endif %}
           <p class="honest-note">This is the <b>verified</b> score from the last audit. Marking items tracks the work — the score changes only on re-audit.</p>
         </div>
         <div class="ov-top">
@@ -117,29 +155,58 @@
     {% elif t.id == "hygiene" %}
       {% set ch = r.copy_health %}
       {% if ch %}
-        <div class="ssr-list">
-          {{ sub_score(ch.claims_alignment) }}
-          {{ sub_score(ch.brand_guidelines) }}
-          {{ sub_score(ch.spell_grammar) }}
-        </div>
-        {% if ch.claims_flags %}
-          <div class="sec-lbl">Claims ({{ ch.claims_flags|length }})</div>
-          {% for c in ch.claims_flags %}
-          <div class="fi {{ 'fi-flagged' if c.status == 'flagged' else ('fi-warn' if c.status == 'warning' else 'fi-ok') }}">
-            <span class="fi-ico">{{ '❌' if c.status == 'flagged' else ('⚠️' if c.status == 'warning' else '✓') }}</span>
-            <span class="fi-body"><span class="fi-text">{{ c.text }}</span>{% if c.reason %}<span class="fi-sub">{{ c.reason }}</span>{% endif %}</span>
+        <div class="score-row-4">
+          {% for lbl, sc in [("Claims", ch.claims_alignment), ("Brand Guidelines", ch.brand_guidelines), ("Spell & Grammar", ch.spell_grammar)] %}
+          <div class="sc">
+            <div class="sc-lbl">{{ lbl }}</div>
+            <div class="sc-val {{ scls(sc.score) }}">{{ "%.1f"|format(sc.score) if sc.score is not none else "—" }}<span class="dn">/10</span></div>
+            <div class="bar-t"><div class="bar-f {{ scls(sc.score) }}" style="width:{{ (sc.score / 10 * 100)|round|int if sc.score is not none else 0 }}%"></div></div>
           </div>
           {% endfor %}
-        {% endif %}
-        {{ flagged(ch.brand_flags, "Brand guideline issues") }}
-        {{ flagged(ch.flagged_errors, "Spelling / grammar errors") }}
+          <div class="sc total">
+            <div class="sc-lbl">Overall Hygiene</div>
+            <div class="sc-val {{ scls(ch.overall) }}">{{ "%.1f"|format(ch.overall) if ch.overall is not none else "—" }}<span class="dn">/10</span></div>
+            <div class="bar-t"><div class="bar-f {{ scls(ch.overall) }}" style="width:{{ (ch.overall / 10 * 100)|round|int if ch.overall is not none else 0 }}%"></div></div>
+          </div>
+        </div>
+
+        {% set claims_issues = (ch.claims_flags | selectattr('status','in',['flagged','warning']) | list) | length %}
+        {% set brand_issues = ch.brand_flags | length %}
+        {% set spell_issues = ch.flagged_errors | length %}
+        <div class="h-sub-nav">
+          <button class="h-sub active" data-hsub="claims">Claims {% if claims_issues %}<span class="fi-src claims">{{ claims_issues }} issue{{ 's' if claims_issues != 1 else '' }}</span>{% endif %}</button>
+          <button class="h-sub" data-hsub="brand">Brand Guidelines {% if brand_issues %}<span class="fi-src brand">{{ brand_issues }} issue{{ 's' if brand_issues != 1 else '' }}</span>{% endif %}</button>
+          <button class="h-sub" data-hsub="spell">Spell Check {% if spell_issues %}<span class="fi-src spell">{{ spell_issues }} error{{ 's' if spell_issues != 1 else '' }}</span>{% endif %}</button>
+        </div>
+
+        <div class="h-panel active" data-hpanel="claims">
+          {{ grouped_flags(ch.claims_flags) }}
+        </div>
+        <div class="h-panel" data-hpanel="brand">
+          {% if ch.brand_flags %}
+            <div class="flag-section-lbl">❌ Flagged <span class="fcnt critical">{{ ch.brand_flags|length }}</span></div>
+            {% for f in ch.brand_flags %}<div class="fi fi-flagged"><span class="fi-ico">❌</span><span class="fi-text">{{ f }}</span></div>{% endfor %}
+          {% else %}<div class="ok-msg">No brand guideline violations found.</div>{% endif %}
+        </div>
+        <div class="h-panel" data-hpanel="spell">
+          {% if ch.flagged_errors %}
+            <div class="flag-section-lbl">❌ Flagged <span class="fcnt critical">{{ ch.flagged_errors|length }}</span></div>
+            {% for e in ch.flagged_errors %}<div class="fi fi-flagged"><span class="fi-ico">❌</span><span class="fi-text">{{ e }}</span></div>{% endfor %}
+          {% else %}<div class="ok-msg">No spelling or grammar errors found.</div>{% endif %}
+        </div>
       {% else %}<p class="empty">Not captured for this run.</p>{% endif %}
 
     {# ── NARRATIVE × PERSONA ── #}
     {% elif t.id == "narrative" %}
       {% set pn = r.persona_narrative %}
       {% if pn %}
-        <div class="ssr-list">
+        <div class="nar-banner">
+          <div class="nb-item"><strong>Configured Narrative</strong><span>{{ pn.narrative_used or pn.configured_narrative or "—" }}</span></div>
+          <div class="nb-item"><strong>Target Persona</strong><span>{{ pn.persona_used or pn.configured_persona or "—" }}</span></div>
+          <div class="nb-item"><strong>Source</strong><span>config.yaml</span></div>
+        </div>
+        {{ total_score("Narrative Execution Score", pn.overall) }}
+        <div class="ssr-list stack-h">
           {{ sub_score(pn.hero_banner) }}{{ sub_score(pn.carousel_flow) }}{{ sub_score(pn.banner_alignment) }}
           {{ sub_score(pn.page_narrative_arc) }}{{ sub_score(pn.cta_language) }}
         </div>
@@ -165,6 +232,8 @@
 
     {# ── VISUAL LAYER ── #}
     {% elif t.id == "visual" %}
+      {% set vd = r.visual_design %}
+      {{ total_score("Overall Visual Score", vd.overall if vd else None) }}
       {% if pdp.images_grouped %}
         <p class="muted panel-lead">{{ pdp.image_count }} assets from the Zeus CDN, in page order.</p>
         {% for group in pdp.images_grouped %}
@@ -179,9 +248,8 @@
           </div>
         {% endfor %}
       {% endif %}
-      {% set vd = r.visual_design %}
       {% if vd %}
-        <h2 class="section-h stack-h">Visual scores</h2>
+        <div class="sec-lbl stack-h">Visual Scores — click to expand</div>
         <div class="ssr-list">
           {{ sub_score(vd.human_presence) }}{{ sub_score(vd.proof_prominence) }}{{ sub_score(vd.ingredient_imagery) }}
           {{ sub_score(vd.before_after) }}{{ sub_score(vd.lifestyle_shots) }}{{ sub_score(vd.visual_hierarchy_brand) }}
@@ -212,15 +280,15 @@
     {# ── REVIEWS & RATINGS ── #}
     {% elif t.id == "reviews" %}
       {% set rv = r.reviews %}
+      {{ total_score("Reviews Score", rv.overall if rv else None) }}
       {% if rv %}
         <div class="ssr-list">
           {{ sub_score(rv.freshness) }}{{ sub_score(rv.rating_distribution) }}{{ sub_score(rv.theme_alignment) }}{{ sub_score(rv.negative_handling) }}
         </div>
         {% if rv.freshness_warning %}<div class="fi fi-warn"><span class="fi-ico">⚠️</span><span class="fi-text">{{ rv.freshness_warning }}</span></div>{% endif %}
-        {{ flagged(rv.flagged_issues) }}
       {% endif %}
       {% if pdp.reviews %}
-        <h2 class="section-h stack-h">Review cards ({{ pdp.reviews|length }})</h2>
+        <h2 class="section-h stack-h">Customer Reviews from Zeus ({{ pdp.reviews|length }})</h2>
         <div class="revgrid">
           {% for rev in pdp.reviews %}
           <div class="revcard">
@@ -235,58 +303,113 @@
           {% endfor %}
         </div>
       {% endif %}
+      {% if rv %}{{ flagged(rv.flagged_issues) }}{% endif %}
 
     {# ── PRODUCT PACKAGING ── #}
     {% elif t.id == "packaging" %}
       {% set pk = r.packaging %}
-      {% if pdp.packaging_photos %}
-        <div class="sec-lbl">Packaging artwork vs PDP photos</div>
-        {% for sku in pdp.packaging_photos %}
-        <div class="pkg-compare">
-          <div class="pkg-compare-h">{{ sku.sku_name }}{% if sku.version %} <span class="chip">{{ sku.version }}</span>{% endif %}</div>
-          <div class="pkg-cols">
-            <div class="pkg-col">
-              <div class="pkg-col-lbl">Latest packaging {% if sku.version %}({{ sku.version }}){% endif %}</div>
-              {% for src in sku.packaging %}<a href="{{ src }}" target="_blank"><img src="{{ src }}" loading="lazy" alt="packaging"></a>{% endfor %}
-              {% if not sku.packaging %}<p class="empty">No packaging image</p>{% endif %}
-            </div>
-            <div class="pkg-col">
-              <div class="pkg-col-lbl">PDP product images</div>
-              {% for src in sku.pdp %}<a href="{{ src }}" target="_blank"><img src="{{ src }}" loading="lazy" alt="pdp"></a>{% endfor %}
-              {% if not sku.pdp %}<p class="empty">No PDP image</p>{% endif %}
-            </div>
-          </div>
-        </div>
-        {% endfor %}
-      {% endif %}
-      {% if pk and (pk.sku_results or pk.required_claims_checks) %}
-        {% if pk.error %}<div class="fi fi-warn"><span class="fi-ico">⚠️</span><span class="fi-text">{{ pk.error }}</span></div>{% endif %}
+      {% if pk and pk.error %}<div class="fi fi-warn"><span class="fi-ico">⚠️</span><span class="fi-text">Packaging check skipped: {{ pk.error }}</span></div>{% endif %}
+      {{ total_score("Packaging Compliance Score", pk.overall if pk else None) }}
+      {% if pk %}
         <div class="ssr-list">
           {{ sub_score(pk.ni_table_check) }}{{ sub_score(pk.product_photo_check) }}{{ sub_score(pk.packaging_match_check) }}
         </div>
+      {% endif %}
+
+      {% if pk and pk.required_claims_checks %}
+        <div class="sec-lbl">Required Changes Checklist</div>
+        <div class="table-scroll">
+          <table class="req-table">
+            <thead><tr><th>Claim / Requirement</th><th>Type</th><th>Status</th><th>Notes</th></tr></thead>
+            <tbody>
+              {% for rc in pk.required_claims_checks %}
+              {% set rcls = 'row-bad' if rc.status in ('violated','mismatch') else ('row-warn' if rc.status == 'absent' else '') %}
+              <tr class="{{ rcls }}">
+                <td>{{ rc.claim }}</td>
+                <td class="req-type">{{ rc.claim_type }}</td>
+                <td class="req-status status-{{ rc.status }}">
+                  {{ '✅' if rc.status == 'present' else ('🔴' if rc.status == 'violated' else ('❌' if rc.status == 'mismatch' else ('⚠️' if rc.status == 'absent' else '—'))) }}
+                  {{ rc.status | upper }}
+                </td>
+                <td class="req-notes">{% if rc.found_text %}<em>"{{ rc.found_text }}"</em><br>{% endif %}{{ rc.notes }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% endif %}
+
+      {% if pk and pk.sku_results %}
+        <div class="sec-lbl">Per-SKU Packaging Detail</div>
         {% for sku in pk.sku_results %}
-          <div class="sec-lbl">{{ sku.sku_name }} <span class="muted">· {{ sku.version }}</span></div>
-          <div class="pkg-flags">
-            <span class="chip {{ 'ok' if sku.ni_table_present else 'stub' }}">NI table {{ 'present' if sku.ni_table_present else 'missing' }}</span>
-            <span class="chip {{ 'ok' if sku.product_photo_present else 'stub' }}">product photo {{ 'present' if sku.product_photo_present else 'missing' }}</span>
-            {% if sku.packaging_match is not none %}<span class="chip {{ 'ok' if sku.packaging_match else 'stub' }}">packaging {{ 'matches' if sku.packaging_match else 'MISMATCH' }}</span>{% endif %}
+        {% set photos = (pdp.packaging_photos | selectattr("sku_name","equalto", sku.sku_name) | list | first) %}
+        <details class="scraped-block" open>
+          <summary>
+            <strong>{{ sku.sku_name }}</strong>
+            {% if sku.version and sku.version not in ('Not found','No link','') %}<span class="chip">{{ sku.version }}</span>{% endif %}
+            {% if sku.packaging_match == true %}<span class="fi-src match-ok">✓ match</span>
+            {% elif sku.packaging_match == false %}<span class="fi-src match-bad">✗ mismatch</span>
+            {% else %}<span class="fi-src match-none">no data</span>{% endif %}
+            {% if sku.drive_folder_url %}<a class="drive-link" href="{{ sku.drive_folder_url }}" target="_blank">Open in Drive ↗</a>{% endif %}
+          </summary>
+          <div class="scraped-body">
+            {% if photos and (photos.packaging or photos.pdp) %}
+            <div class="pkg-cols">
+              <div class="pkg-col">
+                <div class="pkg-col-lbl">Latest Packaging {% if sku.version %}({{ sku.version }}){% endif %}</div>
+                {% for src in photos.packaging %}<a href="{{ src }}" target="_blank"><img src="{{ src }}" loading="lazy" alt="packaging"></a>{% endfor %}
+                {% if not photos.packaging %}<div class="pkg-empty">No packaging images available</div>{% endif %}
+              </div>
+              <div class="pkg-col">
+                <div class="pkg-col-lbl">PDP Product Images</div>
+                {% for src in photos.pdp %}<a href="{{ src }}" target="_blank"><img src="{{ src }}" loading="lazy" alt="pdp"></a>{% endfor %}
+                {% if not photos.pdp %}<div class="pkg-empty">No PDP product images</div>{% endif %}
+              </div>
+            </div>
+            {% endif %}
+
+            <div class="sec-lbl" style="margin-top:.6rem">NI / Ingredient Table</div>
+            <div class="pkg-flags">
+              <span class="chip {{ 'ok' if sku.ni_table_present else 'stub' }}">NI table on PDP: {{ 'Yes' if sku.ni_table_present else 'No' }}</span>
+              <span class="chip {{ 'ok' if sku.product_photo_present else 'stub' }}">product photo {{ 'present' if sku.product_photo_present else 'missing' }}</span>
+            </div>
+            <p class="disclaimer">Checked with AI — not 100% accurate, please double-check.</p>
+
+            {% if sku.ni_packaging_values and sku.ni_pdp_values %}
+            <div class="table-scroll">
+              <table class="ni-table">
+                <thead><tr><th>Ingredient</th><th>Packaging {% if sku.version %}({{ sku.version }}){% endif %}</th><th>PDP</th></tr></thead>
+                <tbody>
+                  {% set pdp_map = {} %}
+                  {% for it in sku.ni_pdp_values %}{% if pdp_map.update({it.ingredient: it.value}) %}{% endif %}{% endfor %}
+                  {% set pkg_map = {} %}
+                  {% for it in sku.ni_packaging_values %}{% if pkg_map.update({it.ingredient: it.value}) %}{% endif %}{% endfor %}
+                  {% set all_ing = [] %}
+                  {% for it in sku.ni_packaging_values + sku.ni_pdp_values %}{% if it.ingredient not in all_ing %}{% if all_ing.append(it.ingredient) %}{% endif %}{% endif %}{% endfor %}
+                  {% for ing in all_ing %}
+                  {% set pv = pkg_map.get(ing) %}{% set dv = pdp_map.get(ing) %}
+                  <tr class="{{ 'row-warn' if (pv and not dv) or (dv and not pv) else '' }}">
+                    <td>{{ ing }}</td><td>{{ pv or "—" }}</td>
+                    <td class="{{ 'row-bad-text' if pv and not dv else '' }}">{{ dv or "✗ missing" }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            {% elif sku.ni_packaging_values and not sku.ni_pdp_values %}
+              <p class="pkg-empty">NI table is present on packaging but not visible in PDP product images.</p>
+            {% elif not sku.ni_packaging_values and not sku.ni_pdp_values %}
+              <p class="pkg-empty">No ingredient table found on packaging.</p>
+            {% endif %}
+            {% if sku.ni_table_diff %}{{ flagged(sku.ni_table_diff, "NI table differences") }}{% endif %}
+            {% if sku.packaging_mismatch_details %}
+              <div class="sec-lbl">Packaging mismatches</div>
+              {% for m in sku.packaging_mismatch_details %}<div class="fi fi-flagged"><span class="fi-ico">❌</span><span class="fi-text"><b>{{ m.element }}</b> — packaging: {{ m.on_packaging }} · PDP: {{ m.on_pdp }}</span></div>{% endfor %}
+            {% endif %}
           </div>
-          {% if sku.ni_table_diff %}{{ flagged(sku.ni_table_diff, "NI table differences") }}{% endif %}
-          {% if sku.packaging_mismatch_details %}
-            <div class="sec-lbl">Packaging mismatches</div>
-            {% for m in sku.packaging_mismatch_details %}<div class="fi fi-flagged"><span class="fi-ico">❌</span><span class="fi-text"><b>{{ m.element }}</b> — packaging: {{ m.on_packaging }} · PDP: {{ m.on_pdp }}</span></div>{% endfor %}
-          {% endif %}
+        </details>
         {% endfor %}
-        {% if pk.required_claims_checks %}
-          <div class="sec-lbl">Required / prohibited claims ({{ pk.required_claims_checks|length }})</div>
-          {% for rc in pk.required_claims_checks %}
-          <div class="fi {{ 'fi-flagged' if rc.status in ('violated','absent') else ('fi-ok' if rc.status == 'present' else 'fi-warn') }}">
-            <span class="fi-ico">{{ '❌' if rc.status in ('violated','absent') else ('✓' if rc.status == 'present' else '?') }}</span>
-            <span class="fi-body"><span class="fi-text">[{{ rc.claim_type }}] {{ rc.claim }} — <b>{{ rc.status }}</b></span>{% if rc.notes %}<span class="fi-sub">{{ rc.notes }}</span>{% endif %}</span>
-          </div>
-          {% endfor %}
-        {% endif %}
-      {% elif not pdp.packaging_photos %}<p class="empty">No packaging check configured/available for this product.</p>{% endif %}
+      {% elif not pk %}<p class="empty">No packaging check configured/available for this product.</p>{% endif %}
 
     {# ── HISTORY ── #}
     {% elif t.kind == "history" %}
@@ -311,6 +434,7 @@
 
     {# ── extras: Ad Gaps, Root Cause (findings) ── #}
     {% else %}
+      {% if t.id == "ads" %}<p class="unverified-note">⚠️ Ad performance data is currently unverified — the product filter on the source sheet isn't confirmed to match this product. Treat as directional, not exact.</p>{% endif %}
       {% if sec and sec.findings %}
         <div class="findings-col">{% for f in sec.findings %}{{ finding_card(f) }}{% endfor %}</div>
       {% else %}<p class="empty">Nothing flagged here. ✓</p>{% endif %}
@@ -331,6 +455,15 @@
   }
   tabs.forEach(t => t.addEventListener('click', () => show(t.dataset.tab)));
   if (location.hash) { const id = location.hash.slice(1); if (document.querySelector(`[data-panel="${id}"]`)) show(id); }
+
+  // Hygiene sub-tabs (Claims / Brand / Spell)
+  document.querySelectorAll('.h-sub').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const wrap = btn.closest('.panel');
+      wrap.querySelectorAll('.h-sub').forEach(b => b.classList.toggle('active', b === btn));
+      wrap.querySelectorAll('.h-panel').forEach(p => p.classList.toggle('active', p.dataset.hpanel === btn.dataset.hsub));
+    });
+  });
 
   const PRODUCT = document.getElementById('product-meta').dataset.product;
   async function setStatus(card, status) {
