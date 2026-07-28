@@ -198,3 +198,54 @@ form.runform { margin:0; }
 .rev-date { margin-left:auto; font-family:var(--font-mono); font-size:.68rem; color:var(--ink-faint); }
 .rev-title { font-weight:600; font-size:.86rem; margin-bottom:.2rem; }
 .rev-text { font-size:.84rem; color:var(--ink-soft); }
+
+/* Summary cells (mirrors report's summary row) */
+.sum-cells { display:grid; grid-template-columns:repeat(auto-fit,minmax(7rem,1fr)); gap:.8rem; margin-bottom:1.5rem; }
+.sum-cell { background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:.8rem; text-align:center; }
+.sum-cell-score { font-family:var(--font-display); font-weight:700; font-size:1.4rem; }
+.sum-cell-score.healthy { color:var(--healthy); } .sum-cell-score.attention { color:var(--attention); } .sum-cell-score.critical { color:var(--critical); }
+.sum-cell-lbl { font-size:.72rem; color:var(--ink-faint); margin-top:.2rem; }
+
+/* Expandable sub-score cards (native, mirrors report's .ssr) */
+.ssr { background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:.7rem .9rem; margin-bottom:.5rem; }
+.ssr-top { cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:center; }
+.ssr-top::-webkit-details-marker { display:none; }
+.ssr-name { font-weight:600; font-size:.9rem; }
+.ssr-score { font-family:var(--font-mono); font-weight:700; font-size:.95rem; }
+.ssr-score.healthy { color:var(--healthy); } .ssr-score.attention { color:var(--attention); } .ssr-score.critical { color:var(--critical); }
+.ssr-score .dn { font-weight:400; font-size:.7em; color:var(--ink-faint); }
+.bar-t { height:5px; border-radius:3px; background:var(--surface-2); margin-top:.5rem; overflow:hidden; }
+.bar-f { height:100%; } .bar-f.healthy{background:var(--healthy);} .bar-f.attention{background:var(--attention);} .bar-f.critical{background:var(--critical);}
+.ssr-detail { margin-top:.6rem; font-size:.85rem; }
+.ssr-obs { color:var(--ink-soft); }
+.ssr-sug { margin-top:.4rem; padding:.4rem .6rem; background:var(--accent-wash); border-radius:6px; color:var(--ink); }
+.ssr-sug b { color:var(--accent-ink); }
+
+/* Persona matrix table */
+.pm-table th, .pm-table td { vertical-align:top; }
+.pm-persona { font-weight:640; }
+.pm-list { margin:0; padding-left:1.1rem; font-size:.84rem; }
+.pm-list li { margin-bottom:.3rem; }
+.pm-list.pm-right li { color:var(--good); }
+.pm-list.pm-miss li { color:var(--critical); }
+.pm-none { color:var(--ink-faint); font-style:italic; list-style:none; margin-left:-1.1rem; }
+
+/* Claims (claims/required-claims list) */
+.claim { display:grid; grid-template-columns:6.5rem 1fr; gap:.6rem; padding:.55rem .8rem; border-radius:8px; margin-bottom:.4rem; background:var(--surface); border:1px solid var(--line); font-size:.85rem; }
+.claim-status { font-family:var(--font-mono); font-size:.66rem; text-transform:uppercase; letter-spacing:.04em; align-self:start; padding-top:.1rem; }
+.claim.crit { border-left:3px solid var(--critical); } .claim.crit .claim-status { color:var(--critical); }
+.claim.warn { border-left:3px solid var(--attention); } .claim.warn .claim-status { color:var(--attention); }
+.claim.ok { border-left:3px solid var(--good); opacity:.75; } .claim.ok .claim-status { color:var(--good); }
+.claim-text { font-weight:600; grid-column:2; }
+.claim-reason { grid-column:2; color:var(--ink-soft); font-weight:400; }
+
+/* Section flow + packaging */
+.flow-order, .flow-miss { font-size:.85rem; color:var(--ink-soft); margin:.4rem 0; }
+.sku { border:1px solid var(--line); border-radius:8px; padding:.8rem 1rem; margin-bottom:.8rem; background:var(--surface); }
+.sku-head { margin-bottom:.5rem; }
+.sku-flags { display:flex; gap:.4rem; flex-wrap:wrap; margin-bottom:.5rem; }
+
+/* Text-layer insight rows */
+.ti { border-left:3px solid var(--unknown); border:1px solid var(--line); border-radius:8px; padding:.6rem .85rem; margin-bottom:.5rem; background:var(--surface); }
+.ti.critical { border-left-color:var(--critical); } .ti.warning { border-left-color:var(--attention); }
+.ti-top { display:flex; gap:.5rem; align-items:center; margin-bottom:.3rem; }

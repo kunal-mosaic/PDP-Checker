@@ -5,17 +5,36 @@ data.py — the ONLY layer the app reads through. It joins the product catalog
 Swapping the store's backend (SQLite → Postgres later) changes nothing here.
 """
 
+import json
+
 from utils.config_loader import load_config
 from dashboard import content
 from dashboard import findings as findings_mod
 from dashboard import store
 from tools.build_dashboard import (
     DIMENSION_LABELS,
+    RUNS_DIR,
     _find_report,
     _product_slug,
     _source_health,
     _status_for,
 )
+
+
+def _raw_result(run_id: str, url: str) -> dict:
+    """The full PDPAnalysisResult dict for one URL, from the run's .full.json —
+    lets the PDP page render the report's full structure (sub-score observations,
+    persona matrix, section flow, packaging) natively, not just flattened findings."""
+    if not run_id:
+        return {}
+    path = RUNS_DIR / f"{run_id}.full.json"
+    if not path.exists():
+        return {}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return {}
+    return next((r for r in data if r.get("url") == url), {})
 
 __all__ = ["DIMENSION_LABELS", "PDP_TABS", "list_categories", "get_category", "get_pdp",
            "latest_report_path", "portfolio_stats"]
@@ -130,6 +149,8 @@ def get_pdp(slug: str, idx: int):
     pdp["history"] = store.history_for_url(cat["name"], url)
     # Findings keyed by section name for direct tab lookup
     pdp["by_section"] = {s["section"]: s for s in pdp["sections"]}
+    # Full raw result → render the report's native structure (sub-scores, matrix, …)
+    pdp["raw"] = _raw_result(cat.get("run_id"), url)
     return cat, pdp
 
 
