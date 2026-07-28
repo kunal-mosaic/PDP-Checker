@@ -16,3 +16,4 @@ outputs/dashboard.db
 outputs/dashboard.db-wal
 outputs/dashboard.db-shm
 .DS_Store
+outputs/packaging_dashboard/

@@ -73,6 +73,15 @@ def pdp_detail(request: Request, slug: str, idx: int):
     })
 
 
+@app.get("/pkgimg/{slug}/{filename}")
+def packaging_image(slug: str, filename: str):
+    """Serve an extracted packaging comparison image."""
+    path = content.packaging_image_path(slug, filename)
+    if not path:
+        return Response(status_code=404)
+    return FileResponse(str(path), headers={"Cache-Control": "public, max-age=86400"})
+
+
 @app.get("/img")
 def image_proxy(u: str):
     """Serve a Zeus CDN image same-origin (host-allowlisted, disk-cached)."""

@@ -239,6 +239,26 @@
     {# ── PRODUCT PACKAGING ── #}
     {% elif t.id == "packaging" %}
       {% set pk = r.packaging %}
+      {% if pdp.packaging_photos %}
+        <div class="sec-lbl">Packaging artwork vs PDP photos</div>
+        {% for sku in pdp.packaging_photos %}
+        <div class="pkg-compare">
+          <div class="pkg-compare-h">{{ sku.sku_name }}{% if sku.version %} <span class="chip">{{ sku.version }}</span>{% endif %}</div>
+          <div class="pkg-cols">
+            <div class="pkg-col">
+              <div class="pkg-col-lbl">Latest packaging {% if sku.version %}({{ sku.version }}){% endif %}</div>
+              {% for src in sku.packaging %}<a href="{{ src }}" target="_blank"><img src="{{ src }}" loading="lazy" alt="packaging"></a>{% endfor %}
+              {% if not sku.packaging %}<p class="empty">No packaging image</p>{% endif %}
+            </div>
+            <div class="pkg-col">
+              <div class="pkg-col-lbl">PDP product images</div>
+              {% for src in sku.pdp %}<a href="{{ src }}" target="_blank"><img src="{{ src }}" loading="lazy" alt="pdp"></a>{% endfor %}
+              {% if not sku.pdp %}<p class="empty">No PDP image</p>{% endif %}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      {% endif %}
       {% if pk and (pk.sku_results or pk.required_claims_checks) %}
         {% if pk.error %}<div class="fi fi-warn"><span class="fi-ico">⚠️</span><span class="fi-text">{{ pk.error }}</span></div>{% endif %}
         <div class="ssr-list">
@@ -266,8 +286,7 @@
           </div>
           {% endfor %}
         {% endif %}
-        <p class="muted" style="margin-top:1rem;">Packaging artwork photos are coming in the next pass (pulled from the existing reports).</p>
-      {% else %}<p class="empty">No packaging check configured/available for this product.</p>{% endif %}
+      {% elif not pdp.packaging_photos %}<p class="empty">No packaging check configured/available for this product.</p>{% endif %}
 
     {# ── HISTORY ── #}
     {% elif t.kind == "history" %}

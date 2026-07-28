@@ -10,6 +10,8 @@ Results are memoised per process; the cache files only change when an audit re-s
 """
 
 import hashlib
+import json
+import re
 from functools import lru_cache
 from pathlib import Path
 from urllib.parse import urlparse
@@ -113,6 +115,41 @@ def reviews_for(url: str) -> list:
             "text": getattr(r, "text", "") or "",
         })
     return out
+
+
+_PKG_DIR = REPO_ROOT / "outputs" / "packaging_dashboard"
+
+
+def packaging_photos(product_name: str) -> list:
+    """Packaging vs PDP comparison photos for a product (from the extracted
+    manifest). Returns [{sku_name, version, packaging:[url], pdp:[url]}]."""
+    slug = re.sub(r"[^\w]", "_", product_name.lower()).strip("_")
+    manifest = _PKG_DIR / f"{slug}.json"
+    if not manifest.exists():
+        return []
+    try:
+        data = json.loads(manifest.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return []
+    out = []
+    for sku in data.get("skus", []):
+        out.append({
+            "sku_name": sku.get("sku_name", ""),
+            "version": sku.get("version", ""),
+            "packaging": [f"/pkgimg/{slug}/{f}" for f in sku.get("packaging", [])],
+            "pdp": [f"/pkgimg/{slug}/{f}" for f in sku.get("pdp", [])],
+        })
+    return out
+
+
+def packaging_image_path(slug: str, filename: str):
+    """Safe absolute path to an extracted packaging image, or None."""
+    if "/" in filename or "\\" in filename or ".." in filename or "/" in slug or ".." in slug:
+        return None
+    path = (_PKG_DIR / slug / filename).resolve()
+    if _PKG_DIR.resolve() not in path.parents or not path.is_file():
+        return None
+    return path
 
 
 def content_stats(url: str) -> dict:

@@ -151,6 +151,8 @@ def get_pdp(slug: str, idx: int):
     pdp["by_section"] = {s["section"]: s for s in pdp["sections"]}
     # Full raw result → render the report's native structure (sub-scores, matrix, …)
     pdp["raw"] = _raw_result(cat.get("run_id"), url)
+    # Packaging comparison photos (extracted from the reports) — product-level
+    pdp["packaging_photos"] = content.packaging_photos(cat["name"])
     return cat, pdp
 
 
