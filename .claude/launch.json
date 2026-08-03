@@ -9,7 +9,7 @@
     },
     {
       "name": "report-preview",
-      "runtimeExecutable": "python3",
+      "runtimeExecutable": "C:\\Users\\Mosaic\\PDP-Monitor\\.claude\\worktrees\\project-revamp-brainstorm-bd1bd1\\.venv\\Scripts\\python.exe",
       "runtimeArgs": ["-m", "http.server", "7654", "--directory", "outputs/reports"],
       "port": 7654
     }
