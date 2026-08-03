@@ -96,13 +96,27 @@ def _known_run_ids(con) -> set:
     return {r["run_id"] for r in con.execute("SELECT run_id FROM runs")}
 
 
+def _run_ids_missing_findings(con) -> set:
+    """run_ids that have a run row but zero findings rows — either the run genuinely
+    had none, or (more likely) its .full.json was written/parsed AFTER the run was
+    first ingested (e.g. the report-parser backfill runs later than the initial
+    summary ingest). Re-check these against disk on every sync."""
+    rows = con.execute(
+        "SELECT r.run_id FROM runs r LEFT JOIN findings f ON f.run_id = r.run_id "
+        "GROUP BY r.run_id HAVING COUNT(f.fid) = 0"
+    ).fetchall()
+    return {r["run_id"] for r in rows}
+
+
 def sync() -> int:
-    """Ingest any run summaries in outputs/runs not yet in the DB. Idempotent.
-    Returns the number of newly ingested runs."""
+    """Ingest any run summaries in outputs/runs not yet in the DB, AND backfill
+    findings for already-ingested runs whose .full.json appeared later. Idempotent.
+    Returns the number of newly ingested or findings-backfilled runs."""
     init_db()
-    ingested = 0
+    changed = 0
     with _conn() as con:
         known = _known_run_ids(con)
+        pending_backfill = _run_ids_missing_findings(con)
         for f in sorted(RUNS_DIR.glob("*.json")):
             if f.name.endswith(".full.json"):
                 continue
@@ -111,14 +125,16 @@ def sync() -> int:
             except (json.JSONDecodeError, OSError):
                 continue
             run_id = summary.get("run_id") or f.stem
-            if run_id in known:
+            is_new = run_id not in known
+            needs_backfill = run_id in pending_backfill
+            if not is_new and not needs_backfill:
                 continue
             _ingest_run(con, run_id, summary, f)
-            ingested += 1
+            changed += 1
         con.commit()
-    if ingested:
-        log.info(f"store.sync ingested {ingested} new run(s)")
-    return ingested
+    if changed:
+        log.info(f"store.sync ingested/backfilled {changed} run(s)")
+    return changed
 
 
 def _ingest_run(con, run_id: str, summary: dict, summary_path):
