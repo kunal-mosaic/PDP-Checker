@@ -1,183 +1,401 @@
+<!-- Shilajit Gummies: canonical sections for the engine parser, from 3 genuinely distinct source files. -->
+
 ## Persona
 
-### Tejas — Gym-Goer, 34–45, Tier 1/2
+### Source (verbatim — persona.pdf)
 
-**Demographics.** Age 34–45 (sweet spot 36–42 — old enough to feel aging, young enough to fight it). Income ₹10–25L/year, disposable income, won't mind a ₹1,000 supplement. Lives in Tier 1/large Tier 2 cities (Delhi, Mumbai, Pune, Lucknow, Indore, Nagpur), travels frequently between cities for work. Business owner or senior professional in a high-output, client-facing role. Married, often with children — family is central to his self-image. Gym 3–5x/week, strength training, trainer-guided, consistent but not competitive. Already stacks whey protein, pre-workout, biotin, ashwagandha, magnesium, or omega-3 — Shilajit is an add-on, not his anchor. Drinks black coffee strategically (pre-workout stimulant / energy kick), no emotional attachment to it. Diet is structured but not tracked — high awareness, imperfect execution. Sleeps 8+ hours, no sleep anxiety.
+<!-- page 1 -->
 
-**Psychographics.** He is not a fitness person — he is a performance person who uses fitness as infrastructure. He defines himself through output: business, family, presence. He didn't start working out because he loved fitness; he started because he saw himself declining — hair loss, white hairs, changing skin texture, dropping energy, and seeing tired parents at his kid's school function planted a fear he hasn't named but acts on daily. His core emotional driver: **"Daughter should feel proud — yes, he is my father."** Not abs, not a podium — dignity, looking like a man who has it together at 40, not the tired dad at the back of the school hall.
+MAN MATTERS · SHILAJIT GUMMIES
+Customer
+Persona
+Playbook
+Tejas · Aakash
+Demographics · Psychographics · Drivers · Barriers · RTBs · Communication
+Man Matters · Internal · Feb 2026 · Based on 274 customer data points across North, West, Tier 1/2
 
-He does not read studies or evaluate ingredients — his filter is trainer said so / trusted friend tried it / no side effects reported. Word of mouth is his only purchase engine, and he has a strong affinity toward "natural." Coffee is strategic, used at two fixed moments (morning ignition, pre-evening push) — he is fuelling specific windows, not fighting a crash.
+<!-- page 2 -->
 
-**The gap he feels but doesn't name:** he has the gym covered and the night stack covered, but 10 AM–7 PM — the work day, travel, meetings, client pressure — his stack doesn't touch that window. His energy in those hours runs on gym residue and caffeine. That's the gap Shilajit lives in.
+TEJAS
+34 – 45 · Gym Goer · Tier 1 / 2
+“Gym toh kar raha hu but between the gym and getting home, the day just
+grinds me down.”
+DEMOGRAPHICS
+| Age | 34 – 45. Sweet spot 36–42. Old enough to feel aging, young enough to fight it. |
+|---|---|
+| Income | ₹10–25L per year. Has disposable income, won’t mind paying for a ₹1000 supplement |
+| City | Tier 1 and large Tier 2 - Delhi, Mumbai, Pune, Lucknow, Indore, Nagpur. Often travels between cities for work. |
+| Occupation | Business owner, senior professional, sales or client-facing role. High-output job. Frequently travels or hectic work schedule |
+| Marital status | Married. Might have children. Family is central to his self-image. |
+| Exercise | Gym 3–5x per week. Strength training. Consistent but not competitive - no competitions, no shredding goals. Trainer-guided. |
+| Supplements | Will be into either whey protein, post-workout, biotin, ashwagandha, magnesium, omega-3. Shilajit is an add-on, not his anchor. |
+| Coffee / Tea | Black coffee. As a pre-workout stimulant or an energy kick they consciously deploy. There is no emotional attachment to it. |
+| Diet | Structured but not tracked. Breakfast: upma, poha, oats, dosa. Lunch: protein + dal or khichdi. Dinner: lighter. High awareness, imperfect execution. Not calorie-counting. |
+| Sleep | 8+ hours. No sleep anxiety. |
 
-He travels 15 days a month; resin is impossible (messy, temperature-sensitive, needs prep). The gummy format is not a preference, it's the only format that works with his life — a supplement needing a spoon and warm water gets forgotten by day two.
+PSYCHOGRAPHICS
+Tejas is not a fitness person. He is a performance person who uses fitness as infrastructure.
 
-**What drives him to buy:**
-- *Primary driver — work exhaustion, not gym exhaustion.* Verbatim: *"Energy boost chahiye, work ki vajah se exhaust ho jate hai."* The 10-hour work day between gym sessions destroys him, not his squat.
-- *Secondary driver — visible aging anxiety.* Hair loss, white hairs, skin, dropping energy. Shilajit sits here when positioned as vitality maintenance, not performance enhancement — the rasayana/systemic-rejuvenation angle is his quiet subtext, though he won't say it.
-- *Purchase trigger — trainer, then trusted peer.* He doesn't research or Google. Trainer recommendation or a gym friend's endorsement converts him; social ads plant the seed but the trainer/friend waters it. Without that second step, he doesn't convert.
+<!-- page 3 -->
 
-**What makes him churn:**
-1. No WOM = no purchase — if the trusted source stops mentioning it, it leaves his radar.
-2. Science language alienates — leading with ShilAbsorb/DBPs/mitochondrial ATP loses him at the hook (*"science toh samajh nahi aata"*).
-3. No tangible mid-day signal — if the effect is invisible during the work day, he de-prioritises it.
-4. Side effects break trust instantly — he specifically checks for acidity and sleep disruption; either appearing kills it with no second chance.
-5. Format friction on the road — anything requiring prep gets left at home and the habit breaks in the first travel week.
+| Identity | He defines himself through output - business, family, presence. The gym is the thing that keeps the machine running, not the machine itself. He did not start working out because he loved fitness. He started because he saw himself declining. Original triggers: hair loss, white hairs appearing, skin texture changing, energy dropping. Saw parents looking tired at his kid's school function and felt a fear he hasn't named but acts on every day. |
+|---|---|
+| Core emotional driver | “Daughter should feel proud — yes, he is my father.” Not abs. Not a podium. Dignity. Looking like a man who has it together at 40. Not the tired dad at the back of the school hall. |
+| Relationship with science | “Science toh samajh nahi aata utna.” He does not read studies. He does not evaluate ingredients. His filter is: trainer said so, trusted friend tried it, no side effects reported. Word of mouth is his only purchase engine. Strong Affinity towards natural |
+| Relationship with coffee | Coffee is strategic, not social. Might even drink black coffee. That shift was conscious: he changed something in his life and it stuck. He uses coffee as a fuel tool at two fixed moments: morning ignition and a pre-evening push. He is not fighting a crash. He is fuelling specific windows. |
+| The gap he feels but doesn't name | He has the gym covered. He has the night stack covered. But 10 AM to 7 PM - the work day, the travel, the meetings, the client pressure - his stack doesn’t touch that window. His energy in those hours is running on gym residue and caffeine. That’s the gap. Shilajit lives there. |
+| Aspiration vs reality | He wants to look good — not shredded. The goal is not transformation. The goal is not declining. He compares himself to peers his age who look tired. He does not want to be that. He cuts sugar, drinks black coffee, goes to the gym three to five times a week. These are deliberate choices, not obsessions. |
+| Format matter | He travels 15 days a month. Resin is impossible - messy, temperature-sensitive, needs preparation. The gummy format is not a preference. It is the only format that works with his life. He literally packs his coffee in a small container when he travels. A supplement that requires a spoon and warm water will be forgotten on day two. |
 
-**Reasons to believe (in priority order):**
-1. **Trainer-trusted / word of mouth** — his #1 purchase filter; not optional, his primary purchase pathway.
-2. **No added sugar** — he already made the disciplined choice to cut milk coffee; frame this as consistent with choices he's already made, not a health warning.
-3. **Gummy format, travel-compatible** — a functional necessity, not a preference.
-4. **60% fulvic acid via ShilAbsorb** — credibility backstop for when the trainer asks, never the hook.
-5. **Stack-additive positioning** — frame as the missing layer between his morning gym and night stack, never as a replacement.
+WHAT DRIVES HIM TO BUY
+| Primary driver | Work exhaustion - not gym exhaustion. The verbatim from your actual Tejas: “Energy boost chahiye, work ki vajah se exhaust ho jate hai.” He goes to the gym. He has protein. He has pre-workout. But the 10-hour work day in between destroys him. That is what he is trying to solve. Not his squat. His meeting at 4 PM. |
+|---|---|
+| Secondary driver | Visible aging anxiety. Hair loss. White hairs. Skin. Energy dropping noticeably. He sees it. He fights it. Shilajit sits in this frame when positioned as vitality maintenance, not performance enhancement. The rasayana angle — systemic rejuvenation — is his quiet subtext. He will not say it but he knows it. |
+| Purchase trigger | Trainer. Then trusted peer. He does not research. He does not google. His trainer is the authority on what goes in his body. If the trainer recommends, he buys. If a gym-going friend says it worked for him, he buys. Social media ads plant the seed but the trainer or friend waters it. Without that second step, he does not convert. |
 
-**Communication direction.** Frame: *"The gym is doing its job. Your work day is undoing it. This fills the gap."* Primary hook: *"Gym toh kar raha hai. Par recover bhi utna hi ho raha hai?"* Tone: peer-to-peer, confident, no preaching — a working man talking to another working man. Say: energy that holds through the work day (not just the workout), fills the mid-day gap, no added sugar (consistent with going black coffee), no acidity/no sleep disruption, trainer recommended, works with his existing stack. Do NOT say: "100% Natural"/Ayurvedic (not his entry point), testosterone booster (too blunt), do not lead with clinical science, do not show gym-transformation imagery — he isn't trying to be shredded. The coffee angle is sacred — never position Shilajit as a coffee replacement; it fills the hours between his two coffee moments, keep them separate. Influencer profile: 38–42, gym-going but not extreme, demanding job, trainer energy not athlete energy, Hinglish, says "yeh mere existing supplements ke saath acha kaam karta hai" not "this changed my body." Format: 60–90s video, trainer testimonial or gym-peer format, Instagram/YouTube, showing the mid-day window (2 PM meeting, travel, evening drive) — never the gym, never bedtime. Retention messaging: Day 7 — "Noticing less depletion between gym and end of work day? That's it working." Day 21 — "Most users report holding energy longer through demanding work days by week 3."
 
----
+<!-- page 4 -->
 
-### Aakash — Non-Gym Buyer, 30–42, Tier 1/2
+WHAT MAKES HIM CHURN
+| Barrier 1 | No WOM = no purchase. He does not self-initiate on supplements. If the trusted source (trainer, friend) stops mentioning it, it leaves his radar. Your trainer network is his purchase channel. Losing trainer advocacy loses Tejas. |
+|---|---|
+| Barrier 2 | Science language alienates. If the ad leads with Shilabsorb, DBPs, mitochondrial ATP — he switches off. He said it plainly: “science toh samajh nahi aata.” Any creative that leans on clinical proof without human translation will lose him at the hook. |
+| Barrier 3 | No tangible mid-day signal. He sleeps 8+ hours, he works out consistently. His baselines are strong. The Shilajit effect has to show up as something he can point to during the work day — less depleted at the 3 PM meeting, better in the evening drive home. If the effect is invisible, he de-prioritises it. |
+| Barrier 4 | Side effects break the trust instantly. He specifically checks for acidity and sleep disruption. Those are his two red lines. If either appears, it’s gone. No second chance. |
+| Barrier 5 | Format friction on the road. If the product requires preparation or is inconvenient to travel with, it gets left at home and the habit breaks within the first travel week. |
 
-**Demographics.** Age 30–42 (largest cluster 31–41). Income ₹5–12L/year — middle income, ₹1,000 is a considered spend, not impulse. Tier 1/Tier 2 cities (Delhi, Lucknow, Pune, Indore, Patna, Nagpur); Tier 2 skews more Ayurvedic in worldview. Desk-based professional, shopkeeper, or business owner with sedentary operations — seated 8–10 hours/day, mentally demanding but physically inactive job. Married with family responsibilities. Exercises rarely — maybe irregular evening walks or light yoga; gym is not part of his identity. Supplement stack is almost none (some have only a multivitamin) — Shilajit isn't an addition to a stack, it IS his entire health act. Tea habit: 3x/day with sugar (morning, post-lunch, evening) — the post-lunch tea is explicitly a slump-beater that spikes then crashes him worse, feeding the problem he doesn't realise he's feeding. Diet is high-carb (rice, roti, dal), heaviest meal at lunch, untracked; defines "healthy" as fruits/dry fruits/juices. Sleep is inconsistent — falls asleep watching TV, no defined sleep time, wakes unrested.
+REASONS TO BELIEVE
+| RTB 1 | TRAINER TRUSTED / WORD OF MOUTH | His #1 purchase filter. Trainer testimonial or peer review outperforms any ad claim. Trainer channel is not optional — it is his primary purchase pathway. |
+|---|---|---|
+| RTB 2 | NO ADDED SUGAR | He consciously cut milk coffee when he started the gym. That was an act of discipline. No added sugar in the gummy aligns with that same deliberate mindset. He has earned this. Frame it as consistent with choices he already made — not as a health warning. |
+| RTB 3 | GUMMY FORMAT — TRAVEL COMPATIBLE | Resin requires preparation. He packs his life in a carry-on. The gummy is the only format that keeps the habit alive when he’s on the road. This is not a preference — it’s a functional necessity. |
+| RTB 4 | 60% FULVIC ACID — VIA SHILABSORB | Do not lead with the science. But have it available when the trainer asks or when he searches. The 60% standardisation vs unbranded resin is the credibility backstop, not the hook. Trainer-facing material needs this clearly explained. |
+| RTB 5 | STACK-ADDITIVE POSITIONING | He already takes pre-workout, protein, ashwagandha, magnesium. This fills the mid-day gap his current stack ignores. Frame it as the missing layer between his morning gym and his night stack — not as a replacement for anything. |
 
-**Psychographics.** Aakash is not avoiding health — he thinks he is doing health, he just has the wrong tools. He doesn't see himself as unfit; he sees himself as a normal, busy person making reasonable efforts (fruit, juice, occasional walks). The belly is noted but not discussed; the 3 PM crash is accepted as life — both normalised. His health worldview is a complete filter: **natural = safe = good**. Ayurvedic, Himalayan, plant-based, no-chemicals open the door; anything sounding like a lab product, sports supplement, or gym product closes it. He isn't anti-supplement, he's anti-complexity — Shilajit appeals because it sounds ancient and simple.
 
-His 2–3 PM crash is physical AND cognitive — West-region data specifically surfaced "Better Focus & Mental Clarity" as an expected benefit. His brain stops working, he re-reads the same email three times, avoids decisions — the more honest pain point is *"3 baje dimag bhi kaam karna band kar deta hai."* His post-lunch sugary tea is self-medication, not pleasure, and carries latent guilt, especially in the 40+ bracket where diabetes is a background anxiety — "no added sugar" from Chicory Root resolves a conflict he carries quietly every day.
+<!-- page 5 -->
 
-**Purchase behaviour:** he is an impulse buyer — verbatim *"Aase hi le liya, bohot ads dekhi toh le liya."* Low barrier to first purchase, catastrophic barrier to second — he bought without conviction, set no expectation, and invented his own unrealistic one. What he wants from Shilajit: to feel like himself at 4 PM — not transformation, not gym body, just not collapsing by afternoon, thinking clearly, being present when he gets home. The bar is low; the product clears it easily if we tell him what to look for.
+COMMUNICATION & NARRATIVES
+The frame for Tejas:
+“The gym is doing its job. Your work day is undoing it. This fills the gap.”
+| Hook | Copy / Direction |
+|---|---|
+| Primary hook | “Gym toh kar raha hai. Par recover bhi utna hi ho raha hai?”Not about fitness. About the gap between gym output and daily recovery. |
+| Tone | Peer-to-peer. Confident. No preaching. Not a health lecture. A working man talking to another working man. |
+| What to say | Energy that holds through the work day, not just the workout. Fills the mid-day gap. No added sugar - consistent with going black coffee. No acidity, no sleep disruption. Trainer recommended. Works with your existing stack. |
+| What NOTto say | Do not say: 100% Natural / Ayurvedic (not his entry point). Do not say: Testosterone booster (too blunt, sounds like a problem he hasn’t admitted). Do not lead with clinical science. Do not show gym transformation imagery. He is not trying to be shredded. |
+| Chai / Coffeeangle | Coffee is sacred. Do not position Shilajit as a coffee replacement or alternative. He uses coffee for two specific moments. Shilajit fills the hours between. Keep these separate. |
+| Influencerprofile | 38–42. Goes to the gym, looks good for his age, not extreme. Has a demanding job. Speaks about work-life-gym balance without being preachy. Trainer energy, not athlete energy. Hinglish. Someone who says “yeh mere existing supplements ke saath acha kaam karta hai” not “this changed my body.” |
+| Format | 60–90 sec video. Trainer testimonial or gym-going peer format. Instagram and YouTube. Show the mid-day window — not the gym, not bedtime. The 2 PM meeting, the travel, the evening drive. |
+| Retention message | Day 7: “Noticing less depletion between gym and end of work day? That’s it working.”Day 21: “Most users report holding energy longer through demanding work days by week 3.” |
 
-**What drives him to buy:**
-- *Primary driver — the 2–3 PM cognitive and physical crash.* Heavy carb lunch + blood sugar crash + circadian dip + his sugary post-lunch chai amplifying the rebound. An ad opening on this exact moment (heavy eyes, re-read email, chai that doesn't help) stops his scroll.
-- *Secondary driver — wanting to be healthy without changing his life.* He won't join a gym or change his diet, but wants to do *something*; one natural gummy with no routine disruption is the easiest health decision available.
-- *Purchase trigger — ad catches him at the right moment, WOM seals it.* West data: 33% of non-gym purchases driven by family/friend WOM. North: social ads drive him, but must hit right after the crash, not at 9 AM.
-- *Latent driver — better immunity/general vitality* as a backstop goal — his "being a healthier person" aspiration in proxy form.
 
-**What makes him churn:**
-1. **Most critical — bought without conviction.** No supplement literacy, no reference frame; he invented his own 2-week expectation and nobody told him what to look for. Without a Day 1 expectation message, this kills retention.
-2. **Consistency failure, no ritual anchor.** No existing supplement routine to attach to; within 10 days he's taken it twice. Fix: replace the post-lunch chai reach with a gummy reach — replace a behaviour, don't build a new one.
-3. **Side-effect anxiety, concentrated in 40+ buyers** — three unaddressed fears: liver heat in summer, suitability for 40+, sugar/diabetes.
-4. **The Kapiva scar** — ~30% of non-gym buyers tried Shilajit before (chemist/unbranded/Kapiva) and it failed; they're cynical first-time MM buyers. Explain *why* the old product failed (ShilAbsorb vs raw resin), in simple, non-clinical language.
+<!-- page 6 -->
 
-**Reasons to believe (in priority order):**
-1. **"100% Natural" / origin** — his entry condition, not a preference; 8/8 non-gym buyers in both North and West chose Natural over Scientific, zero exceptions.
-2. **No added sugar, Chicory Root sweetened** — resolves his sugar guilt, liver-heat fear, and diabetes concern simultaneously (natural prebiotic, cooling not heating, GI of 2) — front-of-pack, not fine print.
-3. **Ayurvedic rasayana, ancient validation** — he needs to feel this is centuries-old tradition, not a clinical trial; ancient is more trustworthy than tested for him.
-4. **Gummy format — easiest supplement he'll ever take** — no prep, no measuring; the ritual anchor is built in (replace the post-lunch tea reach with the gummy).
-5. **Third-party lab tested** — North's Rank 2 closer after the natural hook lands (West uses No Added Sugar as this closer instead).
+AAKASH
+30 – 42 · Non-Gym · Tier 1 / 2
+“3 baje jo hota hai — woh thakan nahi hai. Mujhe laga sab ke saath hota
+hai. Hota nahi hai.”
+DEMOGRAPHICS
+| Age | 30 – 42. Largest cluster is 31–41. |
+|---|---|
+| Income | ₹5–12L per year. Middle income. Price-conscious on supplements - ₹1,000 is a considered spend, not impulse. |
+| City | Tier 1 and Tier 2 — Delhi, Lucknow, Pune, Indore, Patna, Nagpur. Tier 2 skews more Ayurvedic in worldview. |
+| Occupation | Desk-based professional, shopkeeper, business owner with sedentary operations. Seated 8–10 hours a day. The job may be mentally demanding but physically inactive. |
+| Marital status | Married. Has family responsibilities. Health is increasingly on his mind but action has been limited to small moves. |
+| Exercise | Rarely or occasionally. Maybe walks in the evening - irregularly. Might do light yoga. Gym is not part of his identity or routine. |
+| Supplements | Almost none. In both North and West calling data, non-gym buyers had zero supplement stack —- one person had multivitamins. Shilajit is not an addition to a stack. It IS his health act. This is the entirety of what he is doing for himself. |
+| Tea habit | Tea with sugar, 3 times a day. Morning, post-lunch, evening. The post-lunch tea is explicitly a slump-beater. It has sugar. It spikes him, then crashes him worse. He is feeding the problem he is trying to solve and does not realise it. |
+| Diet | High carbohydrate. Rice, roti, dal. Lunch is the heaviest meal. Does not track anything. Defines healthy as: fruits, dry fruits, juices. Has not connected diet to his afternoon crash. |
+| Sleep | Inconsistent. Watches TV and falls asleep. Does not have a defined sleep time. Wakes up without feeling rested on many days — some West data shows morning fatigue even before any activity. |
 
-**Communication direction.** Frame: *"The most natural thing you can do for your afternoon. No gym required. No life change needed. Just this."* Primary hook: *"3 baje jo neend aati hai — woh thakan nahi hai. Wo fix ho sakti hai."* Claim sequence (do not deviate): (1) 100% Natural/Himalayan Shilajit → (2) No added sugar, Chicory Root sweetened → (3) Ayurvedic tradition, centuries of use → (4) One gummy, that's it. Tone: non-judgmental, gentle, inclusive — he hasn't joined a gym and isn't going to; make him feel this is exactly enough, not that he should do more. Chai angle: post-lunch chai is the behaviour being replaced — frame as relief ("the 3 PM chai that doesn't even work? You won't need it anymore"), never as deprivation. Do NOT say: gym, stamina, testosterone, protein, performance, shredded, muscle gain, pre-workout; no gym imagery, no clinical language, no weight/belly references, no transformation framing. North closes on Lead Natural → Third Party Lab Tested; West closes on Lead Natural → No Added Sugar. Influencer profile: 35–42, non-gym, not lean/transformed, talks everyday wellness, Hindi/Hinglish, says "Gym nahi jata but kuch toh karna chahiye tha — yeh easy tha." Retention: Day 1 — "Le lo 1 gummy 2 baje — lunch ke baad, chai se pehle." Day 7 — "3 baje wali chai thodi kam urgent lagti hogi — wahi sign hai." Day 21 — "Zyadatar log 3rd week mein report karte hain — afternoon mein dimag clearer rehta hai."
 
----
+<!-- page 7 -->
 
-### Fitness Buyer — Daily Gym-Goer/Athlete, 24–35, Supplement-Literate
+PSYCHOGRAPHICS
+Aakash is not avoiding health. He thinks he is doing health. He just has the wrong tools.
+| Identity | He does not see himself as unfit. He sees himself as a normal person with a busy life. He eats fruit. He has juice. He walks sometimes. In his frame, he is making reasonable efforts. The belly is noted but not discussed. The 3 PM crash is accepted as life. He has normalised both. |
+|---|---|
+| His healthworldview | Natural = safe = good. This is his complete filter. Ayurvedic, Himalayan, plant-based, no chemicals — these words open the door. Anything that sounds like a lab product, a sports supplement, or a gym product closes it. He is not anti-supplement. He is anti-complexity. Shilajit appeals to him because it sounds ancient and simple. |
+| The crash he lives with | His 2–3 PM crash is both physical AND cognitive. West region data specifically surfaced “Better Focus & Mental Clarity” as an expected benefit — twice. He is not just physically tired. His brain stops working. He cannot concentrate. He reads the same email three times. He makes excuses to avoid decisions. This is the more honest pain point: 3 baje dimag bhi kaam karna band kar deta hai. |
+| Tea & guilt | He drinks 3 teas with sugar a day. He is aware this is not ideal. He has probably tried cutting down. His post-lunch tea is an act of self-medication, not pleasure. He reaches for it because he has no other option. The guilt around sugar is latent but real — especially in the 40+ bracket where diabetes is a background anxiety. The “no added sugar” message from Chicory Root is not just a product claim for Aakash. It is a resolution to a conflict he carries quietly every day. |
+| Purchase behaviour | He is the impulse buyer. Verbatim: “Aase hi le liya, bohot ads dekhi toh le liya.” Low barrier to first purchase. Catastrophic barrier to second. He bought it without conviction. The product has to earn conviction in the first 7 days or it is over. No expectation was set at the point of purchase, so he has invented his own — and it is unrealistic. |
+| What he wants fromShilajit | To feel like himself at 4 PM. That is the complete ambition. Not transformation. Not the gym body. Not energy to run a marathon. Just: not collapsing by afternoon, being able to think clearly, being present when he gets home. The bar is low. The product clears it easily — if we tell him that is what to look for. |
 
-Runs a full stack (whey, creatine, pre-workout), reads labels, questions claims — not looking to be sold to. Wants a measurable edge in the gym, especially in the afternoon session when the body starts to dip. He sees Shilajit as a serious, well-formulated addition that gives an edge without cluttering his stack: Shilajit for steady cellular energy, KSM-66 Ashwagandha for cortisol/recovery, Black Musli for endurance, Black Pepper for absorption of everything else — no added sugar, 100% clean label. He responds to full proof structure (he will look up the study) — the 90-day placebo-controlled trial (120 gym-goers, 25% Fitness Score improvement, 23% cortisol reduction, published in peer-reviewed journals) needs to be cited, not just claimed as "clinically proven." He finds resin bitter, messy, and easy to skip — the gummy keeps his routine consistent (300mg standardised Shilajit/gummy, ShilAbsorb 2.5x better absorption than raw resin, no bitter taste, no prep).
+WHAT DRIVES HIM TO BUY
+| Primary driver | The 2–3 PM cognitive and physical crash. He experiences it every day without exception. Post heavy carb lunch, blood sugar crashes, circadian dip hits simultaneously, and his post-lunch sugary chai amplifies the rebound. He has no name for what is happening but he feels it acutely. An ad that opens with this exact moment — the heavy eyes, the re-read email, the chai that doesn’t help — will stop his scroll. Not energy in general. This specific 45-minute window. |
+|---|---|
+| Secondary driver | Wanting to be healthy without changing his life. |
+
+
+<!-- page 8 -->
+
+|  | He is not going to join the gym. He is not going to change his diet. But he wants to do something. Shilajit is the easiest health decision he can make — one gummy, natural ingredients, no routine disruption. The format does the selling. The natural claim opens the door. |
+|---|---|
+| Purchase trigger | Ad catches him at the right moment, WOM seals it. West data: 33% of non-gym purchases are driven by word of mouth — family or friend. He buys impulsively from ads but converts reliably when someone he knows has tried it. The WOM trigger is especially strong in West. In North, social media ads drive him — but they need to hit him in the right emotional window: right after the crash, not at 9 AM. |
+| Latent driver | Better immunity and general vitality — the backstop goal. In both North and West non-gym data, “Better Immunity” surfaced multiple times as an expected benefit. This is his “being a healthier person” aspiration in proxy form. He cannot commit to the gym but he can commit to a gummy that makes him feel like he is doing something for his health. |
+
+WHAT MAKES HIM CHURN
+| Barrier 1Most critical | Bought without conviction. Churns when nothing is obvious by Day 14. He has no supplement literacy. No reference frame. He paid ₹1,000 and invented his own expectation: a feeling he can point to within 2 weeks. Nobody told him what to look for. The product may be working. He does not know it. Without a Day 1 expectation message, this barrier is guaranteed to kill retention. |
+|---|---|
+| Barrier 2 | Consistency failure. No ritual anchor. He does not have a supplement routine. He does not take protein post-workout. He does not have a night stack. Shilajit is a standalone act with no natural trigger in his day. Within 10 days of buying, he has taken it twice. “Consistency is an issue.” The 2 PM ritual anchor — take it instead of reaching for the post-lunch chai — is the fix. Replace an existing behaviour rather than building a new one. |
+| Barrier 3 | Side effect anxiety — concentrated in 40+ buyers. Three fears, all unaddressed in current creative and packaging: liver heat in summer, suitability for 40+, sugar and diabetes. These fears are explicitly documented in verbatim across North and West. The 40+ non-gym buyer is Aakash’s older version — and he is more likely to abandon over an unanswered fear than any other reason. |
+| Barrier 4 | The Kapiva scar. 30% of non-gym buyers had used Shilajit before — from a chemist, an unbranded source, or Kapiva. It did not work. They stopped. Now they are cynical first-time Man Matters buyers. The message needs to explain why the previous product failed them — not just claim to be better. The Shilabsorb vs raw resin story does this. But it needs to be in simple language, not clinical. |
+
+REASONS TO BELIEVE
+
+<!-- page 9 -->
+
+| RTB 1 | 100% NATURAL — ORIGIN | This is his entry condition, not a purchase preference. 8 out of 8 non-gym buyers in both North and West chose |
+|---|---|---|
+|  |  | Natural over Scientific. Zero exceptions. If it does not feel natural, Ayurvedic, and ancient — he does not open the door. Everything else is secondary to this. |
+| RTB 2 | NO ADDED SUGAR — CHICORY ROOT SWEETENED | He has 3 sugary teas a day and feels latent guilt about it. “No added sugar” resolves a conflict he carries quietly. But the Chicory Root story is the real unlock: it is a natural prebiotic, cooling not heating, GI of 2, safe for diabetic-adjacent concerns. This is not just a claim — it is the answer to his sugar anxiety, his liver heat fear, and his diabetes concern simultaneously. Front-of-pack. Not fine print. |
+| RTB 3 | AYURVEDIC RASAYANA — ANCIENT VALIDATION | He does not need clinical trials. He needs to feel like this is something humans have done for centuries. Shilajit as a rasayana — systemic rejuvenation, used in Ayurvedic tradition for energy and vitality — is the frame that makes him feel safe. Ancient is more trustworthy than tested for this persona. |
+| RTB 4 | GUMMY FORMAT — EASIEST SUPPLEMENT HE WILL EVER TAKE | No preparation. No measuring. No powder. No resin dissolving in warm water. One gummy. At 2 PM. Instead of the chai that was not working anyway. The format does the consistency work for him. The ritual anchor is already built in: replace the post-lunch tea reach with a gummy reach. |
+| RTB 5 | 3RD PARTY LAB TESTED — NORTH CLOSER | In North, lab tested is the Rank 2 closer (4 votes). After the natural hook lands, the lab seal builds the final trust bridge. For West, No Added Sugar takes this role. Use the lab seal in North-targeted creative at the product page or end card. Do not lead with it — it closes, it does not open. |
+
+COMMUNICATION & NARRATIVES
+The frame for Aakash:
+“The most natural thing you can do for your afternoon. No gym required. No
+life change needed. Just this.”
+| Hook | Copy / Direction |
+|---|---|
+| Primary hook | “3 baje jo neend aati hai — woh thakan nahi hai. Wo fix ho sakti hai.”Open on the exact moment. Not energy in general. This specific cognitive fog at this specific time. |
+| Claim sequence | In this exact order: (1) 100% Natural / Himalayan Shilajit. (2) No added sugar — Chicory Root sweetened. (3) Ayurvedic tradition — centuries of use. (4) One gummy. That’s it. Do not deviate from this sequence. Natural opens him. Sugar resolves his guilt. Ayurvedic validates. Simple format converts. |
+
+
+<!-- page 10 -->
+
+| Tone | Non-judgmental. Gentle. Inclusive. He has not joined the gym. He is not going to. That is fine. This is for him, as he is. Do not make him feel like he should be doing more. Make him feel like this is exactly enough. |
+|---|---|
+| Chai angle | Post-lunch chai IS the behaviour being replaced. But frame it as relief, not deprivation. “Your morning chai? Keep it. The 3 PM chai that doesn’t even work? You won’t need it anymore.” Do not say chai is bad. Say this works better. |
+| What NOT to say | Do not say: gym, stamina, testosterone, protein, performance, shredded, muscle gain, pre-workout. Do not use any imagery from a gym. Do not use clinical language. Do not reference weight or belly. Do not frame as transformation. This is maintenance. This is normalcy restored. |
+| North vs West closing claim | North: Lead Natural → close with Third Party Lab Tested. West: Lead Natural → close with No Added Sugar. Same persona, same product, different anxiety being resolved at checkout. |
+| Influencerprofile | 35–42. Non-gym. Looks like Aakash — not lean, not transformed. Talks about everyday wellness. Has a demanding job or family. Speaks in Hindi/Hinglish. Says “Gym nahi jata but kuch toh karna chahiye tha — yeh easy tha.” Not a fitness account. A normal person who made one small change. |
+| Retention message | Day 1: “Le lo 1 gummy 2 baje — lunch ke baad, chai se pehle. Exactly is waqt.”Day 7: “Ab tak notice kiya? 3 baje wali chai thodi kam urgent lagti hogi. Wahi sign hai.”Day 21: “Zyadatar log 3rd week mein report karte hain — afternoon mein dimag clearer rehta hai, chai ki zaroorat kam hoti hai.” |
+
+
+<!-- page 11 -->
+
+Tejas vs Aakash — At a Glance
+| [object Object] | TEJAS | AAKASH |
+|---|---|---|
+| Age | 34–45 | 30–42 |
+| Exercise | Gym 3–5x/week | Rarely / walks |
+| Supplement stack | Full: protein, pre-workout, night stack | None. Shilajit is his entire health act. |
+| Energy dip | Mid-day work depletion after morning gym | 2–3 PM cognitive + physical crash post-lunch |
+| Tea/Coffee | Black coffee. Strategic. Two moments. | Sugary tea. 3x/day. Post-lunch = slump-beater. |
+| Real motivation | Dignity. Looking good for his age. Daughter’s pride. | Feel like himself at 4 PM. No transformation. |
+| Purchase trigger | Trainer WOM. Trusted peer. | Ad at the right moment. WOM in West. |
+| #1 RTB | Trainer trusted + stack-additive positioning | 100% Natural / Himalayan origin |
+| #2 RTB | No added sugar (consistent with his choices) | No added sugar — Chicory Root (resolves guilt) |
+| Lead creative hook | “Gym toh kar raha hai. Par recover bhi utna ho raha hai?” | “3 baje jo neend aati hai — woh fix ho sakti hai.” |
+| What NOT to say | Natural / Ayurvedic / science / testosterone | Gym / stamina / performance / transformation |
+| Influencer type | 38–42, active working dad, trainer energy | 35–42, non-gym, everyday wellness, normal guy |
+| Churn risk | No WOM source / no mid-day signal | No expectation set / no ritual anchor |
 
 ## Product Brief
-# Shilajit Gummies Product Brief
 
-## What It Is
+### Source (verbatim — product_brief file)
 
-Shilajit Gummies are a convenient, vegetarian supplement designed to support cellular energy, vitality, and recovery. Delivered as a ready-to-eat gummy, the product eliminates the preparation hassles of traditional shilajit resin while providing consistent dosing and superior absorption. Dosage across all personas: 2 gummies a day for 3 months.
+| Shilajit Gummies Product Brief |  |
+|---|---|
 
-## Key Ingredients and Their Roles
+1. Key Ingredients
+| Ingredient | What It Does | Form / Spec |
+|---|---|---|
+| Shilajit | Cellular energy support. Fulvic acid carries nutrients into cells. | 300 mg per serving. 60% fulvic acid via ShilAbsorb™. |
+| KSM-66 Ashwagandha | The world’s most clinically studied Ashwagandha extract. Reduces cortisol, supports recovery. | KSM-66®. Full-spectrum root extract. Clinically validated. |
+| Black Musli | Supports vitality and sustained energy through the day. | Standardised extract. |
+| Black Pepper | Enhances bioavailability of all other ingredients. | Piperine extract. |
+| Chicory Root | Natural sweetener. Prebiotic fibre, GI of 2. No glucose spike. Gut coolant. | GI of 2. Natural prebiotic fibre. |
 
-The formula centres on **Shilajit** (300mg per serving, standardised to 60% fulvic acid), which supports cellular energy by carrying nutrients into cells. **KSM-66 Ashwagandha**, the world's most clinically studied ashwagandha extract, reduces cortisol and aids recovery. **Black Musli** provides sustained energy throughout the day, while **Black Pepper** (piperine) enhances bioavailability of all ingredients. **Chicory Root** serves as a natural prebiotic sweetener with a glycaemic index of just 2 — a natural prebiotic fibre, cooling not heating, safe for diabetic-adjacent and summer-heat concerns.
+2. What Is Not In It
+| No added sugar | Sweetened entirely with Chicory Root extract. Glycaemic index of 2. No glucose spike. |
+|---|---|
+| No artificial sweeteners | No sucralose, aspartame, or synthetic sweeteners of any kind. |
+| No chemicals | No synthetic additives, no artificial colours. |
+| No preservatives | No added preservatives. |
+| 100% vegetarian | Plant-based pectin from apple extract. No gelatin. No animal-derived substances. |
 
-## What Is NOT In It
+3. ShilAbsorb™ Technology
+| What it is | Man Matters’ proprietary technology that standardises fulvic acid at 60% per serving. |
+|---|---|
+| The advantage | 2.5x better bioavailability than raw resin. Consistent dose, consistent effect. |
 
-No added sugar, no artificial sweeteners, no chemicals, no preservatives, no artificial flavours, no animal-based substances (100% vegetarian).
+4. Third-Party Lab Tested
+Every batch is independently tested by a certified third-party lab before it reaches the customer. No internal testing only.
+| Tested for | Purity, heavy metals, aflatoxins, fulvic acid percentage. By independent certified lab. |
+|---|---|
+| Batch transparency | Every batch has a unique number. Full lab report available on the Man Matters website. |
+| Side effects | No acidity. No sleep disruption. Clean across both clinical studies. |
 
-## ShilAbsorb™ Technology
+5. Clinically Tested
+Man Matters conducted two independent clinical studies on Shilajit Gummies, both published in peer-reviewed journals. Only 8 clinical studies on Shilajit exist globally. Man Matters has contributed 2 of them.
+| Study design | Two 90-day randomised placebo-controlled trials. Independent certified labs. |
+|---|---|
+| Results | Fitness Score (VO₂ max): +25%. Cortisol reduction: 23%. Protein absorption and fatigue also measured. |
+| Published in | European Journal of Pharmaceutical and Medical Research (EJPMR) and International Journal of Advanced Research in Medicine. |
 
-The proprietary ShilAbsorb™ technology delivers 2.5x better bioavailability than raw resin — this is the credibility backstop for skeptical/science-literate audiences, never the lead hook for Tejas or Aakash.
+| 25% Improvement in Fitness Score (VO₂ max linked) | 23% Reduction in Cortisol Levels | 90 Days. Placebo-controlled. |  |
+|---|---|---|---|
 
-## Third-Party Lab Tested
+6. Gummy vs Resin
+|  | Shilajit Gummy (Man Matters) | Raw Resin |
+|---|---|---|
+| Preparation | Two gummies. No prep, no warm water, no measuring. | Dissolve in warm water daily. Spoon required. Easy to skip. |
+| Taste | No bitterness. Naturally flavoured. | Bitter. Most users abandon within 2 weeks. |
+| Convenience | Travel-ready. Fits any bag. Temperature stable. | Messy, temperature-sensitive. Breaks habit on the road. |
+| Added Sugar | None. Sweetened with Chicory Root. GI of 2. | N/A. |
+| Consistency | No prep means no skipped days. Habit stays intact. | Habit breaks easily. Especially during travel. |
 
-Every batch is independently tested by a certified third-party lab before it reaches the customer — purity, heavy metals, aflatoxins, fulvic acid content. Batch reports available on the Man Matters website. This is not internal testing only.
-
-## Clinically Tested
-
-Man Matters conducted two independent 90-day, randomised, placebo-controlled clinical trials, both published in peer-reviewed journals — 120 gym-goers, 25% improvement in fitness score (VO₂ max-linked), 23% reduction in cortisol levels. Only 8 clinical studies on Shilajit exist globally — Man Matters has contributed 2 of them. This is a genuinely rare proof point worth surfacing for science-literate audiences (Fitness Buyer persona), while being cited carefully (never "clinically proven" without the study behind it) rather than claimed loosely.
-
-## Gummy vs Resin
-
-Resin requires daily preparation (warm water, mixing), is bitter, messy, temperature-sensitive, and breaks consistency/travel compatibility. The gummy format removes every one of those frictions — no prep, no mess, no bitterness, travels anywhere. This comparison is a recurring narrative pillar across all three personas, not just a side note.
-
-## Primary Benefits
-
-Improved fitness performance, reduced stress hormones, enhanced nutrient absorption, and sustained daily energy — without acidity or sleep disruption.
-
-## Proof Points
-
-Two independent 90-day, randomised, placebo-controlled clinical trials published in peer-reviewed journals (25% fitness score improvement, 23% cortisol reduction). Every batch third-party lab tested for purity, heavy metals, and fulvic acid content.
-
-## Differentiators
-
-ShilAbsorb™ (2.5x bioavailability vs raw resin), zero added sugar/chemicals/preservatives, travel-ready gummy format vs messy resin, and a genuinely rare clinical-trial base (2 of only 8 global studies on Shilajit).
+Man Matters  ·  Internal Use Only  ·  2026
 
 ## Narrative
-# Shilajit Gummies: Narrative Analysis (per persona, per pillar)
 
-## Core Story Arc
+### Source (verbatim — narrative.pdf)
 
-The central narrative positions Shilajit Gummies as the modern solution for the responsible adult male who does everything right but still hits a wall. Whether gym-goer, desk worker, or fitness enthusiast, the story follows the same trajectory: a man managing multiple responsibilities finds effort alone isn't enough to sustain him through the day. The 3 PM crash is the universal antagonist; the gummy format is the frictionless, trustworthy answer.
+<!-- page 1 -->
 
-### Tejas — Narrative 1: Daily Energy
-**JTBD:** Sustained energy through the afternoon and post-work, not just the morning session.
-**Hooks:** *"20s mein energy thi unlimited. Ab meeting ke beech mein hi khatam ho jaata hai."* / *"Ghar jaake bacchon ke saath present rehna chahta hu. Sofe pe gir nahi jaana."*
-**Mandate:** The afternoon crash is a work-day problem, not a gym problem. Show the 3 PM wall, the family he wants to show up for. Product: Shilajit for steady energy, KSM-66 for cortisol/stress, no added sugar/no glucose spike (Chicory Root). Add-on: ShilAbsorb 2.5x vs raw resin, third-party lab tested (check batch number).
+Shilajit Gummies
+Influencer Brief
+1. Format
+• Reel: Vertical 9:16. Instagram Reels or YouTube Shorts. 60 to 90 seconds.
+• Consumption moment: Show the product being taken. Natural, not staged.
+NEVER MENTION
+Competitor brands · Testosterone · Libido · Body shaming · Pre-workout · Stamina · Performance
+· Himalayan · Ancient Indian medicine
+2. Persona: Tejas
+Tejas
+Gym-goer, working professional, family man · 34 to 45 · Tier 1 and Tier 2
+He goes to the gym before work, watches what he eats, takes his supplements. At 40, he is doing
+everything right. But by 3 PM, after back-to-back meetings, calls, and constant travel, he is running on
+empty. The gym did not prepare him for the work day.
+He has a job to perform, parents to look after, and kids to come home to. He cannot afford to be the tired
+version of himself.
+NARRATIVE 1: DAILY ENERGY
+| JTBD | He wants sustained energy that carries through the afternoon and post-work, not just the morning session. |
+|---|---|
+| HookOptions |  |
+| Mandate |  |
+| Add-on |  |
 
-### Tejas — Narrative 2: Zero Added Sugar
-**JTBD:** No compromise on health from a gummy format.
-**Hooks:** *"Yaar gummy mein toh chini hogi? Health ka dhyan rakhta hu, sugar nahi leta mein."* / *"Yeh choti si gummy ko dekh kar jo soch rahe ho na, vo bilkul hi galat hai."*
-**Mandate:** He raises the sugar objection himself — answer immediately. No added sugar, Chicory Root sweetened, no glucose spike, no chemicals/preservatives/artificial flavours, 100% vegetarian. Add-on: third-party lab tested for purity, heavy metals, fulvic acid.
 
-### Tejas — Narrative 3: Product First (Resin vs Gummy)
-**JTBD:** The gummy is the only format that fits his travel-heavy life.
-**Hooks:** *"Resin? Roz subah garam paani, chamach, mix mix? Meri life mein yeh nahi hota."* / *"Travel pe hu, gym bag mein hai, office mein hu. Har jagah ho sakta hai."*
-**Mandate:** Hectic life, modern format — resin needs daily prep, the gummy needs nothing. 300mg standardised Shilajit, third-party lab tested every batch. Add-on: no added sugar, naturally sweetened.
+<!-- page 2 -->
 
-### Tejas — Narrative 4: Safety (Third-Party Lab Tested)
-**JTBD:** Confidence from independent, verifiable testing, not just a pack claim.
-**Hooks:** *"Ek seedha advice: koi bhi supplement mat lo jo clinically tested na ho."* / *"No acidity, no sleep issues, kuch bhi nahi. Factory se batch tak, sab transparent hai."*
-**Mandate:** Genuine recommendation tone, not a sales pitch — factory/manufacturing process video works well. Every batch tested independently (purity, heavy metals, aflatoxins, fulvic acid); no acidity, no sleep disruption; batch report on website. Add-on: the 90-day, 120-gym-goer clinical study (25% fitness score, 23% cortisol reduction), peer-reviewed.
+NARRATIVE 2: ZERO ADDED SUGAR
+| JTBD | He takes care of what goes into his body. A gummy with no sugar and no junk means no compromise on health. |
+|---|---|
+| HookOptions |  |
+| Mandate |  |
+| Add-on |  |
 
-### Aakash — Narrative 1: Pure & Natural / Ingredients
-**JTBD:** Easy to adopt because it's built from natural substances he recognises.
-**Hooks:** *"Gym nahi jata, but kuch toh karna chahiye tha. Natural ingredients, simple routine. Yeh easy tha."* / *"Koi chemicals nahi, koi preservatives nahi. Jo andar hai, woh samajh aata hai."*
-**Mandate:** Natural, familiar, simple — not a gym product; ingredient visuals and a factory video work well. Shilajit + KSM-66, no chemicals/preservatives/artificial flavours, 100% vegetarian. Add-on: no added sugar (Chicory Root), third-party lab tested.
+NARRATIVE 3: PRODUCT FIRST
+RESIN VS GUMMY
+| JTBD | He sees the gummy as the only format that actually fits his life. Modern, travel-ready, zero friction. |
+|---|---|
+| HookOptions |  |
+| Mandate |  |
+| Add-on |  |
 
-### Aakash — Narrative 2: Daily Energy
-**JTBD:** Understands the heavy lunch → sugar spike → chai loop is the actual cause of his 3 PM crash, and this breaks the cycle.
-**Hooks:** *"Lunch ke baad chai peeta tha roz. Ab woh zaroorat hi nahi rehti."* / *"Dimag bhi band ho jaata hai 3 baje. Wohi problem thi, wohi solve hua."*
-**Mandate:** Heavy meal → sugar spike → crash; tea is the temporary fix making it worse. One gummy after lunch replaces the chai. Add-on: ShilAbsorb 2.5x absorption, third-party lab tested.
+SAFETY (THIRD-PARTY LAB TESTED)
+| JTBD | He feels confident about what he is putting in his body because the testing is independent, verifiable, and not just a claim on the pack. |
+|---|---|
+| HookOptions |  |
+| Mandate |  |
+| Add-on |  |
 
-### Fitness Buyer — Narrative 1: Pure & Natural / Ingredients
-**JTBD:** A serious, well-formulated product giving a measurable edge without cluttering his stack.
-**Hooks:** *"Pehle mein bhi afternoon mein thak jaata tha. Ek extra lap push karne ka strength hi nahi aata tha."* / *"Mere stack mein protein tha, creatine tha. Jo nahi tha woh tha cellular energy support."*
-**Mandate:** Built for runners/calisthenics/gym-goers wanting more from the same session — each ingredient has a specific job (Shilajit: cellular energy; KSM-66: cortisol/recovery; Black Musli: endurance; Black Pepper: absorption). No added sugar, 100% clean label. Add-on: third-party lab tested, clinically tested.
 
-### Fitness Buyer — Narrative 2: Product First (Clinical Studies + Resin vs Gummy)
-**JTBD:** Sees Man Matters as having done the actual science, not just claimed it.
-**Hooks:** *"90-day study. 120 gym-goers. Placebo group. Blood tests for cortisol. VO2 max measured. Published."* / *"Resin try kiya tha. Bitter tha, messy tha. Consistency nahi rahi."*
-**Mandate:** Give the full proof structure — he will look it up; never say "clinically proven" without citing the study. 90-day placebo-controlled trial, 25% fitness score improvement, 23% cortisol reduction, peer-reviewed, batch report on website. Resin comparison: 300mg standardised Shilajit, ShilAbsorb 2.5x absorption, no bitter taste/no prep. Add-on: third-party lab tested, no added sugar.
+<!-- page 3 -->
 
-### Summer — Seasonal Objection Layer (April–June, any persona, expert-led content only)
-Not a separate demographic — a seasonal objection layer on top of Tejas or Aakash. Heating, liver heat, and sugar sensitivity surface in North/West data every summer.
-**JTBD (myth-busting):** Drop the biggest summer objection and feel confident continuing the habit through peak heat.
-**Hooks:** *"Summer mein Shilajit? Yeh myth hai. Sunlo kyun."* / *"Garam nahi karta. Chicory Root hai isme. GI of 2. Gut coolant hai, heater nahi."*
-**Mandate:** Open with the fear, bust it immediately, expert voice only, name the ingredient and mechanism — don't generalise. Chicory Root: natural prebiotic, GI of 2, gut coolant; no added sugar/no glucose spike; safe for summer and for 40+ diabetes-concerned buyers. Add-on: third-party lab tested, no acidity/no heat-related side effects.
-**JTBD (format):** Sees the gummy as the only practical Shilajit format in summer — no warm water, no mess.
-**Hooks:** *"Resin ke liye garam paani chahiye. 42 degree mein? Nahi hoga."* / *"Gummy. Bag mein. Anywhere. Summer ka sabse easy supplement."*
-**Mandate:** Resin in summer is a dead habit (40°C warm-water prep isn't realistic) — the gummy removes every barrier. No prep, Chicory Root keeps it cooling, no added sugar, 300mg standardised Shilajit. Add-on: third-party lab tested, no acidity/heat aggravation.
+3. Persona: Aakash
+Aakash
+Non-gym buyer, desk-based professional · 30 to 42 · Tier 1 and Tier 2
+He has a desk job, sits for 8 to 10 hours, eats a heavy lunch, and drinks two or three teas a day. In his
+head, he is doing fine. He eats fruit, walks sometimes. He thinks the 3 PM crash is just how life is.
+He is not looking for a transformation. He just wants to get through the afternoon without feeling like he
+needs to sleep at his desk.
+NARRATIVE 1: PURE & NATURAL/ INGREDIENTS
+| JTBD | Too many supplements in the market. This one is easy to add to his routine because it is built from natural substances he actually recognises. |
+|---|---|
+| HookOptions |  |
+| Mandate |  |
+| Add-on |  |
 
-## Key Claims (cross-persona, for Copy Health / Claims Alignment scoring)
+NARRATIVE 2: DAILY ENERGY
+| JTBD | He understands that the heavy lunch, the sugar spike, and the chai loop are the actual reason behind the 3 PM crash. This breaks that cycle. |
+|---|---|
+| HookOptions |  |
+| Mandate |  |
+| Add-on |  |
 
-- 2.5x better absorption than raw resin (ShilAbsorb technology)
-- 25% fitness score improvement and 23% cortisol reduction in a 90-day clinical trial (2 of only 8 global Shilajit studies)
-- Third-party tested for purity, heavy metals, and fulvic acid content
-- Zero added sugar, no artificial preservatives, 100% vegetarian
-- NEVER MENTION: competitor brands, testosterone, libido, body shaming, pre-workout, stamina, performance, Himalayan, ancient Indian medicine
+
+<!-- page 4 -->
+
+4. Persona: Fitness Buyer
+Fitness Buyer
+Daily gym-goer or athlete · 24 to 35 · Supplement-literate
+Runs a full stack: whey, creatine, pre-workout. Reads labels, questions claims. He is not looking to be
+sold to. He wants that extra push in the gym, that extra rep, that extra lap. He feels Shilajit can get him
+there.
+His goal: more energy in the gym, especially in the afternoon session when the body starts to dip.
+NARRATIVE 1: PURE & NATURAL/ INGREDIENTS
+| JTBD | He sees this as a serious, well-formulated product that gives him a measurable edge without cluttering his stack. |
+|---|---|
+| HookOptions |  |
+| Mandate |  |
+| Add-on |  |
+
+NARRATIVE 2: PRODUCT FIRST
+CLINICAL STUDIES
+| JTBD | He sees Man Matters as a brand that has actually done the science, not just claimed it. |
+|---|---|
+| HookOptions |  |
+| Mandate |  |
+| Add-on |  |
+
+
+<!-- page 5 -->
+
+RESIN VS GUMMY
+| JTBD | He finds resin bitter, messy, and easy to skip. The gummy keeps the habit consistent without breaking his routine. |
+|---|---|
+| HookOptions |  |
+| Mandate |  |
+| Add-on |  |
+
+SEASON BASED NARRATIVE
+Summer
+Seasonal layer · April to June · Any profile · Expert-led content only
+Not a separate demographic. A seasonal objection layer on top of Tejas or Aakash. Heating, liver heat,
+and sugar sensitivity surface in North and West data every summer.
+NARRATIVE 1: SUMMER BASED
+| JTBD | He drops the biggest objection blocking summer purchases and feels confident continuing the habit through peak heat. |
+|---|---|
+| HookOptions |  |
+| Mandate |  |
+| Add-on |  |
+
+| JTBD | He sees the gummy as the only Shilajit format that makes practical sense in summer. No warm water, no mess, no excuses. |
+|---|---|
+| HookOptions |  |
+| Mandate |  |
+
+
+<!-- page 6 -->
+
+|  |
+|---|
+| Add-on |
+
+• Product: No prep, no warm water, no mess. Chicory Root keeps it cooling. No
+added sugar. 300 mg standardised Shilajit per gummy.
+• Dosage: 2 gummies a day for 3 months.
+•
+Third-party lab tested. Every batch certified.
+•
+No acidity. No heat aggravation.
+Man Matters · Internal Use Only · 2026
 
 ## Required Claims
 ### Must NOT appear on PDP (GM Compliance — all nutra products)
@@ -201,4 +419,3 @@ Not a separate demographic — a seasonal objection layer on top of Tejas or Aak
 - Review and update FAQs as required
 - Verify and correct the Fulvic Acid claim mentioned within the FAQ section
 - NI table must be present on PDP
-
