@@ -309,13 +309,19 @@ def _load_images_as_b64(paths: List[Path], max_images: int = 5) -> List[dict]:
                 for page_num in range(min(6, len(doc))):
                     page = doc[page_num]
                     pix = page.get_pixmap(dpi=200)
-                    img_data = pix.tobytes("jpeg")
+                    # PDF pages at 200dpi routinely exceed Claude's 2000px multi-image
+                    # limit (e.g. A4 ≈ 1654x2339px) — resize the same way the plain-image
+                    # path below already does, or the request gets rejected outright.
+                    page_img = Image.open(io.BytesIO(pix.tobytes("png"))).convert("RGB")
+                    page_img.thumbnail((1200, 1200))
+                    buf = io.BytesIO()
+                    page_img.save(buf, format="JPEG", quality=85)
                     result.append({
                         "type": "image",
                         "source": {
                             "type": "base64",
                             "media_type": "image/jpeg",
-                            "data": base64.b64encode(img_data).decode(),
+                            "data": base64.b64encode(buf.getvalue()).decode(),
                         }
                     })
                 doc.close()
