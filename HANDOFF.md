@@ -54,27 +54,15 @@ This opens a browser login — sign in with the account that has access to the U
 
 ## What's on GitHub right now
 
-Branch: `claude/project-revamp-brainstorm-bd1bd1` on `github.com/Purvagandhi18/PDP-Monitor` — fully pushed, nothing stranded on the old laptop.
+**Primary, your own repo — clone this one:** `https://github.com/kunal-mosaic/PDP-Checker.git`, branch `main`. Full commit history carried over from the original repo, verified identical HEAD commit after push. This is the one to work from going forward.
 
-## Moving the repo to your own GitHub account
+Original repo (`github.com/Purvagandhi18/PDP-Monitor`, branch `claude/project-revamp-brainstorm-bd1bd1`) still exists as-is — the live audit report link already emailed out (`purvagandhi18.github.io/PDP-Monitor`) still points there and still works. No need to touch it; it's just no longer where new work happens.
 
-Three real options — you need your own GitHub login for any of them, this isn't something that can be done on your behalf:
-
-| Option | Who has to act | Notes |
-|---|---|---|
-| Transfer ownership | Purva (current owner) | Repo Settings → Transfer — needs her cooperation |
-| Fork it | You | Fast, but stays tagged as a fork of hers |
-| **Fresh repo, full history, your account** | You | **Recommended** — you own it outright, no dependency on Purva |
-
-Steps for the recommended option:
-1. Log into GitHub as yourself, create a new **empty** repo (no README/license) — e.g. `kunal-mosaic/pdp-intelligence`.
-2. From inside the cloned repo:
-   ```bash
-   git remote add newrepo <your-new-repo-url>
-   git push newrepo claude/project-revamp-brainstorm-bd1bd1:main
-   ```
-   This carries the entire commit history over — nothing lost, nothing redone.
-3. Point future work (and Mind Matters integration, when that happens) at the new repo.
+```bash
+git clone https://github.com/kunal-mosaic/PDP-Checker.git
+cd PDP-Checker
+git checkout main
+```
 
 ## What happened today (in order)
 
