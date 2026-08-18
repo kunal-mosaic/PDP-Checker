@@ -39,7 +39,13 @@ pip install -r requirements.txt
 playwright install chromium
 ```
 
-Then copy `.env` (API keys — Anthropic, Google service account, GitHub token) into the repo root. This file is never committed; get it from wherever it's currently backed up (it lived at `C:\Users\Mosaic\PDP-Monitor\.env` on the Windows machine — back it up somewhere before wiping that laptop).
+Then copy `.env` (Anthropic key, GitHub token, Mixpanel, Gmail) into the repo root. This file is never committed; get it from wherever it's currently backed up (it lived at `C:\Users\Mosaic\PDP-Monitor\.env` on the Windows machine — back it up somewhere before wiping that laptop). Exact variable names needed: `ANTHROPIC_API_KEY`, `MOSAIC_MCP_URL`, `GITHUB_TOKEN`, `MIXPANEL_PROJECT_ID`, `MIXPANEL_SERVICE_ACCOUNT_USERNAME`, `MIXPANEL_SERVICE_ACCOUNT_SECRET`, `GMAIL_SENDER`, `GMAIL_APP_PASSWORD`, `GMAIL_RECIPIENT`.
+
+**Separately, Google Sheets/Drive access is NOT in `.env` at all.** `scraper/sheets_connector.py` and `scraper/version_control_connector.py` both call `google.auth.default()` — this resolves Application Default Credentials, which live in a machine-level config folder (`~/.config/gcloud/application_default_credentials.json` on Mac), not in the repo and not in `.env`. On the new machine, install the `gcloud` CLI and run:
+```bash
+gcloud auth application-default login --scopes="https://www.googleapis.com/auth/spreadsheets.readonly,https://www.googleapis.com/auth/drive.readonly,https://www.googleapis.com/auth/cloud-platform"
+```
+Without this, ad-data (Umbrella Sheet) and packaging-artwork (Drive) fetches will fail — everything else still works.
 
 To run a single product's audit: `python main.py --run-now --product "Shilajit Gummies"`
 To run the dashboard: `python -m uvicorn dashboard.app:app --port 8000` then open `http://localhost:8000`
