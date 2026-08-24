@@ -54,13 +54,12 @@ def _build_summary(product_name: str, snapshot: dict, pages_url: str = None) -> 
 
     lines = [
         f"Hi,",
-        f"Hi Abhijeet, Sending you my first automated email done through routines.",
         f"",
         f"This is an automated weekly PDP analysis report for {product_name}.",
         f"Run date: {run_date}",
         f"",
         f"{'→ View report: ' + pages_url if pages_url else '→ Full report attached below.'}",
-        f"{'→ All reports: https://purvagandhi18.github.io/PDP-Monitor/' if pages_url else ''}",
+        f"{'→ All reports: https://kunal-mosaic.github.io/PDP-Checker/' if pages_url else ''}",
         f"",
         f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
         f"SCORES SUMMARY",

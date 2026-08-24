@@ -3,7 +3,7 @@ publish_report.py — pushes the latest report to GitHub Pages (gh-pages branch)
 
 After every run, the latest HTML report is copied to the gh-pages branch as
 index.html and pushed. GitHub Pages serves it at:
-  https://purvagandhi18.github.io/PDP-Monitor/
+  https://kunal-mosaic.github.io/PDP-Checker/
 
 Usage:
     python3 tools/publish_report.py --product "Shilajit Gummies"
@@ -23,11 +23,11 @@ from dotenv import load_dotenv
 load_dotenv(dotenv_path=Path(__file__).parent.parent / ".env")
 
 REPO_ROOT    = Path(__file__).parent.parent
-PAGES_BASE   = "https://purvagandhi18.github.io/PDP-Monitor"
+PAGES_BASE   = "https://kunal-mosaic.github.io/PDP-Checker"
 REMOTE       = "origin"
 PAGES_BRANCH = "gh-pages"
-GITHUB_USER  = "Purvagandhi18"
-GITHUB_REPO  = "PDP-Monitor"
+GITHUB_USER  = "kunal-mosaic"
+GITHUB_REPO  = "PDP-Checker"
 
 
 def _product_slug(name: str) -> str:
