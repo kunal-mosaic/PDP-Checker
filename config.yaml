@@ -44,6 +44,9 @@ products:
     version_control_skus:
       - "MM Hair Gummies 30mcg Gummies - 30s"
       - "MM Minoxidil Topical Solution 5% - 60 ml"
+    drive_folder_overrides:
+      "MM Hair Gummies 30mcg Gummies - 30s": "https://drive.google.com/drive/folders/1iPzohd6TyfcgvRBwPjT7mDvkPZ63Vk98"
+      "MM Minoxidil Topical Solution 5% - 60 ml": "https://drive.google.com/drive/folders/1txUH2ADiPO3anrloNU2pjHCKun82MxG-"
     personas:
       - "S2 ICP"   # 18-26yr student/young professional, frontal recession, preservation mindset
     narratives:
@@ -71,6 +74,9 @@ products:
     version_control_skus:
       - "MM Hair Gummies 30mcg Gummies - 30s"
       - "MM Minoxifin - 60 ml"
+    drive_folder_overrides:
+      "MM Hair Gummies 30mcg Gummies - 30s": "https://drive.google.com/drive/folders/1iPzohd6TyfcgvRBwPjT7mDvkPZ63Vk98"
+      "MM Minoxifin - 60 ml": "https://drive.google.com/drive/folders/1gicaPM4zsEHMs5zrdlw2PFlbpgaV9X4B"
     personas:
       - "Arjun"   # 22-34yr working professional, crown + bald patches, brand-burned researcher
     narratives:
@@ -101,6 +107,9 @@ products:
     version_control_skus:
       - "MM Hair Gummies 30mcg Gummies - 30s"
       - "MM Minoxifin Advanced"
+    drive_folder_overrides:
+      "MM Hair Gummies 30mcg Gummies - 30s": "https://drive.google.com/drive/folders/1iPzohd6TyfcgvRBwPjT7mDvkPZ63Vk98"
+      "MM Minoxifin Advanced": "https://drive.google.com/drive/folders/1lrZcIbc69XMzC_Qrv1-IIFmfI044uUXd"
     packaging_file_filters:
       "MM Minoxifin Advanced": "Label"   # bottle label only (not the carton box)
     skip_pdp_prefilter: true             # kit PDP — composite images get wrongly dropped by product_shot filter
@@ -133,6 +142,9 @@ products:
     version_control_skus:
       - "MM Hair Gummies 30mcg Gummies - 30s"
       - "MM Advanced Hair Serum - 30 ml"
+    drive_folder_overrides:
+      "MM Hair Gummies 30mcg Gummies - 30s": "https://drive.google.com/drive/folders/1iPzohd6TyfcgvRBwPjT7mDvkPZ63Vk98"
+      "MM Advanced Hair Serum - 30 ml": "https://drive.google.com/drive/folders/1pyHi4pS-S1P9SfLTG0vmjgFo-1LP7thL"
     personas:
       - "Early-Stage Hairfall"   # noticed hairfall/thinning early, tried nuskas/oils/shampoos, "waiting trap"
     narratives:
@@ -160,6 +172,9 @@ products:
     version_control_skus:
       - "MM Hair Gummies 30mcg Gummies - 30s"
       - "MM Hair 30mcg Gummies (No Added Sugar) - 90s"
+    drive_folder_overrides:
+      "MM Hair Gummies 30mcg Gummies - 30s": "https://drive.google.com/drive/folders/1iPzohd6TyfcgvRBwPjT7mDvkPZ63Vk98"
+      "MM Hair 30mcg Gummies (No Added Sugar) - 90s": "https://drive.google.com/drive/folders/1Xytvk5K6EbCRz6iR0U8YLdfETtDTcQUP"
     personas:
       - "Early-Stage Hairfall 18-26"   # college/first-job, nutrition gap, tried nuskas/oils/shampoos
     narratives:
@@ -195,6 +210,7 @@ products:
       - "MM BeardMax - 30 ml"
     drive_folder_overrides:
       "MM Beard Gummies - 30s": "https://drive.google.com/drive/folders/1DIDSci9Gcbu7MLopGpig7g58GPMmyI4s"
+      "MM BeardMax - 30 ml": "https://drive.google.com/drive/folders/1odtNNqwcS1iOAvtuKqopzRjdU4cGPco_"
     personas:
       - "The First-Time Grower"   # 18-22, peer-driven, wants proof without judgment
       - "The Patcher"             # 22-27, research-led, tried oils, wants mechanism clarity

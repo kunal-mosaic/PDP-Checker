@@ -14,7 +14,7 @@ def load_config() -> dict:
 
 
 def get_env(key: str, required: bool = True, default: str = "") -> str:
-    val = os.getenv(key, default)
+    val = os.getenv(key) or default
     if required and not val:
         raise EnvironmentError(
             f"Missing required environment variable: {key}\n"
