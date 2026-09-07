@@ -129,15 +129,25 @@ def run_product(product_cfg: dict):
             log.warning(f"      Skipping visuals for failed scrape: {pdp.url}")
             enriched.append(pdp)
             continue
-        try:
-            # Always clear old images before downloading fresh ones
-            url_slug = re.sub(r"[^\w]", "_", pdp.url)[:60]
-            clear_url_images(url_slug)
-
-            enriched.append(enrich_with_visuals(pdp))
-            log.info(f"      ✓ {pdp.url} → {len(pdp.carousels)} slides, {len(pdp.banners)} banners")
-        except Exception as e:
-            log.warning(f"      Visual scrape failed for {pdp.url}: {e} — continuing without visuals")
+        url_slug = re.sub(r"[^\w]", "_", pdp.url)[:60]
+        last_err = None
+        for attempt in range(2):
+            try:
+                # Always clear old images before downloading fresh ones
+                clear_url_images(url_slug)
+                enriched_pdp = enrich_with_visuals(pdp)
+                last_err = None
+                break
+            except Exception as e:
+                last_err = e
+                log.warning(f"      Visual scrape attempt {attempt + 1}/2 failed for {pdp.url}: {e}")
+                if attempt == 0:
+                    time.sleep(5)
+        if last_err is None:
+            enriched.append(enriched_pdp)
+            log.info(f"      ✓ {pdp.url} → {len(enriched_pdp.carousels)} slides, {len(enriched_pdp.banners)} banners")
+        else:
+            log.warning(f"      Visual scrape failed for {pdp.url} after 2 attempts: {last_err} — continuing without visuals")
             enriched.append(pdp)
 
     # ── Step 4: Pull Google Sheets ─────────────────────────────

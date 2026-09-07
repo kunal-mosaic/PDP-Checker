@@ -385,7 +385,7 @@ def _playwright_cdn_sweep(url: str, url_slug: str) -> List[ZeusImage]:
 
             page.on("request", _on_request)
 
-            page.goto(url, wait_until="domcontentloaded", timeout=35000)
+            page.goto(url, wait_until="domcontentloaded", timeout=60000)
             page.wait_for_timeout(2000)
 
             # Pass 1: slow scroll top→bottom to trigger lazy-loaded images.
@@ -748,7 +748,7 @@ def enrich_with_visuals(pdp_data: PDPTextData) -> PDPTextData:
         page = ctx.new_page()
 
         try:
-            page.goto(url, wait_until="domcontentloaded", timeout=30000)
+            page.goto(url, wait_until="domcontentloaded", timeout=60000)
             page.wait_for_timeout(2500)
 
             # Scroll to trigger lazy loads, then return to top

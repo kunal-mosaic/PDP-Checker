@@ -12,6 +12,7 @@ structures are reasonably consistent across sites.
 
 import re
 import json
+import time
 import anthropic
 from datetime import datetime
 from typing import List, Optional
@@ -621,7 +622,7 @@ def scrape_text(url: str) -> PDPTextData:
         page = ctx.new_page()
 
         try:
-            page.goto(url, wait_until="domcontentloaded", timeout=30000)
+            page.goto(url, wait_until="domcontentloaded", timeout=60000)
             # Wait for the React app to hydrate and render product content.
             # Try to find a product heading or add-to-cart button; fall back to
             # a flat 4s wait if neither appears (handles A/B variants gracefully).
@@ -716,13 +717,22 @@ def scrape_text(url: str) -> PDPTextData:
 
 
 def scrape_all_urls(urls: List[str]) -> List[PDPTextData]:
-    """Scrape multiple PDP URLs sequentially."""
+    """Scrape multiple PDP URLs sequentially, retrying transient failures once."""
     results = []
     for url in urls:
-        try:
-            results.append(scrape_text(url))
-        except Exception as e:
-            log.error(f"Failed to scrape {url}: {e}")
+        last_err = None
+        for attempt in range(2):
+            try:
+                results.append(scrape_text(url))
+                last_err = None
+                break
+            except Exception as e:
+                last_err = e
+                log.warning(f"Scrape attempt {attempt + 1}/2 failed for {url}: {e}")
+                if attempt == 0:
+                    time.sleep(5)
+        if last_err is not None:
+            log.error(f"Failed to scrape {url} after 2 attempts: {last_err}")
             results.append(PDPTextData(
                 url=url,
                 scraped_at=datetime.utcnow().isoformat(),
