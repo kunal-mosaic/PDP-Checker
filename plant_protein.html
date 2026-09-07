@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Plant Protein — PDP Report 31 August 2026</title>
+<title>Plant Protein — PDP Report 07 September 2026</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
@@ -307,7 +307,7 @@ a{color:inherit;text-decoration:none}a:hover{text-decoration:underline}
     <h1>Plant Protein — PDP Audit</h1>
     <p>Daily health check across content, visuals, narrative and reviews</p>
   </div>
-  <div class="rh-right">31 August 2026<br>1 URL</div>
+  <div class="rh-right">07 September 2026<br>1 URL</div>
 </div>
 
 
@@ -448,8 +448,8 @@ a{color:inherit;text-decoration:none}a:hover{text-decoration:underline}
     <div class="h-sub-nav">
       <button class="h-sub active" onclick="switchHygieneSub('1','claims',this)">
         Claims
-        <span class="fi-src claims">1 issue</span>
-        <span class="fi-src" style="background:#e6f4ed;color:#1a7a4a">8 ok</span>
+        <span class="fi-src claims">2 issues</span>
+        <span class="fi-src" style="background:#e6f4ed;color:#1a7a4a">7 ok</span>
       </button>
       <button class="h-sub" onclick="switchHygieneSub('1','brand',this)">
         Brand Guidelines
@@ -464,21 +464,30 @@ a{color:inherit;text-decoration:none}a:hover{text-decoration:underline}
     
     <div id="1-hygiene-claims" class="h-panel active">
       
-      <div class="flag-section-lbl" style="margin-top:0">❌ Flagged <span class="fcnt critical">1</span></div>
+      <div class="flag-section-lbl" style="margin-top:0">❌ Flagged <span class="fcnt critical">2</span></div>
       
       <div class="fi fi-flagged" data-uid="1" data-cat="claims">
         <label><input type="checkbox" class="fi-cb" onchange="dismissFlag(this,'1','claims')">
         <span class="fi-ico">❌</span>
         <span class="fi-body">
           <span class="fi-text">"No Added Sugar"</span>
-          <span class="fi-reason">The prohibited claim 'No Added Sugar' appears as a badge/callout in the first PDP carousel image alongside 'Third Party Lab Tested' and 'Special Digestive Enzyme Blend'.</span>
+          <span class="fi-reason">The prohibited claim 'No Added Sugar' appears as a badge/icon in the first PDP carousel image alongside 'Third Party Lab Tested' and 'Special Digestive Enzyme Blend' icons.</span>
+        </span></label>
+      </div>
+      
+      <div class="fi fi-flagged" data-uid="1" data-cat="claims">
+        <label><input type="checkbox" class="fi-cb" onchange="dismissFlag(this,'1','claims')">
+        <span class="fi-ico">❌</span>
+        <span class="fi-body">
+          <span class="fi-text">"Check all text, images, FAQ, and additional info sections for prohibited claims"</span>
+          <span class="fi-reason">Comprehensive scan completed. Found prohibited claim 'No Added Sugar' as a badge/icon in the first carousel image. All other prohibited claims (100% Natural, No Side Effects, Healthy, Vegan, 100% Vegan) were not found in any text, images, FAQ, or additional info sections.</span>
         </span></label>
       </div>
       
       
       
       
-      <div class="flag-section-lbl">✅ Verified <span class="fcnt healthy">8</span></div>
+      <div class="flag-section-lbl">✅ Verified <span class="fcnt healthy">7</span></div>
       
       <div class="fi fi-ok">
         <span class="fi-ico">✅</span>
@@ -508,7 +517,7 @@ a{color:inherit;text-decoration:none}a:hover{text-decoration:underline}
         <span class="fi-ico">✅</span>
         <span class="fi-body">
           <span class="fi-text">"Vegan"</span>
-          <span class="fi-reason">The word 'Vegan' does not appear as a standalone claim in the PDP. The product is called 'Vegain' which is the product name, not a vegan claim.</span>
+          <span class="fi-reason">The word 'Vegan' does not appear as a standalone claim. The product is called 'VEGAIN' which is a brand name, not a vegan claim.</span>
         </span>
       </div>
       
@@ -524,15 +533,7 @@ a{color:inherit;text-decoration:none}a:hover{text-decoration:underline}
         <span class="fi-ico">✅</span>
         <span class="fi-body">
           <span class="fi-text">"Verify 'No Added Sugar' claim only if product genuinely has no added sugar per label"</span>
-          <span class="fi-reason">The PDP nutrition table shows Added Sugar as 0 gm. The label ingredient list shows 'Sweetener (INS 955)' which is sucralose - an artificial sweetener, not sugar. The 'No Added Sugar' claim appears to be technically accurate as the product uses artificial sweetener instead of added sugar. However, the claim is still on the prohibited list and appears on PDP.</span>
-        </span>
-      </div>
-      
-      <div class="fi fi-ok">
-        <span class="fi-ico">✅</span>
-        <span class="fi-body">
-          <span class="fi-text">"Check all text, images, FAQ, and additional info sections for prohibited claims"</span>
-          <span class="fi-reason">Full scan of all PDP content completed. The only prohibited claim found is 'No Added Sugar' as a badge in the first carousel image. FAQ discusses muscle gain, meal replacement, and usage but contains no prohibited claims.</span>
+          <span class="fi-reason">The nutrition information table in the PDP images confirms Added Sugar is 0 gm. The label shows Sweetener INS 955 (Sucralose) is used, which is a non-nutritive sweetener and not classified as 'added sugar'. The 'No Added Sugar' claim appears to be technically accurate per the formulation.</span>
         </span>
       </div>
       
@@ -540,7 +541,7 @@ a{color:inherit;text-decoration:none}a:hover{text-decoration:underline}
         <span class="fi-ico">✅</span>
         <span class="fi-body">
           <span class="fi-text">"Verify prohibited claims in all languages on PDP"</span>
-          <span class="fi-reason">The entire PDP including all images, text, FAQ, and additional information sections are in English only. No prohibited claims found in any other language as no other languages are present on the PDP.</span>
+          <span class="fi-reason">PDP content is entirely in English. No other languages detected. The prohibited claim 'No Added Sugar' was found in English only. No Hindi or other regional language content present on the PDP.</span>
         </span>
       </div>
       
@@ -952,21 +953,21 @@ a{color:inherit;text-decoration:none}a:hover{text-decoration:underline}
 
         
         <div class="copy-row">
-          <span class="copy-lbl">Subheads (6)</span>
+          <span class="copy-lbl">Subheads (14)</span>
           <div class="chip-wrap">
-            <span class="chip">Clinical Proof</span><span class="chip">Why consider Man Matters Whey Protein?</span><span class="chip">Key Ingredients</span><span class="chip">Safe and Effective</span><span class="chip">How do we compare</span><span class="chip">Got Questions ?</span>
+            <span class="chip">Clinical Proof</span><span class="chip">Why consider Man Matters Whey Protein?</span><span class="chip">Key Ingredients</span><span class="chip">Safe and Effective</span><span class="chip">How do we compare</span><span class="chip">Made in a certified facility</span><span class="chip">Third Party Lab Tested</span><span class="chip">4.7gm BCAA</span><span class="chip">Special Digestive Enzyme Blend</span><span class="chip">Overall Wellness</span><span class="chip">4 Plant-Based Proteins</span><span class="chip">28 Vitamins and Minerals</span><span class="chip">9 Amino Acids</span><span class="chip">Enriched with Ashwagandha</span>
           </div>
         </div>
         
 
         
         <div class="copy-row">
-          <span class="copy-lbl">Body Copy (43 blocks)</span>
+          <span class="copy-lbl">Body Copy (28 blocks)</span>
           <div style="margin-top:6px">
             
             <div class="body-item">Chocolate Flavour | Mixes easily</div>
             
-            <div class="body-item">Simple. Clean. Effective. Pure Plant Protein, with a complete Amino Acid Profile and added digestive enzymes : Thoughtfully designed to deliver clean, reliable, and plant-powered nutrition.</div>
+            <div class="body-item">Simple. Clean. Effective. Pure Plant Protein, with a complete Amino Acid Profile and added digestive enzymes: Thoughtfully designed to deliver clean, reliable, and plant-powered nutrition.</div>
             
             <div class="body-item">Built for Performance: 24g Pure Plant Protein</div>
             
@@ -976,63 +977,29 @@ a{color:inherit;text-decoration:none}a:hover{text-decoration:underline}
             
             <div class="body-item">For those who demand the best from their plant-based nutrition. Because clean fuel leads to extraordinary results.</div>
             
-            <div class="body-item">Lab Tests and Certifications</div>
+            <div class="body-item">To ensure you get world class protein, Man Mattes Plant Protein is made by experts in a certified facility with all the safety & hygiene precautions. Our facilities are GMP, HACCP, FSSC & ISO 22000-2018 certified to ensure you get only the highesst quality whey protein</div>
             
-            <div class="body-item">Protein Content Test</div>
+            <div class="body-item">Man Matters Plant Protein is lab tested in a third party facility so you can be rest assured about the protein content, complete amino acid profile, no heavy metals, and no aflatoxins. Only Pure Wholesome Plant Protein for you!</div>
             
-            <div class="body-item">Heavy Metal Test</div>
+            <div class="body-item">Branch Chained Amino Acids or BCAAs stimulate protein synthesis, which is the process of building new muscle. This helps with muscle growth when combined with resistance training.</div>
             
-            <div class="body-item">Made in a certified facility</div>
+            <div class="body-item">Special digestive blend in our Plant Protein ensures that the protein you consume is effectively digested and absorbed in your body. No more Plant Protein Bloating!</div>
             
             
             <details style="margin-top:4px">
               <summary style="font-size:11.5px;color:#aaa;cursor:pointer;padding:4px 8px">
-                + 33 more blocks
+                + 18 more blocks
               </summary>
-              
-              <div class="body-item">To ensure you get world class protein, Man Mattes Plant Protein is made by experts in a certified facility with all the safety & hygiene precautions. Our facilities are GMP, HACCP, FSSC & ISO 22000-2018 certified to ensure you get only the highesst quality whey protein</div>
-              
-              <div class="body-item">Third Party Lab Tested</div>
-              
-              <div class="body-item">Man Matters Plant Protein is lab tested in a third party facility so you can be rest assured about the protein content, complete amino acid profile, no heavy metals, and no aflatoxins. Only Pure Wholesome Plant Protein for you!</div>
-              
-              <div class="body-item">4.7gm BCAA</div>
-              
-              <div class="body-item">Branch Chained Amino Acids or BCAAs stimulate protein synthesis, which is the process of building new muscle. This helps with muscle growth when combined with resistance training.</div>
-              
-              <div class="body-item">Special Digestive Enzyme Blend</div>
-              
-              <div class="body-item">Special digestive blend in our Plant Protein ensures that the protein you consume is effectively digested and absorbed in your body. No more Plant Protein Bloating!</div>
-              
-              <div class="body-item">Overall Wellness</div>
               
               <div class="body-item">We take care of your Micronutrients requirement. Man Matters Plant Protein contains 22 essential Vitamins & Minerals for holistic development.</div>
               
-              <div class="body-item">4 Plant-Based Proteins</div>
-              
               <div class="body-item">Mix of pea, brown rice, moong bean, and whole algae proteins for a complete Amino Acid profile</div>
-              
-              <div class="body-item">28 Vitamins and Minerals</div>
               
               <div class="body-item">Strengthens your bones, helps meet micornutrient needs</div>
               
-              <div class="body-item">9 Amino Acids</div>
-              
               <div class="body-item">Mix of BCAAs and EAAs makes for a complete amino acid profile, essential for muscle building and strengthening</div>
               
-              <div class="body-item">Enriched with Ashwagandha</div>
-              
               <div class="body-item">Helps boost strength and immunity</div>
-              
-              <div class="body-item">Pea Protein, Brown Rice Protein, Moong Bean Protein, Spirulina Extract (Whole Algae Protein), Cocoa, Ashwagandha Extract, NaCl, Sweetener, (INS 955), Xanthan Gum (INS 415), Silicon DiOxide & Digezyme.</div>
-              
-              <div class="body-item">Vitamins: Beta Carotene, Thiamine HCl, Riboflavin, Niacinamide, Pyridoxine HCl, Ascorbic Acid, Folic Acid, Cyanocobalamin, Cholecalciferol, D-Alpha Tocopherol, Phytonadione, Menaquinone, Biotin, Calcium D Pantothenate</div>
-              
-              <div class="body-item">Minerals: Potassium Chloride, Sodium Chloride, Dicalcium Phosphate, Zinc Sulphate, Ferrous Sulfate, Magnesium Oxide, Sodium Molybdate, Cupric Sulfate, Potassium Iodide, Manganese Chloride, Sodium Selenate, and Chromium Chloride</div>
-              
-              <div class="body-item">Add 1 level scoop (33g) of protein powder to 300 ml cold water and shake vigorously</div>
-              
-              <div class="body-item">When to use?: Man Matters Plant Protein can be taken at any time during the day. We recommend that you take it in the morning to maintain consistency with regime</div>
               
               <div class="body-item">No Artificial Color</div>
               
@@ -1048,13 +1015,17 @@ a{color:inherit;text-decoration:none}a:hover{text-decoration:underline}
               
               <div class="body-item">Added Digestive Enzymes</div>
               
+              <div class="body-item">Add 1 level scoop (33g) of protein powder to 300 ml cold water and shake vigorously</div>
+              
+              <div class="body-item">When to use?: Man Matters Plant Protein can be taken at any time during the day. We recommend that you take it in the morning to maintain consistency with regime</div>
+              
               <div class="body-item">Man Matters Plant Protein is a complete protein that helps you gain muscle effectively, just as well as Whey Protein.</div>
               
               <div class="body-item">Yes, this can be used as a meal replacement and helps you stay in a caloric deficit, leading to weight loss</div>
               
-              <div class="body-item">Yes, you can. This protein powder helps fuel daily protein needs, which is necessary for every individual irrespective of their lifestyle and activity levels.</div>
+              <div class="body-item">This protein powder helps fuel daily protein needs, which is necessary for every individual irrespective of their lifestyle and activity levels.</div>
               
-              <div class="body-item">Yes, the Protein Powder can be used for non training days to meet your daily protein requirements. We recommend taking 1-2 scoops every day to fulfill your nutrient needs.</div>
+              <div class="body-item">The Protein Powder can be used for non training days to meet your daily protein requirements. We recommend taking 1-2 scoops every day to fulfill your nutrient needs.</div>
               
             </details>
             
@@ -1256,7 +1227,7 @@ My muscles look so good in my shirts now super happ…</div>
         <div class="bar-t" style="margin-top:6px"><div class="bar-f attention"
           style="width:65%"></div></div>
         <div class="ssr-detail">
-          <div class="ssr-obs">NI tables are present on both packaging and PDP but show significant discrepancies in serving size (33gm on packaging vs 33gm on PDP but 15 vs 30 servings), energy values, and several nutrient amounts differ between the two.</div>
+          <div class="ssr-obs">NI tables are present on both packaging and PDP, but the packaging table is partially illegible due to image orientation/resolution, while PDP shows clear values with some discrepancies in serving size basis (packaging shows 15 servings/500gm vs PDP shows 30 servings/33gm).</div>
           <div class="ssr-sug">Ensure NI table matches latest packaging and is visible on PDP.</div>
         </div>
       </div>
@@ -1335,8 +1306,8 @@ My muscles look so good in my shirts now super happ…</div>
             <td style="padding:9px 14px;color:#888;font-size:11px;text-transform:uppercase;letter-spacing:.5px">prohibited</td>
             <td style="padding:9px 14px;color:#c0392b;font-weight:700;font-size:12px">🔴 VIOLATED</td>
             <td style="padding:9px 14px;color:#666;font-size:12px">
-              <em style="color:#888">"PDP Image 1 shows a badge/icon with text 'No Added Sugar' on the left side of the product image"</em><br>
-              The prohibited claim 'No Added Sugar' appears as a badge/callout in the first PDP carousel image alongside 'Third Party Lab Tested' and 'Special Digestive Enzyme Blend'.
+              <em style="color:#888">"PDP image 1 shows a badge/icon with text 'No Added Sugar' on the left side of the product image"</em><br>
+              The prohibited claim 'No Added Sugar' appears as a badge/icon in the first PDP carousel image alongside 'Third Party Lab Tested' and 'Special Digestive Enzyme Blend' icons.
             </td>
           </tr>
           
@@ -1360,7 +1331,7 @@ My muscles look so good in my shirts now super happ…</div>
             <td style="padding:9px 14px;color:#c17d00;font-weight:700;font-size:12px">⚠️ ABSENT</td>
             <td style="padding:9px 14px;color:#666;font-size:12px">
               
-              The word 'Vegan' does not appear as a standalone claim in the PDP. The product is called 'Vegain' which is the product name, not a vegan claim.
+              The word 'Vegan' does not appear as a standalone claim. The product is called 'VEGAIN' which is a brand name, not a vegan claim.
             </td>
           </tr>
           
@@ -1383,20 +1354,20 @@ My muscles look so good in my shirts now super happ…</div>
             <td style="padding:9px 14px;color:#888;font-size:11px;text-transform:uppercase;letter-spacing:.5px">required</td>
             <td style="padding:9px 14px;color:#1a7a4a;font-weight:700;font-size:12px">✅ PRESENT</td>
             <td style="padding:9px 14px;color:#666;font-size:12px">
-              <em style="color:#888">"PDP Nutrition Information image shows 'Added Sugar: 0 gm' per serving; Label shows product contains 'Sweetener (INS 955)' which is sucralose (artificial sweetener), not added sugar"</em><br>
-              The PDP nutrition table shows Added Sugar as 0 gm. The label ingredient list shows 'Sweetener (INS 955)' which is sucralose - an artificial sweetener, not sugar. The 'No Added Sugar' claim appears to be technically accurate as the product uses artificial sweetener instead of added sugar. However, the claim is still on the prohibited list and appears on PDP.
+              <em style="color:#888">"PDP nutrition table image shows 'Added Sugar: 0 gm' and 'Total Sugar: 0 gm'; Label ingredients list shows 'Sweetener (INS 955)' which is Sucralose, an artificial sweetener, not added sugar"</em><br>
+              The nutrition information table in the PDP images confirms Added Sugar is 0 gm. The label shows Sweetener INS 955 (Sucralose) is used, which is a non-nutritive sweetener and not classified as 'added sugar'. The 'No Added Sugar' claim appears to be technically accurate per the formulation.
             </td>
           </tr>
           
           
           
-          <tr style="border-bottom:1px solid #eee;">
+          <tr style="border-bottom:1px solid #eee;background:#fdecea">
             <td style="padding:9px 14px;font-weight:500">Check all text, images, FAQ, and additional info sections for prohibited claims</td>
             <td style="padding:9px 14px;color:#888;font-size:11px;text-transform:uppercase;letter-spacing:.5px">required</td>
-            <td style="padding:9px 14px;color:#1a7a4a;font-weight:700;font-size:12px">✅ PRESENT</td>
+            <td style="padding:9px 14px;color:#c0392b;font-weight:700;font-size:12px">🔴 VIOLATED</td>
             <td style="padding:9px 14px;color:#666;font-size:12px">
-              <em style="color:#888">"Comprehensive scan completed: Found 'No Added Sugar' badge in Image 1; No other prohibited claims found in FAQ section, Additional Information section, reviews, or other images"</em><br>
-              Full scan of all PDP content completed. The only prohibited claim found is 'No Added Sugar' as a badge in the first carousel image. FAQ discusses muscle gain, meal replacement, and usage but contains no prohibited claims.
+              <em style="color:#888">"'No Added Sugar' badge in PDP image 1"</em><br>
+              Comprehensive scan completed. Found prohibited claim 'No Added Sugar' as a badge/icon in the first carousel image. All other prohibited claims (100% Natural, No Side Effects, Healthy, Vegan, 100% Vegan) were not found in any text, images, FAQ, or additional info sections.
             </td>
           </tr>
           
@@ -1407,8 +1378,8 @@ My muscles look so good in my shirts now super happ…</div>
             <td style="padding:9px 14px;color:#888;font-size:11px;text-transform:uppercase;letter-spacing:.5px">required</td>
             <td style="padding:9px 14px;color:#1a7a4a;font-weight:700;font-size:12px">✅ PRESENT</td>
             <td style="padding:9px 14px;color:#666;font-size:12px">
-              <em style="color:#888">"PDP content is entirely in English; no other languages detected in text or images"</em><br>
-              The entire PDP including all images, text, FAQ, and additional information sections are in English only. No prohibited claims found in any other language as no other languages are present on the PDP.
+              
+              PDP content is entirely in English. No other languages detected. The prohibited claim 'No Added Sugar' was found in English only. No Hindi or other regional language content present on the PDP.
             </td>
           </tr>
           
@@ -1507,8 +1478,6 @@ My muscles look so good in my shirts now super happ…</div>
                 
                   
                 
-                  
-                
                 
                 
                   
@@ -1569,25 +1538,11 @@ My muscles look so good in my shirts now super happ…</div>
                     
                   
                 
-                  
-                    
-                  
-                
-                
-                  
-                
-                  
                 
                   
                     
                   
                 
-                  
-                    
-                  
-                
-                  
-                    
                   
                 
                   
@@ -1650,16 +1605,18 @@ My muscles look so good in my shirts now super happ…</div>
                     
                   
                 
+                  
+                    
+                  
                 
+                  
+                    
+                  
                 
+                  
+                    
+                  
                 
-                
-                <tr style="border-bottom:1px solid #eee;">
-                  <td style="padding:6px 10px;font-weight:500">Energy</td>
-                  <td style="padding:6px 10px">?</td>
-                  <td style="padding:6px 10px;">
-                    162.5 Kcal</td>
-                </tr>
                 
                 
                 
@@ -1699,6 +1656,16 @@ My muscles look so good in my shirts now super happ…</div>
                   <td style="padding:6px 10px">?</td>
                   <td style="padding:6px 10px;color:#c0392b;font-weight:600">
                     ✗ missing</td>
+                </tr>
+                
+                
+                
+                
+                <tr style="border-bottom:1px solid #eee;background:#fff8f0">
+                  <td style="padding:6px 10px;font-weight:500">Energy</td>
+                  <td style="padding:6px 10px">—</td>
+                  <td style="padding:6px 10px;">
+                    162.5 Kcal</td>
                 </tr>
                 
                 
@@ -1785,7 +1752,7 @@ My muscles look so good in my shirts now super happ…</div>
                 
                 
                 <tr style="border-bottom:1px solid #eee;background:#fff8f0">
-                  <td style="padding:6px 10px;font-weight:500">Vitamin C</td>
+                  <td style="padding:6px 10px;font-weight:500">Vitamin C (Ascorbic acid)</td>
                   <td style="padding:6px 10px">—</td>
                   <td style="padding:6px 10px;">
                     10.28 mg</td>
@@ -1795,7 +1762,7 @@ My muscles look so good in my shirts now super happ…</div>
                 
                 
                 <tr style="border-bottom:1px solid #eee;background:#fff8f0">
-                  <td style="padding:6px 10px;font-weight:500">Vitamin B3</td>
+                  <td style="padding:6px 10px;font-weight:500">Vitamin B3 (Niacinamide)</td>
                   <td style="padding:6px 10px">—</td>
                   <td style="padding:6px 10px;">
                     3.08 mg</td>
@@ -1805,7 +1772,7 @@ My muscles look so good in my shirts now super happ…</div>
                 
                 
                 <tr style="border-bottom:1px solid #eee;background:#fff8f0">
-                  <td style="padding:6px 10px;font-weight:500">Vitamin E</td>
+                  <td style="padding:6px 10px;font-weight:500">Vitamin E (alpha Tocopherol)</td>
                   <td style="padding:6px 10px">—</td>
                   <td style="padding:6px 10px;">
                     2.056 mg</td>
@@ -1815,7 +1782,7 @@ My muscles look so good in my shirts now super happ…</div>
                 
                 
                 <tr style="border-bottom:1px solid #eee;background:#fff8f0">
-                  <td style="padding:6px 10px;font-weight:500">Vitamin B5</td>
+                  <td style="padding:6px 10px;font-weight:500">Vitamin B5 (Pantothenic acid)</td>
                   <td style="padding:6px 10px">—</td>
                   <td style="padding:6px 10px;">
                     1.3 mg</td>
@@ -1825,7 +1792,7 @@ My muscles look so good in my shirts now super happ…</div>
                 
                 
                 <tr style="border-bottom:1px solid #eee;background:#fff8f0">
-                  <td style="padding:6px 10px;font-weight:500">Vitamin B6</td>
+                  <td style="padding:6px 10px;font-weight:500">Vitamin B6 (Pyridoxine HCL)</td>
                   <td style="padding:6px 10px">—</td>
                   <td style="padding:6px 10px;">
                     0.51 mg</td>
@@ -1835,7 +1802,7 @@ My muscles look so good in my shirts now super happ…</div>
                 
                 
                 <tr style="border-bottom:1px solid #eee;background:#fff8f0">
-                  <td style="padding:6px 10px;font-weight:500">Vitamin B2</td>
+                  <td style="padding:6px 10px;font-weight:500">Vitamin B2 (Riboflavin)</td>
                   <td style="padding:6px 10px">—</td>
                   <td style="padding:6px 10px;">
                     0.25 mg</td>
@@ -1845,7 +1812,7 @@ My muscles look so good in my shirts now super happ…</div>
                 
                 
                 <tr style="border-bottom:1px solid #eee;background:#fff8f0">
-                  <td style="padding:6px 10px;font-weight:500">Vitamin B1</td>
+                  <td style="padding:6px 10px;font-weight:500">Vitamin B1 (Thiamine)</td>
                   <td style="padding:6px 10px">—</td>
                   <td style="padding:6px 10px;">
                     0.23 mg</td>
@@ -1855,7 +1822,7 @@ My muscles look so good in my shirts now super happ…</div>
                 
                 
                 <tr style="border-bottom:1px solid #eee;background:#fff8f0">
-                  <td style="padding:6px 10px;font-weight:500">Vitamin A</td>
+                  <td style="padding:6px 10px;font-weight:500">Vitamin A (Retinyl Acetate)</td>
                   <td style="padding:6px 10px">—</td>
                   <td style="padding:6px 10px;">
                     41.15 mcg</td>
@@ -1865,7 +1832,7 @@ My muscles look so good in my shirts now super happ…</div>
                 
                 
                 <tr style="border-bottom:1px solid #eee;background:#fff8f0">
-                  <td style="padding:6px 10px;font-weight:500">Vitamin B9</td>
+                  <td style="padding:6px 10px;font-weight:500">Vitamin B9 (Folic acid)</td>
                   <td style="padding:6px 10px">—</td>
                   <td style="padding:6px 10px;">
                     33.92 mcg</td>
@@ -1875,7 +1842,7 @@ My muscles look so good in my shirts now super happ…</div>
                 
                 
                 <tr style="border-bottom:1px solid #eee;background:#fff8f0">
-                  <td style="padding:6px 10px;font-weight:500">Vitamin B7</td>
+                  <td style="padding:6px 10px;font-weight:500">Vitamin B7 (Biotin)</td>
                   <td style="padding:6px 10px">—</td>
                   <td style="padding:6px 10px;">
                     6.17 mcg</td>
@@ -1894,9 +1861,7 @@ My muscles look so good in my shirts now super happ…</div>
             <div style="background:#fff5f5;border-radius:6px;padding:10px">
               <div style="font-size:11px;font-weight:700;color:#c0392b;margin-bottom:4px">Missing from PDP</div>
               
-              <div style="font-size:12px;color:#555;padding:2px 0">Vitamin D (present on packaging front panel, not listed in PDP NI table)</div>
-              
-              <div style="font-size:12px;color:#555;padding:2px 0">BCAAs value confirmation (packaging shows 4.7gm, PDP infographic shows 4.7gm but not in NI table)</div>
+              <div style="font-size:12px;color:#555;padding:2px 0">Vitamin D (listed on packaging front panel, not visible in PDP NI table)</div>
               
             </div>
             
@@ -1917,6 +1882,8 @@ My muscles look so good in my shirts now super happ…</div>
               <div style="font-size:12px;color:#555;padding:2px 0">Trans Fat: 0 mg</div>
               
               <div style="font-size:12px;color:#555;padding:2px 0">Cholesterol: 0 mg</div>
+              
+              <div style="font-size:12px;color:#555;padding:2px 0">Sodium: 50 mg</div>
               
               <div style="font-size:12px;color:#555;padding:2px 0">Vitamin C: 10.28 mg</div>
               
@@ -2206,4 +2173,4 @@ function updateSummaryCell(uid, tab, score) {
 </script>
 </body>
 </html>
-<!-- generated: 2026-08-31T18:42:29 -->
+<!-- generated: 2026-09-07T15:06:52 -->
